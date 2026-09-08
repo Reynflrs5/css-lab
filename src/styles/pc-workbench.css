@@ -1,0 +1,1611 @@
+/* ============================================================
+   PC PARTS WORKBENCH — Open Showcase Architecture (360° Orbit)
+   TESDA CSS NC II Practical Reference Lab
+   ============================================================ */
+
+:root {
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --paper: #FAFAF8;
+  --paper-dim: #F2F1EB;
+  --white: #FFFFFF;
+  --ink: #111111;
+  --ink-soft: #2B2B2D;
+  --graphite: #4A4A4D;
+  --steel: #85858A;
+  --line: #D6D5CE;
+  --deep: #0B0C0F;
+  --deep-2: #14151B;
+  --deep-3: #1E2028;
+  --hud-text: #F4F4F5;
+  --hud-dim: #909099;
+  --accent-gold: #F59E0B;
+  --accent-green: #10B981;
+  --accent-cyan: #06B6D4;
+  --accent-blue: #3B82F6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fan-unit,
+  .gpu-fan,
+  .fan-rotor,
+  .psu-fan-rotor,
+  .status-dot.live,
+  .gpu-led.active {
+    animation: none !important;
+  }
+}
+
+/* ── Page Header ─────────────────────────────────────────── */
+.pc-parts-page .pc-parts-header {
+  margin-bottom: 8px;
+}
+.header-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.mono-sub {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--steel);
+}
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+.header-title {
+  font-size: clamp(1.75rem, 3.2vw, 2.4rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.header-desc {
+  max-width: 62ch;
+  color: var(--graphite);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.system-telemetry-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.telemetry-pill {
+  background: var(--white);
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+}
+.pill-key {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--steel);
+  text-transform: uppercase;
+}
+.pill-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.rule-heavy {
+  border: none;
+  border-top: 1.5px solid var(--ink);
+  margin: 24px 0 28px;
+}
+
+/* ── Workbench Toolbar ───────────────────────────────────── */
+.pc-parts-workbench {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.workbench-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  background: var(--paper-dim);
+}
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mono-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--steel);
+  font-weight: 600;
+}
+.view-presets {
+  display: flex;
+  gap: 2px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.view-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 7px 11px;
+  background: var(--white);
+  color: var(--graphite);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.view-btn:hover {
+  color: var(--ink);
+}
+.view-btn.active {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.auto-spin-btn, .glass-toggle-btn, .reset-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--graphite);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.auto-spin-btn:hover, .glass-toggle-btn:hover, .reset-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.auto-spin-btn.active {
+  background: #09090b;
+  color: #38bdf8;
+  border-color: #0284c7;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+.glass-toggle-btn.off {
+  border-color: var(--accent-green);
+  color: #065f46;
+  background: #ecfdf5;
+  font-weight: 600;
+}
+.glass-toggle-btn.on {
+  border-color: var(--line);
+  color: var(--graphite);
+}
+
+.power-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--graphite);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.power-toggle-btn:hover {
+  border-color: var(--ink);
+}
+.power-toggle-btn.powered {
+  border-color: var(--ink);
+  color: var(--ink);
+  font-weight: 600;
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--steel);
+  flex-shrink: 0;
+}
+.status-dot.live {
+  background: var(--accent-green);
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+}
+
+.sound-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  color: var(--graphite);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.sound-toggle-btn:hover {
+  color: var(--ink);
+  border-color: var(--steel);
+}
+
+/* ── Zoom Controls ───────────────────────────────────────── */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border: 1px solid var(--line);
+  background: var(--white);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--graphite);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+  flex-shrink: 0;
+}
+.zoom-btn:hover:not(:disabled) {
+  background: var(--paper-dim);
+  color: var(--ink);
+}
+.zoom-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.zoom-btn.zoom-fit {
+  border-left: 1px solid var(--line);
+}
+.zoom-pct-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 0 8px;
+  height: 28px;
+  border: none;
+  border-left: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  min-width: 44px;
+  text-align: center;
+  transition: background 0.12s ease;
+}
+.zoom-pct-btn:hover {
+  background: var(--paper-dim);
+}
+
+/* ── Main Grid ───────────────────────────────────────────── */
+.workbench-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.workbench-grid.atlas-mode {
+  grid-template-columns: 1fr;
+  display: block;
+  height: 100%;
+}
+@media (max-width: 980px) {
+  .workbench-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Viewport Column & 3D Stage ─────────────────────────── */
+.viewport-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chassis-viewport {
+  position: relative;
+  background: radial-gradient(circle at 50% 36%, #1c1d25 0%, #0c0d11 100%);
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  min-height: 590px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  user-select: none;
+  cursor: grab;
+  touch-action: none;
+}
+.chassis-viewport.dragging {
+  cursor: grabbing;
+}
+
+/* Viewport HUD */
+.viewport-hud {
+  position: absolute;
+  z-index: 25;
+  font-family: var(--mono);
+  pointer-events: none;
+}
+.viewport-hud.top-left {
+  top: 14px;
+  left: 16px;
+}
+.viewport-hud.top-right {
+  top: 14px;
+  right: 16px;
+  text-align: right;
+}
+.hud-code {
+  font-size: 10px;
+  color: var(--hud-dim);
+  letter-spacing: 0.05em;
+}
+.hud-status {
+  font-size: 11px;
+  color: var(--hud-text);
+  margin-top: 3px;
+}
+.hud-angle {
+  font-size: 10px;
+  color: var(--hud-dim);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.inline-icon {
+  color: var(--accent-cyan);
+}
+.txt-accent { color: var(--accent-green); }
+.txt-dim { color: var(--hud-dim); }
+
+.post-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.post-label {
+  font-size: 9px;
+  color: var(--hud-dim);
+  letter-spacing: 0.08em;
+}
+.post-digits {
+  font-size: 16px;
+  font-weight: 700;
+  color: #3f3f46;
+  padding: 1px 6px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.06em;
+}
+.post-digits.active {
+  color: var(--accent-green);
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+}
+.active-part-indicator {
+  font-size: 10px;
+  color: var(--accent-gold);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+}
+
+.viewport-footer {
+  position: relative;
+  z-index: 25;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--hud-dim);
+  background: rgba(12, 13, 17, 0.9);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.mono-help {
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+/* ── 3D Scene Container & Open Chassis ──────────────────── */
+.scene-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1300px;
+  perspective-origin: 50% 50%;
+}
+
+.pc-case-3d {
+  position: relative;
+  width: 330px;
+  height: 420px;
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pc-case-3d.no-transition {
+  transition: none !important;
+}
+
+/* ── CHASSIS OPEN FRAMEWORK ───────────────────────────────── */
+.chassis-back-structure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #14151b;
+  border: 2px solid #2a2c36;
+  transform: translateZ(-35px);
+  cursor: pointer;
+}
+.chassis-back-structure.selected {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+}
+.grommet {
+  position: absolute;
+  background: #090a0d;
+  border: 1.5px solid #383a45;
+  border-radius: 4px;
+}
+.g-top { top: 12px; left: 60px; width: 60px; height: 12px; }
+.g-right-1 { top: 50px; right: 10px; width: 14px; height: 70px; }
+.g-right-2 { top: 140px; right: 10px; width: 14px; height: 70px; }
+.g-bot { bottom: 85px; left: 100px; width: 80px; height: 12px; }
+
+/* Roof & Base Frame */
+.chassis-roof {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: repeating-linear-gradient(90deg, #23252f, #23252f 3px, #16171e 3px, #16171e 6px);
+  border: 1.5px solid #333542;
+  transform: rotateX(90deg) translateZ(25px);
+  transform-origin: top center;
+}
+.chassis-base {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: #111216;
+  border: 1.5px solid #272832;
+  transform: rotateX(-90deg) translateZ(25px);
+  transform-origin: bottom center;
+}
+
+/* Rear Edge Frame (Left in open view) */
+.chassis-rear-edge {
+  position: absolute;
+  top: 14px;
+  left: 8px;
+  width: 36px;
+  height: 310px;
+  background: #191a21;
+  border: 1px solid #333540;
+  transform: translateZ(-15px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 2px;
+}
+.mini-rear-io {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 60px;
+}
+.mini-jack {
+  background: #090a0d;
+  border: 1px solid #4b4d58;
+}
+.mini-jack.usb { width: 12px; height: 6px; border-color: #3b82f6; }
+.mini-jack.hdmi { width: 14px; height: 5px; }
+.mini-jack.lan { width: 14px; height: 8px; border-color: #eab308; }
+
+/* Front Edge Frame (Right in open view) */
+.chassis-front-edge {
+  position: absolute;
+  top: 14px;
+  right: 8px;
+  width: 44px;
+  height: 310px;
+  background: #191a21;
+  border: 1px solid #333540;
+  transform: translateZ(-15px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 4px;
+}
+.front-io-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.front-pwr-btn {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #383a45;
+  border: 1.5px solid #85858a;
+  cursor: pointer;
+}
+.front-pwr-btn.on {
+  background: var(--accent-green);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.9);
+}
+.front-port {
+  background: #090a0d;
+  border: 1px solid #4a4c56;
+}
+.front-port.usb { width: 14px; height: 6px; border-color: #3b82f6; }
+.front-port.usbc { width: 12px; height: 4px; }
+
+/* ── 12. CASE FANS ────────────────────────────────────────── */
+/* Rear Exhaust Fan */
+.comp-exhaust-fan {
+  top: 6px;
+  width: 32px;
+  height: 32px;
+  z-index: 10;
+}
+.exhaust-fan-frame {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #4f515d;
+  background: #090a0d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.exhaust-fan-frame .fan-rotor {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255, 255, 255, 0.25) 0deg 20deg, transparent 20deg 60deg);
+}
+
+/* Front Intake Fans */
+.comp-intake-fans {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 14px;
+  z-index: 10;
+}
+.intake-fan {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid #4f515d;
+  background: #090a0d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.intake-fan .fan-rotor {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255, 255, 255, 0.25) 0deg 20deg, transparent 20deg 60deg);
+}
+.fan-rotor.spinning {
+  animation: spinFan 0.7s linear infinite;
+}
+
+/* ── HARDWARE LAYERS ─────────────────────────────────────── */
+.hardware-layer {
+  position: absolute;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+.hardware-layer:hover {
+  filter: brightness(1.22);
+}
+.hardware-layer:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.hardware-layer.selected {
+  outline: 2px solid var(--accent-gold);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.55);
+  z-index: 120 !important;
+}
+
+/* Component Badge Tag */
+.comp-tag {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  background: rgba(10, 10, 12, 0.9);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-family: var(--mono);
+  font-size: 7.5px;
+  letter-spacing: 0.05em;
+  padding: 1px 4px;
+  pointer-events: none;
+  user-select: none;
+}
+.comp-tag.mini {
+  font-size: 7px;
+  bottom: 2px;
+  right: 3px;
+  padding: 0 3px;
+}
+
+/* ── 2. MOTHERBOARD ───────────────────────────────────────── */
+.comp-mobo {
+  top: 14px;
+  left: 48px;
+  width: 232px;
+  height: 305px;
+  background: linear-gradient(145deg, #18191f 0%, #111216 100%);
+  border: 1.5px solid #3a3c48;
+  z-index: 2;
+  transform: translateZ(-20px);
+}
+.comp-mobo.selected {
+  border-color: var(--accent-gold);
+}
+.pcb-traces {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+  pointer-events: none;
+}
+.vrm-heatsink {
+  position: absolute;
+  background: linear-gradient(180deg, #3a3c45 0%, #1f2025 100%);
+  border: 1px solid #4f515d;
+}
+.vrm-heatsink.top { top: 8px; left: 54px; width: 100px; height: 15px; }
+.vrm-heatsink.left { top: 26px; left: 8px; width: 20px; height: 88px; }
+.io-shield-block {
+  position: absolute;
+  top: 8px;
+  left: 6px;
+  width: 16px;
+  height: 108px;
+  background: #3f414c;
+  border: 1px solid #585a67;
+}
+.chipset-heatsink {
+  position: absolute;
+  bottom: 28px;
+  right: 18px;
+  width: 66px;
+  height: 52px;
+  background: linear-gradient(135deg, #2b2c34 0%, #17181d 100%);
+  border: 1px solid #484a55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chipset-text {
+  font-family: var(--mono);
+  font-size: 6.5px;
+  color: #a1a1aa;
+}
+.pcie-slot {
+  position: absolute;
+  height: 8px;
+  background: #09090b;
+  border: 1px solid #52525b;
+}
+.pcie-slot.primary { top: 172px; left: 22px; width: 175px; }
+.pcie-slot.secondary { top: 232px; left: 22px; width: 115px; opacity: 0.6; }
+
+/* ── 3. CPU ───────────────────────────────────────────────── */
+.comp-cpu {
+  top: 34px;
+  left: 106px;
+  width: 70px;
+  height: 70px;
+  z-index: 5;
+  transform: translateZ(-10px);
+}
+.cpu-socket-frame {
+  width: 100%;
+  height: 100%;
+  background: #232429;
+  border: 1.5px solid #636672;
+  padding: 6px;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+.cpu-bracket-lever {
+  position: absolute;
+  right: -5px;
+  top: 4px;
+  bottom: 4px;
+  width: 4px;
+  background: #8e909a;
+  border: 1px solid #4f515d;
+}
+.cpu-ihs {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(145deg, #d4d4d8 0%, #9ca3af 100%);
+  border: 1px solid #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.cpu-triangle {
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  width: 0;
+  height: 0;
+  border-left: 6px solid var(--accent-gold);
+  border-top: 6px solid transparent;
+}
+.cpu-mark {
+  font-family: var(--mono);
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #111;
+}
+.cpu-clock {
+  font-family: var(--mono);
+  font-size: 6px;
+  color: #374151;
+}
+
+/* ── 4. CPU COOLER ────────────────────────────────────────── */
+.comp-cooling {
+  top: 22px;
+  left: 94px;
+  width: 94px;
+  height: 94px;
+  z-index: 15;
+  transform: translateZ(12px);
+}
+.pc-case-3d.exploded .comp-cooling {
+  transform: translateZ(65px);
+}
+.cooler-tower {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: rgba(28, 29, 35, 0.9);
+  border: 1.5px solid #9ca3af;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+}
+.fin-stack {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 4px 6px;
+  pointer-events: none;
+}
+.cooler-fin {
+  width: 100%;
+  height: 2px;
+  background: #64748b;
+  border-top: 1px solid #cbd5e1;
+}
+.heatpipe {
+  position: absolute;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, #d97706, #92400e);
+  border: 1px solid #78350f;
+  top: 0;
+}
+.pipe-1 { left: 14px; }
+.pipe-2 { left: 24px; }
+.pipe-3 { right: 24px; }
+.pipe-4 { right: 14px; }
+
+.fan-unit {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 1.5px solid #52525b;
+  background: radial-gradient(circle, #27272a 35%, #18181b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fan-hub {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #3f3f46;
+  border: 1px solid #71717a;
+  z-index: 5;
+}
+.fan-blade {
+  position: absolute;
+  width: 34px;
+  height: 9px;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 4px;
+}
+.fan-blade.b1 { transform: rotate(0deg) translate(14px); }
+.fan-blade.b2 { transform: rotate(90deg) translate(14px); }
+.fan-blade.b3 { transform: rotate(180deg) translate(14px); }
+.fan-blade.b4 { transform: rotate(270deg) translate(14px); }
+.fan-unit.spinning {
+  animation: spinFan 0.75s linear infinite;
+}
+
+/* ── 5. RAM ───────────────────────────────────────────────── */
+.comp-ram {
+  top: 28px;
+  left: 202px;
+  width: 44px;
+  height: 92px;
+  z-index: 10;
+  display: flex;
+  gap: 6px;
+  transform: translateZ(-2px);
+}
+.pc-case-3d.exploded .comp-ram {
+  transform: translateZ(46px);
+}
+.dimm-slot {
+  width: 18px;
+  height: 100%;
+  background: #09090b;
+  border: 1px solid #52525b;
+  padding: 2px;
+}
+.ram-stick {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #3f3f46 0%, #18181b 100%);
+  border: 1px solid #71717a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 1px;
+}
+.ram-ridges {
+  width: 85%;
+  height: 14px;
+  background: repeating-linear-gradient(180deg, #71717a, #71717a 2px, transparent 2px, transparent 4px);
+}
+.ram-text {
+  font-family: var(--mono);
+  font-size: 6px;
+  font-weight: 700;
+  color: #e4e4e7;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.05em;
+}
+.ram-gold-pins {
+  width: 100%;
+  height: 5px;
+  background: repeating-linear-gradient(90deg, #eab308, #eab308 2px, #000 2px, #000 3px);
+}
+
+/* ── 6. M.2 NVMe SSD ──────────────────────────────────────── */
+.comp-storage {
+  top: 136px;
+  left: 110px;
+  width: 82px;
+  height: 24px;
+  z-index: 6;
+  transform: translateZ(-6px);
+}
+.pc-case-3d.exploded .comp-storage {
+  transform: translateZ(32px);
+}
+.m2-stick {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #18181b 0%, #2b2d33 100%);
+  border: 1px solid #52525b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+}
+.m2-heatsink-fins {
+  width: 24px;
+  height: 12px;
+  background: repeating-linear-gradient(90deg, #71717a, #71717a 2px, transparent 2px, transparent 4px);
+}
+.m2-text {
+  font-family: var(--mono);
+  font-size: 6.5px;
+  font-weight: 600;
+  color: #fafafa;
+}
+.m2-screw-notch {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #a1a1aa;
+  border: 1px solid #3f3f46;
+}
+
+/* ── 7. CMOS BATTERY (CR2032) ─────────────────────────────── */
+.comp-cmos {
+  top: 196px;
+  left: 206px;
+  width: 30px;
+  height: 30px;
+  z-index: 7;
+  transform: translateZ(-6px);
+}
+.cmos-coin-socket {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #09090b;
+  border: 1px solid #4a4c54;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cmos-coin-cell {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f4f4f5 40%, #a1a1aa 100%);
+  border: 1px solid #e4e4e7;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.cmos-plus {
+  font-size: 7px;
+  font-weight: 700;
+  color: #111;
+  line-height: 1;
+}
+.cmos-text {
+  font-family: var(--mono);
+  font-size: 4px;
+  color: #27272a;
+}
+
+/* ── 8. FRONT PANEL HEADERS (FPANEL) ──────────────────────── */
+.comp-fpanel {
+  bottom: 8px;
+  right: 14px;
+  width: 48px;
+  height: 26px;
+  z-index: 8;
+  transform: translateZ(-6px);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.fpanel-pins-block {
+  width: 24px;
+  height: 18px;
+  background: #09090b;
+  border: 1px solid #3f414d;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 1px;
+}
+.pin-pair {
+  height: 3px;
+  background: repeating-linear-gradient(90deg, #eab308, #eab308 2px, transparent 2px, transparent 4px);
+}
+.fpanel-ribbon-wires {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.fwire {
+  width: 16px;
+  height: 2.5px;
+  border-radius: 1px;
+}
+.w-red { background: #ef4444; }
+.w-blk { background: #18181b; }
+.w-blu { background: #3b82f6; }
+.w-wht { background: #f4f4f5; }
+
+/* ── 9. GPU ───────────────────────────────────────────────── */
+.comp-gpu {
+  top: 168px;
+  left: 54px;
+  width: 242px;
+  height: 72px;
+  z-index: 20;
+  transform: translateZ(18px);
+}
+.pc-case-3d.exploded .comp-gpu {
+  transform: translateZ(78px);
+}
+.gpu-shroud {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #27272a 0%, #18181b 100%);
+  border: 1.5px solid #52525b;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.7);
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+}
+.gpu-bracket {
+  position: absolute;
+  left: -6px;
+  top: 6px;
+  bottom: 6px;
+  width: 6px;
+  background: #a1a1aa;
+  border: 1px solid #52525b;
+}
+.gpu-badge {
+  position: absolute;
+  top: 5px;
+  left: 14px;
+  font-family: var(--mono);
+  font-size: 6.5px;
+  color: #a1a1aa;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.gpu-led {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #52525b;
+}
+.gpu-led.active {
+  background: var(--accent-cyan);
+  box-shadow: 0 0 7px rgba(6, 182, 212, 0.95);
+}
+.gpu-fans-row {
+  display: flex;
+  gap: 20px;
+  margin-left: auto;
+  margin-right: 18px;
+}
+.gpu-fan {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid #3f3f46;
+  background: #09090b;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gpu-fan.spinning {
+  animation: spinFan 0.65s linear infinite;
+}
+.gpu-fan.spinning-reverse {
+  animation: spinFanReverse 0.65s linear infinite;
+}
+.gpu-power-cable {
+  position: absolute;
+  top: -12px;
+  right: 18px;
+  display: flex;
+  gap: 2px;
+}
+.cable-wire {
+  width: 3px;
+  height: 14px;
+  background: #111;
+  border-radius: 2px;
+}
+
+/* ── BASEMENT COVER & BOTTOM COMPONENTS ───────────────────── */
+.chassis-basement-cover {
+  position: absolute;
+  bottom: 10px;
+  left: 8px;
+  right: 8px;
+  height: 72px;
+  background: #17181e;
+  border: 1.5px solid #2f313c;
+  transform: translateZ(-10px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+}
+
+/* 10. SATA HDD / SSD Bay */
+.comp-sata-hdd {
+  position: relative;
+  width: 120px;
+  height: 56px;
+  z-index: 14;
+}
+.hdd-caddy {
+  width: 100%;
+  height: 100%;
+  border: 1px dashed #4b4d58;
+  background: #111216;
+  padding: 3px;
+}
+.hdd-metal-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #383942 0%, #1f2025 100%);
+  border: 1px solid #636573;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 6px;
+}
+.hdd-label-sticker {
+  display: flex;
+  flex-direction: column;
+}
+.hdd-brand {
+  font-family: var(--mono);
+  font-size: 7px;
+  font-weight: 700;
+  color: #fff;
+}
+.hdd-cap {
+  font-family: var(--mono);
+  font-size: 5.5px;
+  color: #9ca3af;
+}
+.hdd-sata-cables {
+  display: flex;
+  gap: 6px;
+  align-self: flex-end;
+}
+.sata-data-cable {
+  width: 8px;
+  height: 4px;
+  background: #ef4444;
+  border-radius: 1px;
+}
+.sata-power-cable {
+  width: 14px;
+  height: 4px;
+  background: #111;
+  border: 1px solid #333;
+}
+
+/* 11. PSU */
+.comp-psu {
+  position: relative;
+  width: 160px;
+  height: 56px;
+  z-index: 12;
+}
+.psu-shroud {
+  width: 100%;
+  height: 100%;
+  background: #18191d;
+  border: 1.5px solid #383a42;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.45);
+}
+.psu-grill {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid #52525b;
+  background: radial-gradient(circle, #27272a 35%, #09090b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.psu-fan-rotor {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #3f3f46;
+}
+.psu-fan-rotor.spinning {
+  animation: spinFan 0.9s linear infinite;
+}
+.psu-specs-badge {
+  display: flex;
+  flex-direction: column;
+}
+.psu-wattage {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+}
+.psu-cert {
+  font-family: var(--mono);
+  font-size: 7.5px;
+  color: var(--accent-gold);
+  font-weight: 600;
+}
+.psu-modular-harness {
+  display: flex;
+  gap: 3px;
+}
+.wire-bundle {
+  width: 8px;
+  height: 24px;
+  background: repeating-linear-gradient(90deg, #111, #111 2px, #333 2px, #333 4px);
+  border-radius: 2px;
+}
+
+/* Optional Glass Side Panel (Only visible when toggled ON) */
+.tempered-glass-cover.on {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(0, 0, 0, 0.15) 100%);
+  transform: translateZ(35px);
+  pointer-events: auto;
+  cursor: pointer;
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.4);
+}
+.glass-screw {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4b4d58;
+  border: 1px solid #85858a;
+}
+.glass-screw.tl { top: 8px; left: 8px; }
+.glass-screw.tr { top: 8px; right: 8px; }
+.glass-screw.bl { bottom: 8px; left: 8px; }
+.glass-screw.br { bottom: 8px; right: 8px; }
+
+/* ── COMPONENT SELECTOR MATRIX ───────────────────────────── */
+.component-selector-matrix {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  padding: 14px;
+}
+.selector-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--steel);
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+}
+.selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+.comp-card-btn {
+  background: var(--white);
+  border: 1px solid var(--line);
+  padding: 9px 12px;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+.comp-card-btn:hover {
+  border-color: var(--ink);
+  background: var(--paper-dim);
+}
+.comp-card-btn.active {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+.comp-card-btn.active .part-name-label {
+  color: var(--white);
+}
+.comp-card-btn.active .part-category-tag {
+  color: #cbd5e1;
+  border-color: #475569;
+}
+.comp-card-btn.active .part-draw {
+  color: var(--accent-gold);
+}
+.btn-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.part-category-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  color: var(--steel);
+  border: 1px solid var(--line);
+  padding: 1px 4px;
+}
+.part-draw {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--graphite);
+  font-weight: 500;
+}
+.part-name-label {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ── Workstation Detail Panel ────────────────────────────── */
+.detail-column {
+  display: flex;
+  flex-direction: column;
+}
+.workstation-panel {
+  border: 1.5px solid var(--ink);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  min-height: 590px;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.05);
+}
+.panel-header {
+  padding: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.telemetry-badge {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  background: var(--paper-dim);
+  color: var(--ink);
+}
+.telemetry-badge.category {
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
+}
+.telemetry-badge.power {
+  border-color: #fde047;
+  background: #fefce8;
+  color: #854d0e;
+}
+.telemetry-badge.temp {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.component-title {
+  font-size: 1.35rem;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.component-summary {
+  font-size: 13.5px;
+  color: var(--graphite);
+  line-height: 1.6;
+}
+
+/* Tabs */
+.workstation-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper-dim);
+}
+.ws-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px 8px;
+  background: transparent;
+  border: none;
+  border-right: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--steel);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.ws-tab:last-child {
+  border-right: none;
+}
+.ws-tab:hover {
+  color: var(--ink);
+  background: #eae9e2;
+}
+.ws-tab.active {
+  background: var(--white);
+  color: var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+/* Tab Viewport */
+.tab-viewport {
+  padding: 22px;
+  flex: 1;
+}
+.section-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--steel);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* Specs */
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+.spec-card {
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  background: var(--paper);
+}
+.spec-key {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--steel);
+  margin-bottom: 3px;
+}
+.spec-val {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Installation Guide */
+.protocol-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.protocol-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+.step-number {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--steel);
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+.step-text {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.safety-alert {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  background: #fffbeb;
+  border-left: 3px solid #f59e0b;
+  border-top: 1px solid #fef3c7;
+  border-right: 1px solid #fef3c7;
+  border-bottom: 1px solid #fef3c7;
+  color: #92400e;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.alert-symbol {
+  flex-shrink: 0;
+  color: #d97706;
+}
+
+/* Diagnostics */
+.faults-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.fault-card {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--ink);
+  padding: 12px 14px;
+  background: var(--paper);
+}
+.fault-indicator {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--steel);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+.fault-desc {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.diagnostic-summary {
+  background: var(--paper-dim);
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+}
+.summary-title {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 4px;
+}
+.diagnostic-summary p {
+  font-size: 13px;
+  color: var(--graphite);
+  margin: 0;
+}
