@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -9,6 +9,9 @@ import Networking from './pages/Networking'
 import Troubleshooting from './pages/Troubleshooting'
 
 export default function App() {
+  const location = useLocation()
+  const isPcParts = location.pathname === '/pc-parts'
+
   return (
     <>
       <NavBar />
@@ -20,7 +23,7 @@ export default function App() {
         <Route path="/networking"     element={<Networking />} />
         <Route path="/troubleshooting" element={<Troubleshooting />} />
       </Routes>
-      <Footer note="CSS NC II Study Reference — Academic use only" />
+      {!isPcParts && <Footer note="CSS NC II Study Reference — Academic use only" />}
     </>
   )
 }

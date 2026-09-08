@@ -1,22 +1,42 @@
+@import './pc-workbench.css';
+
 /* ─────────────────────────────────────────────────────────────
    atlas-explorer.css  –  Anatomy Atlas–style PC Parts Layout
    ───────────────────────────────────────────────────────────── */
 
 /* ── Global Page Override for Atlas Mode ───────────────────── */
+html:has(.atlas-explorer),
+body:has(.atlas-explorer) {
+  height: 100% !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+  background: #0c0d11 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 body:has(.atlas-explorer) .footer {
-  display: none;
+  display: none !important;
 }
 
 /* ── Root shell ─────────────────────────────────────────────── */
 .atlas-explorer {
+  position: fixed;
+  top: var(--nav-h, 56px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: calc(100vh - var(--nav-h, 56px));
+  max-height: calc(100vh - var(--nav-h, 56px));
   display: flex;
   flex-direction: column;
-  margin-top: var(--nav-h, 56px);
-  height: calc(100vh - var(--nav-h, 56px));
-  min-height: 600px;
   font-family: 'Inter', system-ui, sans-serif;
-  background: #f4f5f7;
+  background: #0c0d11;
   overflow: hidden;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
 }
 
 /* ── Top Bar ─────────────────────────────────────────────────── */
@@ -43,16 +63,21 @@ body:has(.atlas-explorer) .footer {
 .atlas-brand-name { white-space: nowrap; }
 .atlas-brand-name strong { font-weight: 700; }
 
-.atlas-tabs-nav {
+/* ── View Switcher Pills ──────────────────────────────────── */
+.atlas-view-switcher {
   display: flex;
-  gap: 2px;
-  background: #f3f4f6;
+  gap: 3px;
+  background: #f1f3f5;
   padding: 3px;
   border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
-.atlas-nav-tab {
-  padding: 5px 14px;
-  font-size: 13px;
+.view-mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  font-size: 12.5px;
   font-weight: 500;
   border: none;
   border-radius: 6px;
@@ -60,12 +85,17 @@ body:has(.atlas-explorer) .footer {
   color: #6b7280;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
-.atlas-nav-tab.active,
-.atlas-nav-tab:hover {
+.view-mode-btn:hover {
+  color: #111827;
+  background: rgba(255, 255, 255, 0.6);
+}
+.view-mode-btn.active {
   background: #fff;
   color: #111827;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 .atlas-topbar-right {
@@ -73,6 +103,45 @@ body:has(.atlas-explorer) .footer {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+.fullscreen-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #fff;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.fullscreen-toggle-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+  border-color: #9ca3af;
+}
+
+.drawer-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid #3b82f6;
+  border-radius: 7px;
+  background: #eff6ff;
+  color: #2563eb;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.drawer-toggle-btn:hover,
+.drawer-toggle-btn.active {
+  background: #2563eb;
+  color: #fff;
 }
 .atlas-meta-tag {
   font-size: 12px;
@@ -83,13 +152,35 @@ body:has(.atlas-explorer) .footer {
   white-space: nowrap;
 }
 
-/* ── Three-column layout ─────────────────────────────────────── */
+/* ── Layout Modes ───────────────────────────────────────────── */
 .atlas-columns {
   display: grid;
-  grid-template-columns: 220px 1fr 265px;
+  grid-template-columns: 220px 1fr 280px;
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   height: 100%;
+  position: relative;
+}
+
+.atlas-columns.mode-landscape {
+  display: flex !important;
+  flex-direction: row;
+  grid-template-columns: unset !important;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #0c0d11;
+}
+.atlas-columns.mode-landscape .atlas-viewport-wrapper {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: radial-gradient(circle at 50% 45%, #191b26 0%, #0a0b0e 100%);
 }
 
 /* ── LEFT: Sidebar ───────────────────────────────────────────── */
@@ -336,14 +427,16 @@ body:has(.atlas-explorer) .footer {
 .atlas-viewport-wrapper {
   display: flex;
   flex-direction: column;
-  background: #f8f9fb;
+  background: #0b0c10;
   overflow: hidden;
   position: relative;
+  width: 100%;
+  height: 100%;
 }
 .atlas-viewport-header {
-  padding: 16px 20px 10px;
-  border-bottom: 1px solid #e9eaec;
-  background: #fff;
+  padding: 12px 20px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: #101217;
   flex-shrink: 0;
 }
 .atlas-viewport-label {
@@ -354,44 +447,69 @@ body:has(.atlas-explorer) .footer {
   text-transform: uppercase;
 }
 .atlas-viewport-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  color: #111827;
-  margin: 4px 0 4px;
+  color: #f3f4f6;
+  margin: 3px 0 2px;
   line-height: 1.2;
 }
 .atlas-viewport-sub {
-  font-size: 12px;
-  color: #9ca3af;
+  font-size: 11.5px;
+  color: #6b7280;
 }
 
 .atlas-3d-frame {
   flex: 1;
+  width: 100%;
+  min-height: 480px;
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Override PcDiagram's outer wrapper so it fills atlas frame */
 .atlas-3d-frame .pc-parts-workbench {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   height: 100%;
   gap: 0;
 }
 .atlas-3d-frame .workbench-grid.atlas-mode {
+  flex: 1;
+  width: 100%;
   height: 100%;
   display: flex !important;
+  flex-direction: column;
   grid-template-columns: unset !important;
 }
 .atlas-3d-frame .viewport-column {
   flex: 1;
+  width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .atlas-3d-frame .chassis-viewport {
   flex: 1;
-  min-height: unset;
+  width: 100%;
+  min-height: 450px;
   height: 100%;
+  position: relative;
+  border: none;
+  border-radius: 0;
+  background: radial-gradient(circle at 50% 40%, #1e202d 0%, #0b0c10 100%);
 }
 .atlas-3d-frame .scene-container {
+  flex: 1;
+  width: 100%;
   height: 100%;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ── Atlas Viewport Floating Dock ────────────────────────── */
@@ -503,18 +621,345 @@ body:has(.atlas-explorer) .footer {
   flex-direction: column;
   overflow-y: auto;
   padding: 18px 0 16px;
+  position: relative;
+  z-index: 30;
 }
 .atlas-details-panel::-webkit-scrollbar { width: 4px; }
 .atlas-details-panel::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 2px; }
+
+/* In Landscape Mode: Details Panel acts as slide-out drawer */
+.atlas-columns.mode-landscape .atlas-details-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 350px;
+  max-width: 90vw;
+  box-shadow: -10px 0 35px rgba(0, 0, 0, 0.5);
+  z-index: 40;
+  transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(16px);
+}
+.atlas-columns.mode-landscape .atlas-details-panel.closed {
+  transform: translateX(100%);
+  pointer-events: none;
+}
+
+.drawer-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  margin-bottom: 8px;
+}
+.drawer-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.drawer-close-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
 
 .details-section-label {
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #9ca3af;
-  padding: 0 18px;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin: 0;
+}
+
+/* ── Landscape Floating Category Dropdown ───────────────────── */
+.landscape-cat-dropdown-wrap {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 35;
+  user-select: none;
+}
+
+.landscape-cat-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  background: rgba(18, 20, 28, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  color: #f3f4f6;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.landscape-cat-dropdown-trigger:hover {
+  background: rgba(28, 32, 44, 0.96);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+.landscape-cat-dropdown-trigger.open {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35), 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.landscape-cat-dropdown-trigger.filtered {
+  border-color: rgba(59, 130, 246, 0.6);
+  background: rgba(22, 28, 42, 0.95);
+}
+
+.cat-dropdown-filter-icon {
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.cat-dropdown-label {
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.cat-dropdown-selected {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cat-dropdown-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cat-dropdown-arrow {
+  color: #9ca3af;
+  transition: transform 0.2s ease;
+  margin-left: 2px;
+}
+
+.cat-dropdown-arrow.open {
+  transform: rotate(180deg);
+  color: #fff;
+}
+
+/* Dropdown Menu */
+.landscape-cat-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  background: rgba(15, 17, 24, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: catMenuFade 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 50;
+}
+
+@keyframes catMenuFade {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.cat-menu-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 6px;
+}
+
+.landscape-cat-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.landscape-cat-menu-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.landscape-cat-menu-item.active {
+  background: rgba(59, 130, 246, 0.22);
+  color: #fff;
+  font-weight: 600;
+}
+
+.cat-menu-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cat-menu-dot.all {
+  background: #9ca3af;
+}
+
+.cat-menu-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.cat-menu-name {
+  flex: 1;
+}
+
+.cat-menu-count {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-mono, monospace);
+}
+
+.lpp-clear-filter-btn {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  cursor: pointer;
+  margin-left: auto;
+  transition: all 0.12s ease;
+}
+
+.lpp-clear-filter-btn:hover {
+  background: #3b82f6;
+  color: #fff;
+}
+
+/* ── Landscape Left Parts Panel ─────────────────────────────── */
+.landscape-parts-panel {
+  width: 160px;
+  min-width: 160px;
+  height: 100%;
+  background: rgba(10, 11, 16, 0.97);
+  border-right: 1px solid rgba(255, 255, 255, 0.09);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
+  z-index: 20;
+  padding-bottom: 12px;
+}
+.landscape-parts-panel::-webkit-scrollbar { width: 3px; }
+.landscape-parts-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+.lpp-header {
+  font-family: var(--font-mono, monospace);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.3);
+  padding: 14px 14px 8px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  margin-bottom: 4px;
+}
+
+.lpp-group {
+  margin-bottom: 2px;
+}
+
+.lpp-group-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px 3px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.lpp-group-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.lpp-part-btn {
+  display: block;
+  width: 100%;
+  padding: 6px 14px 6px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  background: transparent;
+  border: none;
+  border-left: 2px solid transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.14s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lpp-part-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
+}
+.lpp-part-btn.active {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  font-weight: 600;
+  border-left-width: 2px;
 }
 
 .details-search {
@@ -544,9 +989,21 @@ body:has(.atlas-explorer) .footer {
 .details-search-input:focus { border-color: #3b82f6; background: #fff; }
 
 /* Selected Part */
+@keyframes detailsPopIn {
+  0% {
+    opacity: 0.25;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .details-selected {
   padding: 14px 18px 0;
   flex: 1;
+  animation: detailsPopIn 0.26s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .details-cat-badge {

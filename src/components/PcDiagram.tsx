@@ -21,12 +21,19 @@ import {
   ZoomIn,
   ZoomOut,
   Maximize2,
+  Focus,
 } from 'lucide-react'
 import { pcParts, type PcPart } from '../data/pcParts'
+import '../styles/pc-workbench.css'
 
 type CameraPreset = 'isometric' | 'front' | 'interior' | 'rear' | 'exploded'
 
 interface Rotation {
+  x: number
+  y: number
+}
+
+interface Pan {
   x: number
   y: number
 }
@@ -37,6 +44,8 @@ export interface PcDiagramProps {
   onSelect?: (id: string) => void
   /** Hide the bottom selector grid and right detail panel (used when atlas layout provides them) */
   atlasMode?: boolean
+  initialZoom?: number
+  isFullscreen?: boolean
 }
 
 const PRESET_ANGLES: Record<CameraPreset, Rotation> = {
@@ -47,7 +56,63 @@ const PRESET_ANGLES: Record<CameraPreset, Rotation> = {
   exploded: { x: 20, y: -24 },
 }
 
-export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: PcDiagramProps = {}) {
+// case is 330×420px, center = (165, 210)
+// pan = -(partCenter - caseCenter) to move camera toward the part
+const COMPONENT_FOCUS_PRESETS: Record<string, { zoom: number; rotation: Rotation; pan: Pan }> = {
+  motherboard: { zoom: 1.85, rotation: { x: 2, y: -4  }, pan: { x: -20,  y: 44   } },
+  cpu:         { zoom: 2.4,  rotation: { x: 4, y: -6  }, pan: { x: 0,    y: 141  } },
+  cooling:     { zoom: 2.2,  rotation: { x: 8, y: -12 }, pan: { x: 0,    y: 141  } },
+  ram:         { zoom: 2.4,  rotation: { x: 6, y: -8  }, pan: { x: -80,  y: 136  } },
+  gpu:         { zoom: 2.1,  rotation: { x: 10, y: -14}, pan: { x: -30,  y: 6    } },
+  storage:     { zoom: 2.4,  rotation: { x: 4, y: -5  }, pan: { x: -10,  y: 62   } },
+  'sata-hdd':  { zoom: 2.1,  rotation: { x: 6, y: -10 }, pan: { x: -65,  y: -162 } },
+  psu:         { zoom: 2.0,  rotation: { x: 6, y: -12 }, pan: { x: 25,   y: -162 } },
+  'case-fans': { zoom: 1.6,  rotation: { x: 8, y: 15  }, pan: { x: -35,  y: 15   } },
+  'cmos-battery': { zoom: 2.5, rotation: { x: 4, y: -5}, pan: { x: -75,  y: -1   } },
+  fpanel:      { zoom: 2.4,  rotation: { x: 4, y: -5  }, pan: { x: -145, y: -189 } },
+  chassis:     { zoom: 1.35, rotation: { x: 12, y: -18}, pan: { x: -20,  y: 0    } },
+}
+
+// Helper to get focus presets adjusted for fullscreen vs windowed mode
+function getFocusPreset(id: string, isFs: boolean) {
+  const base = COMPONENT_FOCUS_PRESETS[id]
+  if (!base) return null
+  if (isFs) return base
+
+  // When NOT in fullscreen, scale down zoom by ~32% so parts don't over-magnify or crop out
+  const zoomFactor = 0.68
+  const adjustedZoom = Math.max(1.18, +(base.zoom * zoomFactor).toFixed(2))
+  const panFactor = adjustedZoom / base.zoom
+
+  return {
+    zoom: adjustedZoom,
+    rotation: base.rotation,
+    pan: {
+      x: Math.round(base.pan.x * panFactor),
+      y: Math.round(base.pan.y * panFactor),
+    },
+  }
+}
+
+export default function PcDiagram({
+  selectedId,
+  onSelect,
+  atlasMode = false,
+  initialZoom,
+  isFullscreen: isFsProp,
+}: PcDiagramProps = {}) {
+  const [internalFs, setInternalFs] = useState<boolean>(() =>
+    typeof document !== 'undefined' ? !!document.fullscreenElement : false
+  )
+
+  useEffect(() => {
+    const onFsChange = () => setInternalFs(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', onFsChange)
+    return () => document.removeEventListener('fullscreenchange', onFsChange)
+  }, [])
+
+  const isFs = isFsProp ?? internalFs
+  const defaultZoom = initialZoom ?? (atlasMode ? (isFs ? 1.35 : 1.1) : 1.0)
   const [internalSelected, setInternalSelected] = useState<PcPart>(pcParts[1]) // Default to Motherboard
   // In controlled mode, derive selected from prop; fall back to internal state
   const selected = selectedId ? (pcParts.find(p => p.id === selectedId) ?? internalSelected) : internalSelected
@@ -59,7 +124,9 @@ export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: P
   const [glassPanelOn, setGlassPanelOn] = useState<boolean>(false) // Default OPEN CASE
   const [activeTab, setActiveTab] = useState<'specs' | 'install' | 'diagnostics'>('specs')
   const [isDragging, setIsDragging] = useState<boolean>(false)
-  const [zoom, setZoom] = useState<number>(1.0)
+  const [zoom, setZoom] = useState<number>(defaultZoom)
+  const [focusMode, setFocusMode] = useState<boolean>(false)
+  const [pan, setPan] = useState<Pan>({ x: 0, y: 0 })
 
   const viewportRef = useRef<HTMLDivElement>(null)
   const dragStartRef = useRef<{ clientX: number; clientY: number; rotX: number; rotY: number }>({
@@ -111,13 +178,38 @@ export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: P
     [soundEnabled]
   )
 
-  const select = (id: string) => {
+  const select = (id: string, forceFocus?: boolean) => {
     const part = pcParts.find(p => p.id === id)
-    if (part) {
-      playClickSound(1050, 0.04)
-      setInternalSelected(part)
-      onSelect?.(id)
+    if (!part) return
+    playClickSound(1050, 0.04)
+    const alreadyFocused = focusMode && selected.id === id
+    setInternalSelected(part)
+    onSelect?.(id)
+    // Always zoom in on click; if already focused on same part, toggle off
+    if (alreadyFocused && forceFocus !== true) {
+      setFocusMode(false)
+      setZoom(defaultZoom)
+      setRotation(PRESET_ANGLES.interior)
+      setPan({ x: 0, y: 0 })
+    } else {
+      setFocusMode(true)
+      setIsAutoSpinning(false)
+      const preset = getFocusPreset(id, isFs)
+      if (preset) {
+        setZoom(preset.zoom)
+        setRotation(preset.rotation)
+        setPan(preset.pan)
+      }
     }
+  }
+
+
+  const exitFocusMode = () => {
+    playClickSound(750, 0.03)
+    setFocusMode(false)
+    setZoom(defaultZoom)
+    setRotation(PRESET_ANGLES.interior)
+    setPan({ x: 0, y: 0 })
   }
 
   const handleKey = (e: KeyboardEvent<HTMLDivElement>, id: string) => {
@@ -130,6 +222,7 @@ export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: P
   const applyPreset = (preset: CameraPreset) => {
     playClickSound(880, 0.03)
     setIsAutoSpinning(false)
+    setFocusMode(false)
     setActivePreset(preset)
     setRotation(PRESET_ANGLES[preset])
   }
@@ -142,12 +235,27 @@ export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: P
   const resetView = () => {
     playClickSound(750, 0.03)
     setIsAutoSpinning(false)
+    setFocusMode(false)
     setActivePreset('interior')
     setRotation(PRESET_ANGLES.interior)
-    setZoom(1.0)
+    setZoom(defaultZoom)
+    setPan({ x: 0, y: 0 })
   }
 
-  // 360 Turntable auto-rotation loop
+  // Auto-focus whenever selectedId or fullscreen state changes (controlled mode from AtlasExplorer)
+  useEffect(() => {
+    if (!selectedId) return
+    setFocusMode(true)
+    setIsAutoSpinning(false)
+    const preset = getFocusPreset(selectedId, isFs)
+    if (preset) {
+      setZoom(preset.zoom)
+      setRotation(preset.rotation)
+      setPan(preset.pan)
+    }
+  }, [selectedId, isFs])
+
+
   useEffect(() => {
     if (!isAutoSpinning) return
 
@@ -228,7 +336,7 @@ export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: P
   }
   const zoomReset = () => {
     playClickSound(820, 0.03)
-    setZoom(1.0)
+    setZoom(defaultZoom)
   }
 
   const normalizedY = ((Math.round(rotation.y) % 360) + 360) % 360
@@ -440,8 +548,18 @@ export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: P
                   {powerOn ? 'AA' : '--'}
                 </span>
               </div>
-              <div className="active-part-indicator">
-                INSPECTING: <strong>{selected.shortName.toUpperCase()}</strong>
+              <div className={`active-part-indicator${focusMode ? ' focus-active' : ''}`}>
+                <span>{focusMode ? '🎯 FOCUSED:' : 'INSPECTING:'} <strong>{selected.shortName.toUpperCase()}</strong></span>
+                {focusMode && (
+                  <button
+                    type="button"
+                    className="unfocus-hud-btn"
+                    onClick={exitFocusMode}
+                    title="Exit focus mode and show all parts"
+                  >
+                    SHOW ALL
+                  </button>
+                )}
               </div>
               <div className="hud-angle" style={{ marginTop: 4 }}>
                 🔍 ZOOM: {zoomPct}%
@@ -453,9 +571,10 @@ export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: P
               <div
                 className={`pc-case-3d ${activePreset}${powerOn ? ' pwr-on' : ''}${
                   isDragging ? ' no-transition' : ''
-                }`}
+                }${focusMode ? ` focus-mode focusing-${selected.id}` : ''}`}
                 style={{
-                  transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(${zoom})`,
+                  transform: `translateX(${pan.x}px) translateY(${pan.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(${zoom})`,
+                  transition: isDragging ? 'none' : 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
                 {/* ── 1. CHASSIS OUTER FRAMEWORK ───────────────────── */}
@@ -996,13 +1115,28 @@ export default function PcDiagram({ selectedId, onSelect, atlasMode = false }: P
                     )}
                     <span>{glassPanelOn ? 'Glass' : 'Open'}</span>
                   </button>
+                  <button
+                    type="button"
+                    className={`atlas-dock-btn focus-pill${focusMode ? ' active' : ''}`}
+                    onClick={() => {
+                      if (focusMode) {
+                        exitFocusMode()
+                      } else {
+                        select(selected.id, true)
+                      }
+                    }}
+                    title={focusMode ? 'Show All Parts' : `Focus & Isolate ${selected.shortName} (Blur other parts)`}
+                  >
+                    <Focus size={13} strokeWidth={1.75} aria-hidden="true" />
+                    <span>{focusMode ? 'Isolated' : 'Isolate'}</span>
+                  </button>
                 </div>
               </div>
             ) : (
               /* Viewport Footer */
               <div className="viewport-footer">
                 <span className="mono-help">
-                  🖱️ Drag to orbit • Scroll wheel or ＋/－ to zoom • Click any component to inspect
+                  🖱️ Drag to orbit • Scroll to zoom • Click part to isolate • Click again to show all
                 </span>
               </div>
             )}

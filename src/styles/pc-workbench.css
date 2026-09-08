@@ -317,6 +317,7 @@
   grid-template-columns: 1fr;
   display: block;
   height: 100%;
+  width: 100%;
 }
 @media (max-width: 980px) {
   .workbench-grid {
@@ -329,6 +330,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
 }
 
 .chassis-viewport {
@@ -454,7 +456,6 @@
   width: 330px;
   height: 420px;
   transform-style: preserve-3d;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .pc-case-3d.no-transition {
   transition: none !important;
@@ -654,6 +655,54 @@
   box-shadow: 0 0 14px rgba(245, 158, 11, 0.55);
   z-index: 120 !important;
 }
+
+/* ── Per-Category Selected Colors ─────────────────────────── */
+/* Processing (CPU) → Red */
+.comp-cpu.selected {
+  outline-color: #ef4444;
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.65), 0 0 6px rgba(239, 68, 68, 0.4);
+}
+/* Interconnect (Motherboard, CMOS, FPanel) → Orange */
+.comp-mobo.selected,
+.comp-cmos.selected,
+.comp-fpanel.selected {
+  outline-color: #f97316;
+  box-shadow: 0 0 16px rgba(249, 115, 22, 0.6);
+}
+/* Memory (RAM) → Purple */
+.comp-ram.selected {
+  outline-color: #a855f7;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.7), 0 0 6px rgba(168, 85, 247, 0.4);
+}
+/* Graphics (GPU) → Blue */
+.comp-gpu.selected {
+  outline-color: #3b82f6;
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.65), 0 0 6px rgba(59, 130, 246, 0.4);
+}
+/* Storage (NVMe, SATA HDD) → Emerald */
+.comp-storage.selected,
+.comp-sata-hdd.selected {
+  outline-color: #10b981;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+}
+/* Thermal (Cooler, Case Fans) → Cyan */
+.comp-cooling.selected,
+.comp-exhaust-fan.selected,
+.comp-intake-fans.selected {
+  outline-color: #06b6d4;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.6);
+}
+/* Power (PSU) → Amber */
+.comp-psu.selected {
+  outline-color: #f59e0b;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.65);
+}
+/* Enclosure (Chassis) → Gray */
+.chassis-back-structure.selected {
+  outline-color: #9ca3af;
+  box-shadow: 0 0 12px rgba(156, 163, 175, 0.5);
+}
+
 
 /* Component Badge Tag */
 .comp-tag {
@@ -1608,4 +1657,239 @@
   font-size: 13px;
   color: var(--graphite);
   margin: 0;
+}
+
+/* ── COMPONENT FOCUS & DEPTH-OF-FIELD BLUR MODE ──────────── */
+.pc-case-3d.focus-mode {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pc-case-3d.focus-mode .hardware-layer {
+  transition: filter 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.38s ease,
+              transform 0.38s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Blur & Dim all unselected parts and chassis edges */
+.pc-case-3d.focus-mode .hardware-layer:not(.selected),
+.pc-case-3d.focus-mode .chassis-back-structure:not(.selected),
+.pc-case-3d.focus-mode .chassis-roof,
+.pc-case-3d.focus-mode .chassis-base,
+.pc-case-3d.focus-mode .glass-panel {
+  filter: blur(6px) opacity(0.16) grayscale(0.7) !important;
+  pointer-events: none;
+}
+/* Blur chassis edges only when NOT focusing case-fans */
+.pc-case-3d.focus-mode:not(.focusing-case-fans) .chassis-rear-edge,
+.pc-case-3d.focus-mode:not(.focusing-case-fans) .chassis-front-edge {
+  filter: blur(6px) opacity(0.16) grayscale(0.7) !important;
+  pointer-events: none;
+}
+/* When focusing case-fans, keep edges sharp and pop fans out */
+.pc-case-3d.focus-mode.focusing-case-fans .chassis-rear-edge,
+.pc-case-3d.focus-mode.focusing-case-fans .chassis-front-edge {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 70 !important;
+  box-shadow: 0 0 40px rgba(6, 182, 212, 0.8), 0 0 14px rgba(6, 182, 212, 0.5);
+  animation: focusAura-cyan 2s infinite alternate ease-in-out;
+}
+
+/* If the selected part is inside the basement (PSU or SATA HDD), keep basement outline; else blur it */
+.pc-case-3d.focus-mode:not(.focusing-psu):not(.focusing-sata-hdd) .chassis-basement-cover {
+  filter: blur(5px) opacity(0.15) grayscale(0.8) !important;
+  pointer-events: none;
+}
+
+/* Focused Selected Component Pops Out Sharp & Illuminated */
+.pc-case-3d.focus-mode .hardware-layer.selected,
+.pc-case-3d.focus-mode .chassis-back-structure.selected {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 70 !important;
+  transform: translateZ(12px) scale(1.02);
+  box-shadow: 0 0 45px rgba(59, 130, 246, 0.8),
+              0 0 16px rgba(255, 255, 255, 0.65) !important;
+  animation: focusAura 2s infinite alternate ease-in-out;
+}
+
+/* Dedicated Motherboard Focus Glow (Orange) */
+.pc-case-3d.focus-mode.focusing-motherboard .comp-mobo {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+  box-shadow: 0 0 55px rgba(249, 115, 22, 0.85),
+              0 0 22px rgba(251, 191, 36, 0.65),
+              inset 0 0 30px rgba(249, 115, 22, 0.3) !important;
+  animation: focusAura-orange 2s infinite alternate ease-in-out;
+}
+/* CPU Focus Glow (Red) */
+.pc-case-3d.focus-mode.focusing-cpu .comp-cpu {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+  box-shadow: 0 0 55px rgba(239, 68, 68, 0.9),
+              0 0 22px rgba(239, 68, 68, 0.6) !important;
+  animation: focusAura-red 2s infinite alternate ease-in-out;
+}
+/* RAM Focus Glow (Purple) */
+.pc-case-3d.focus-mode.focusing-ram .comp-ram {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+  box-shadow: 0 0 55px rgba(168, 85, 247, 0.9),
+              0 0 22px rgba(168, 85, 247, 0.6) !important;
+  animation: focusAura-purple 2s infinite alternate ease-in-out;
+}
+/* GPU Focus Glow (Blue) */
+.pc-case-3d.focus-mode.focusing-gpu .comp-gpu {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+  box-shadow: 0 0 55px rgba(59, 130, 246, 0.9),
+              0 0 22px rgba(59, 130, 246, 0.6) !important;
+  animation: focusAura-blue 2s infinite alternate ease-in-out;
+}
+/* Storage Focus Glow (Emerald) */
+.pc-case-3d.focus-mode.focusing-storage .comp-storage,
+.pc-case-3d.focus-mode.focusing-sata-hdd .comp-sata-hdd {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+  box-shadow: 0 0 45px rgba(16, 185, 129, 0.85),
+              0 0 18px rgba(16, 185, 129, 0.5) !important;
+  animation: focusAura-emerald 2s infinite alternate ease-in-out;
+}
+/* Thermal Focus Glow (Cyan) */
+.pc-case-3d.focus-mode.focusing-cooling .comp-cooling {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+  box-shadow: 0 0 45px rgba(6, 182, 212, 0.85),
+              0 0 18px rgba(6, 182, 212, 0.5) !important;
+  animation: focusAura-cyan 2s infinite alternate ease-in-out;
+}
+
+/* Dedicated Case Fans Focus Glow (Cyan ARGB Fan Rings) */
+.chassis-rear-edge .comp-exhaust-fan {
+  position: relative !important;
+  top: 0 !important;
+  margin-top: 8px;
+}
+.chassis-front-edge .comp-intake-fans {
+  position: relative !important;
+  top: 0 !important;
+  margin-top: 14px;
+}
+.pc-case-3d.focus-mode.focusing-case-fans .comp-exhaust-fan,
+.pc-case-3d.focus-mode.focusing-case-fans .comp-intake-fans,
+.comp-exhaust-fan.selected,
+.comp-intake-fans.selected {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 80 !important;
+  transform: translateZ(8px) scale(1.05) !important;
+}
+.pc-case-3d.focus-mode.focusing-case-fans .exhaust-fan-frame,
+.comp-exhaust-fan.selected .exhaust-fan-frame,
+.pc-case-3d.focus-mode.focusing-case-fans .intake-fan,
+.comp-intake-fans.selected .intake-fan {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 24px rgba(6, 182, 212, 0.95), 0 0 8px rgba(6, 182, 212, 0.7), inset 0 0 12px rgba(6, 182, 212, 0.45) !important;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, #090a0d 80%) !important;
+  animation: fanRingPulse 1.8s infinite alternate ease-in-out;
+}
+.pc-case-3d.focus-mode.focusing-case-fans .fan-rotor,
+.comp-exhaust-fan.selected .fan-rotor,
+.comp-intake-fans.selected .fan-rotor {
+  background: repeating-conic-gradient(rgba(6, 182, 212, 0.95) 0deg 25deg, rgba(6, 182, 212, 0.15) 25deg 60deg) !important;
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.85);
+}
+@keyframes fanRingPulse {
+  0% {
+    box-shadow: 0 0 16px rgba(6, 182, 212, 0.7), inset 0 0 8px rgba(6, 182, 212, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 34px rgba(6, 182, 212, 1), 0 0 16px rgba(34, 211, 238, 0.8), inset 0 0 16px rgba(6, 182, 212, 0.7);
+  }
+}
+/* PSU Focus Glow (Amber) */
+.pc-case-3d.focus-mode.focusing-psu .comp-psu {
+  filter: none !important;
+  opacity: 1 !important;
+  z-index: 50 !important;
+  box-shadow: 0 0 45px rgba(245, 158, 11, 0.85),
+              0 0 18px rgba(245, 158, 11, 0.5) !important;
+  animation: focusAura-amber 2s infinite alternate ease-in-out;
+}
+
+@keyframes focusAura {
+  0%   { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6), 0 0 10px rgba(255,255,255,0.4); }
+  100% { box-shadow: 0 0 55px rgba(59, 130, 246, 0.95), 0 0 22px rgba(255,255,255,0.8); }
+}
+@keyframes focusAura-red {
+  0%   { box-shadow: 0 0 30px rgba(239, 68, 68, 0.6), 0 0 10px rgba(239,68,68,0.3); }
+  100% { box-shadow: 0 0 60px rgba(239, 68, 68, 1.0), 0 0 24px rgba(255,100,100,0.7); }
+}
+@keyframes focusAura-purple {
+  0%   { box-shadow: 0 0 30px rgba(168, 85, 247, 0.6), 0 0 10px rgba(168,85,247,0.3); }
+  100% { box-shadow: 0 0 60px rgba(168, 85, 247, 1.0), 0 0 24px rgba(200,130,255,0.7); }
+}
+@keyframes focusAura-blue {
+  0%   { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6), 0 0 10px rgba(59,130,246,0.3); }
+  100% { box-shadow: 0 0 60px rgba(59, 130, 246, 1.0), 0 0 24px rgba(100,160,255,0.7); }
+}
+@keyframes focusAura-orange {
+  0%   { box-shadow: 0 0 30px rgba(249, 115, 22, 0.6), 0 0 10px rgba(249,115,22,0.3); }
+  100% { box-shadow: 0 0 60px rgba(249, 115, 22, 1.0), 0 0 24px rgba(251,191,36,0.7); }
+}
+@keyframes focusAura-emerald {
+  0%   { box-shadow: 0 0 28px rgba(16, 185, 129, 0.6), 0 0 10px rgba(16,185,129,0.3); }
+  100% { box-shadow: 0 0 55px rgba(16, 185, 129, 1.0), 0 0 22px rgba(52,211,153,0.7); }
+}
+@keyframes focusAura-cyan {
+  0%   { box-shadow: 0 0 28px rgba(6, 182, 212, 0.6), 0 0 10px rgba(6,182,212,0.3); }
+  100% { box-shadow: 0 0 55px rgba(6, 182, 212, 1.0), 0 0 22px rgba(34,211,238,0.7); }
+}
+@keyframes focusAura-amber {
+  0%   { box-shadow: 0 0 28px rgba(245, 158, 11, 0.6), 0 0 10px rgba(245,158,11,0.3); }
+  100% { box-shadow: 0 0 55px rgba(245, 158, 11, 1.0), 0 0 22px rgba(251,191,36,0.7); }
+}
+
+
+/* HUD Focus Indicator & Unfocus Button */
+.active-part-indicator.focus-active {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(249, 115, 22, 0.22);
+  border: 1px solid rgba(249, 115, 22, 0.45);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+.unfocus-hud-btn {
+  font-family: var(--mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.unfocus-hud-btn:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+.atlas-dock-btn.focus-pill {
+  color: #38bdf8;
+}
+.atlas-dock-btn.focus-pill.active {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
 }
