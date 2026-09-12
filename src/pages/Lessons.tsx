@@ -23,6 +23,13 @@ const syllabus = [
     to: '/networking',
   },
   {
+    module: 'LAB-01',
+    title: 'RJ45 Cable Crimping & Testing Lab',
+    topics: ['T-568A vs T-568B pinout standards', 'Straight-Through vs Crossover cabling', 'Interactive wire arranging workbench', 'Dual-unit LAN continuity tester sweep', 'Crimping standard operating procedure & fault diagnostics'],
+    hours: '6 hrs',
+    to: '/cable-lab',
+  },
+  {
     module: 'MOD-04',
     title: 'Troubleshooting & Maintenance',
     topics: ['Diagnostic methodology', 'POST sequence', 'Beep codes', 'Software tools', 'Preventive maintenance schedule'],
@@ -40,7 +47,7 @@ export default function Lessons() {
           <span className="label" style={{ display: 'block', marginBottom: '8px' }}>TESDA NC II · Course Outline</span>
           <h1>Syllabus</h1>
           <p style={{ marginTop: '12px' }}>
-            Four core modules covering the TESDA Computer Systems Servicing NC II competency standard.
+            Core theory modules and interactive laboratory simulators covering the TESDA Computer Systems Servicing NC II competency standard.
             Select a module below to begin studying.
           </p>
         </div>

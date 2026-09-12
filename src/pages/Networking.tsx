@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const topologies = [
   { name: 'Bus', desc: 'All devices share a single cable (backbone). Simple but a single break disables the entire network. Largely obsolete.' },
   { name: 'Star', desc: 'All devices connect to a central switch/hub. Most common in LANs. Failure of one node does not affect others; hub/switch failure is the single point of failure.' },
@@ -165,9 +167,14 @@ export default function Networking() {
               ))}
             </tbody>
           </table>
-          <div className="callout" style={{ marginTop: '16px' }}>
-            <span className="label">T-568B Wiring Standard</span>
-            Pin order: <code>Orange-W · Orange · Green-W · Blue · Blue-W · Green · Brown-W · Brown</code>
+          <div className="callout" style={{ marginTop: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+            <div>
+              <span className="label">T-568B Wiring Standard</span>
+              Pin order: <code>White-Orange · Orange · White-Green · Blue · White-Blue · Green · White-Brown · Brown</code>
+            </div>
+            <Link to="/cable-lab" className="btn btn-solid" style={{ fontSize: '0.72rem' }}>
+              Launch RJ45 Cable Lab →
+            </Link>
           </div>
         </section>
 

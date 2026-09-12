@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import {
   Search,
   ChevronRight,
@@ -89,13 +89,6 @@ export default function AtlasExplorer() {
         p.category.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : []
-
-  const landscapeParts = useMemo(() => {
-    if (!selectedCategory) return pcParts
-    const cat = CATEGORIES.find(c => c.label === selectedCategory)
-    if (!cat) return pcParts
-    return pcParts.filter(p => cat.ids.includes(p.id))
-  }, [selectedCategory])
 
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isCatDropdownOpen, setIsCatDropdownOpen] = useState(false)

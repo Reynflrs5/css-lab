@@ -6,7 +6,9 @@ import Lessons from './pages/Lessons'
 import Hardware from './pages/Hardware'
 import PcParts from './pages/PcParts'
 import Networking from './pages/Networking'
+import CableLab from './pages/CableLab'
 import Troubleshooting from './pages/Troubleshooting'
+import Glossary from './pages/Glossary'
 
 export default function App() {
   const location = useLocation()
@@ -21,7 +23,9 @@ export default function App() {
         <Route path="/hardware"       element={<Hardware />} />
         <Route path="/pc-parts"       element={<PcParts />} />
         <Route path="/networking"     element={<Networking />} />
+        <Route path="/cable-lab"      element={<CableLab />} />
         <Route path="/troubleshooting" element={<Troubleshooting />} />
+        <Route path="/glossary"        element={<Glossary />} />
       </Routes>
       {!isPcParts && <Footer note="CSS NC II Study Reference — Academic use only" />}
     </>

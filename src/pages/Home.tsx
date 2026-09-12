@@ -20,10 +20,22 @@ const modules = [
     to: '/networking',
   },
   {
+    num: 'LAB-01',
+    title: 'RJ45 Cable Lab',
+    desc: 'Interactive crimping workbench, continuity tester simulator, and T568A/B standards.',
+    to: '/cable-lab',
+  },
+  {
     num: 'MOD-04',
     title: 'Troubleshooting',
     desc: 'Diagnostic methodology, POST codes, beep codes, and preventive maintenance.',
     to: '/troubleshooting',
+  },
+  {
+    num: 'MOD-06',
+    title: 'Glossary & Flashcards',
+    desc: '35+ key networking and cabling terms with flip-card review and multiple-choice quiz modes.',
+    to: '/glossary',
   },
 ]
 
@@ -57,7 +69,7 @@ export default function Home() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
             <span className="label">Course Modules</span>
             <hr style={{ flex: 1, border: 'none', borderTop: '1px solid var(--line)' }} />
-            <span className="tag">4 Units</span>
+            <span className="tag">5 Units & Labs</span>
           </div>
 
           <div className="module-grid">
