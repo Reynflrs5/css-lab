@@ -19,38 +19,51 @@ import {
   Timer,
   Ruler
 } from 'lucide-react'
+import '../styles/tech-pages.css'
 
 export default function CableLab() {
   const [activeTab, setActiveTab] = useState<'sim' | 'standards' | 'procedure' | 'troubleshooting' | 'challenge' | 'calculator'>('sim')
 
   return (
-    <main className="page">
-      <div className="container">
-        {/* Page Header */}
-        <div className="section" style={{ marginBottom: '32px' }}>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
-            <span className="tag">COC 03 · Network Cabling</span>
-            <span className="tag" style={{ background: '#fef3c7', color: '#92400e', borderColor: '#fcd34d' }}>
-              <Sparkles size={12} style={{ display: 'inline', marginRight: '3px' }} />
-              Interactive Lab
-            </span>
+    <main className="page" style={{ padding: 0 }}>
+      {/* ── COMMAND DECK HEADER ─────────────────────────── */}
+      <header className="tech-page-header">
+        <div className="tech-page-glow glow-emerald" />
+        <div className="container">
+          <div className="tech-header-badge">
+            <span className="tech-pulse-dot" />
+            <span>VIRTUAL WORKBENCH // LAB 01 // ANSI/TIA-568.2-D COMPLIANT</span>
           </div>
-          <h1 style={{ marginTop: '8px', marginBottom: '8px' }}>RJ45 Cable Crimping & Testing Lab</h1>
-          <p>
-            Master the T-568A and T-568B wiring standards, test pin continuity on the simulated dual-unit LAN tester,
-            and review step-by-step practical assessment procedures for the TESDA CSS NC II qualification.
-          </p>
-        </div>
 
+          <h1 className="tech-page-title">
+            <span className="tech-title-gradient-emerald">RJ-45 Cable Crimping &amp; Testing Lab</span>
+          </h1>
+
+          <p className="tech-page-desc">
+            Interactive cable laboratory featuring 8P8C crimping workbench simulators, T568A/T568B wire pinout standards,
+            dual-unit LED continuity fault sweep testers, and 110 IDC keystone jack punchdown guides.
+          </p>
+
+          <div className="tech-header-quicknav">
+            <div className="tech-quicknav-item">
+              <Sparkles size={14} color="#10b981" />
+              <span>Standards: <strong>TIA/EIA-568-A &amp; T-568-B</strong></span>
+            </div>
+            <div className="tech-quicknav-item">
+              <Wrench size={14} color="#38bdf8" />
+              <span>Tools: <strong>8P8C Crimper, Stripper, LAN Tester</strong></span>
+            </div>
+            <div className="tech-quicknav-item">
+              <Timer size={14} color="#f59e0b" />
+              <span>Assessment: <strong>TESDA COC 3 Practical</strong></span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="container" style={{ paddingBottom: '64px' }}>
         {/* Tab Navigation */}
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          borderBottom: '2px solid var(--ink)',
-          marginBottom: '32px',
-          overflowX: 'auto',
-          paddingBottom: '0'
-        }}>
+        <div className="tech-tab-strip" style={{ marginBottom: '32px' }}>
           {[
             { id: 'sim', label: '1. Virtual Workbench & Tester', icon: Wrench },
             { id: 'standards', label: '2. Pinout Standards (T568A / T568B)', icon: Layers },
@@ -66,24 +79,7 @@ export default function CableLab() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id as any)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 18px',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.06em',
-                  border: '1px solid var(--line)',
-                  borderBottom: 'none',
-                  background: isActive ? 'var(--ink)' : 'var(--paper)',
-                  color: isActive ? 'var(--paper)' : 'var(--graphite)',
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  transition: 'background 0.15s, color 0.15s'
-                }}
+                className={`tech-tab-btn ${isActive ? 'active' : ''}`}
               >
                 <Icon size={15} />
                 {tab.label}
