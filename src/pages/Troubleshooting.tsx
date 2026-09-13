@@ -160,48 +160,19 @@ export default function Troubleshooting() {
       </header>
 
       <div className="container" style={{ paddingBottom: '64px' }}>
-        {/* Navigation Tabs */}
-        <div className="tech-tab-strip">
-          <button
-            type="button"
-            onClick={() => setActiveTab('methodology')}
-            className={`tech-tab-btn ${activeTab === 'methodology' ? 'active-amber' : ''}`}
+        {/* Navigation Dropdown */}
+        <div className="tech-dropdown-container" style={{ marginBottom: '32px', position: 'relative' }}>
+          <select 
+            value={activeTab} 
+            onChange={(e) => setActiveTab(e.target.value as 'methodology' | 'post' | 'beeps' | 'symptoms' | 'tools')}
+            className="tech-dropdown"
           >
-            <Activity size={15} />
-            1. 7-Step Diagnostic SOP
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('post')}
-            className={`tech-tab-btn ${activeTab === 'post' ? 'active-amber' : ''}`}
-          >
-            <Terminal size={15} />
-            2. POST Boot Sequence
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('beeps')}
-            className={`tech-tab-btn ${activeTab === 'beeps' ? 'active-amber' : ''}`}
-          >
-            <Volume2 size={15} />
-            3. POST Beep Decoder Matrix
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('symptoms')}
-            className={`tech-tab-btn ${activeTab === 'symptoms' ? 'active-amber' : ''}`}
-          >
-            <AlertTriangle size={15} />
-            4. Common Symptoms &amp; Fixes
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('tools')}
-            className={`tech-tab-btn ${activeTab === 'tools' ? 'active-amber' : ''}`}
-          >
-            <Wrench size={15} />
-            5. Software Diagnostic Utilities
-          </button>
+            <option value="methodology">1. 7-Step Diagnostic SOP</option>
+            <option value="post">2. POST Boot Sequence</option>
+            <option value="beeps">3. POST Beep Decoder Matrix</option>
+            <option value="symptoms">4. Common Symptoms & Fixes</option>
+            <option value="tools">5. Software Diagnostic Utilities</option>
+          </select>
         </div>
 
         {/* TAB 1: Diagnostic Methodology */}

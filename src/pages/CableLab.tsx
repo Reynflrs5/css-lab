@@ -62,30 +62,26 @@ export default function CableLab() {
       </header>
 
       <div className="container" style={{ paddingBottom: '64px' }}>
-        {/* Tab Navigation */}
-        <div className="tech-tab-strip" style={{ marginBottom: '32px' }}>
-          {[
-            { id: 'sim', label: '1. Virtual Workbench & Tester', icon: Wrench },
-            { id: 'standards', label: '2. Pinout Standards (T568A / T568B)', icon: Layers },
-            { id: 'procedure', label: '3. Step-by-Step Crimping Guide', icon: FileText },
-            { id: 'troubleshooting', label: '4. LAN Tester Diagnostics', icon: AlertTriangle },
-            { id: 'challenge', label: '5. ⏱ Timed Wiring Challenge', icon: Timer },
-            { id: 'calculator', label: '6. 📏 Cable Performance Calculator', icon: Ruler },
-          ].map(tab => {
-            const Icon = tab.icon
-            const isActive = activeTab === tab.id
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`tech-tab-btn ${isActive ? 'active' : ''}`}
-              >
-                <Icon size={15} />
+        {/* Navigation Dropdown */}
+        <div className="tech-dropdown-container" style={{ marginBottom: '32px', position: 'relative' }}>
+          <select 
+            value={activeTab} 
+            onChange={(e) => setActiveTab(e.target.value as any)}
+            className="tech-dropdown"
+          >
+            {[
+              { id: 'sim', label: '1. Virtual Workbench & Tester' },
+              { id: 'standards', label: '2. Pinout Standards (T568A / T568B)' },
+              { id: 'procedure', label: '3. Step-by-Step Crimping Guide' },
+              { id: 'troubleshooting', label: '4. LAN Tester Diagnostics' },
+              { id: 'challenge', label: '5. ⏱ Timed Wiring Challenge' },
+              { id: 'calculator', label: '6. 📏 Cable Performance Calculator' },
+            ].map(tab => (
+              <option key={tab.id} value={tab.id}>
                 {tab.label}
-              </button>
-            )
-          })}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* TAB 1: INTERACTIVE SIMULATOR */}

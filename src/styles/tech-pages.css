@@ -155,10 +155,12 @@
   border: 1px solid #1f2330;
   margin-bottom: 32px;
   overflow-x: auto;
-  flex-wrap: wrap; /* Allow wrapping on small screens */
+  flex-wrap: nowrap; /* Keep on one line */
 }
 
 .tech-tab-btn {
+  flex: 1;
+  justify-content: center;
   background: transparent;
   border: none;
   color: #94a3b8;
@@ -456,4 +458,125 @@
     height: 400px !important;
     order: -1; /* Make the 3D viewer appear on top of the list on mobile */
   }
+}
+
+/* -- TECH DROPDOWN ------------------------------------------ */
+.tech-dropdown {
+  width: 100%;
+  background: #090a0f;
+  color: #94a3b8;
+  border: 1px solid #1f2330;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.tech-dropdown:hover {
+  border-color: #38bdf8;
+}
+
+.tech-dropdown:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.tech-dropdown-container::after {
+  content: '?';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+  font-size: 0.8rem;
+}
+
+
+/* ==========================================================================
+   FLASHCARDS (3D FLIP)
+   ========================================================================== */
+
+.tech-flashcard {
+  background-color: transparent;
+  height: 220px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.tech-flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.tech-flashcard-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.tech-flashcard-front,
+.tech-flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.tech-flashcard-front {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
+.tech-flashcard-front:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.tech-flashcard-back {
+  background-color: #0f172a;
+  color: #ffffff;
+  transform: rotateY(180deg);
+  border: 1px solid #1e293b;
+}
+
+/* Packet Journey Simulator */
+@keyframes packetMove {
+  0%   { left: 5%; opacity: 1; }
+  100% { left: 90%; opacity: 0.3; }
+}
+
+.btn-tech-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: 1px solid #334155;
+  background: transparent;
+  color: #94a3b8;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.btn-tech-outline:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
 }

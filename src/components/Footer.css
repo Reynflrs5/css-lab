@@ -1,0 +1,154 @@
+/* Modern Footer Styles for ReynTech */
+.modern-footer {
+  position: relative;
+  background: 
+    radial-gradient(ellipse 60% 40% at 50% 110%, rgba(16, 185, 129, 0.08), transparent 70%),
+    linear-gradient(to top, #090a0f 0%, #0e1118 100%);
+  border-top: 1px solid #1f2332;
+  padding: 48px 0 24px;
+  color: #f4f4f5;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  margin-top: auto;
+  overflow: hidden;
+}
+
+.modern-footer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.modern-footer-inner, .modern-footer-bottom {
+  position: relative;
+  z-index: 1;
+}
+
+.modern-footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.modern-footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.modern-footer-brand:hover {
+  transform: translateY(-2px);
+}
+
+.reyntech-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.reyntech-logo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-20deg);
+  animation: shine 6s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
+
+.reyntech-logo svg {
+  width: 28px;
+  height: 28px;
+  color: #ffffff;
+  z-index: 1;
+}
+
+.reyntech-name {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ffffff 30%, #34d399 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.modern-footer-links {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 8px;
+}
+
+.modern-footer-links a {
+  color: #a7f3d0;
+  font-size: 0.9rem;
+  font-family: var(--font-mono, monospace);
+  font-weight: 500;
+  transition: color 0.2s, text-shadow 0.2s;
+  text-decoration: none;
+}
+
+.modern-footer-links a:hover {
+  color: #10b981;
+  text-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+}
+
+.modern-footer-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border-top: 1px solid #1f2332;
+  padding-top: 24px;
+  font-size: 0.8rem;
+}
+
+.modern-footer-copyright {
+  color: #94a3b8;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+}
+
+.modern-footer-note {
+  font-family: var(--font-mono, monospace);
+  color: #38bdf8;
+  font-size: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .modern-footer-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .modern-footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

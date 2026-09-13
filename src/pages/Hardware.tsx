@@ -19,8 +19,7 @@ import {
 import '../styles/tech-pages.css'
 import PcDiagram from '../components/PcDiagram'
 import { assemblySteps, disassemblySteps } from '../data/assemblyGuide'
-import AssessmentQuiz from '../components/AssessmentQuiz'
-import { hardwareQuizQuestions } from '../data/hardwareQuiz'
+
 
 interface ComponentItem {
   name: string
@@ -168,48 +167,23 @@ export default function Hardware() {
       </header>
 
       <div className="container" style={{ paddingBottom: '64px' }}>
-        {/* Navigation Tabs */}
-        <div className="tech-tab-strip">
-          <button
-            type="button"
-            onClick={() => setActiveTab('components')}
-            className={`tech-tab-btn ${activeTab === 'components' ? 'active-blue' : ''}`}
+        {/* Navigation Dropdown */}
+        <div className="tech-dropdown-container" style={{ marginBottom: '32px', position: 'relative' }}>
+          <select 
+            value={activeTab} 
+            onChange={(e) => {
+              const val = e.target.value as 'components' | 'safety' | 'assembly' | 'disassembly' | 'quiz';
+              setActiveTab(val);
+              if (val === 'assembly') setSelectedPartId('chassis');
+              if (val === 'disassembly') setSelectedPartId('psu');
+            }}
+            className="tech-dropdown"
           >
-            <CircuitBoard size={15} />
-            1. Component Identification &amp; Specs
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('safety')}
-            className={`tech-tab-btn ${activeTab === 'safety' ? 'active-blue' : ''}`}
-          >
-            <ShieldAlert size={15} />
-            2. Tools &amp; ESD Safety Protocols
-          </button>
-          <button
-            type="button"
-            onClick={() => { setActiveTab('assembly'); setSelectedPartId('chassis'); }}
-            className={`tech-tab-btn ${activeTab === 'assembly' ? 'active-blue' : ''}`}
-          >
-            <Wrench size={15} />
-            3. Assembly SOP Checklist (10 Steps)
-          </button>
-          <button
-            type="button"
-            onClick={() => { setActiveTab('disassembly'); setSelectedPartId('psu'); }}
-            className={`tech-tab-btn ${activeTab === 'disassembly' ? 'active-blue' : ''}`}
-          >
-            <Box size={15} />
-            4. Disassembly SOP Checklist (8 Steps)
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('quiz')}
-            className={`tech-tab-btn ${activeTab === 'quiz' ? 'active' : ''}`}
-          >
-            <ClipboardCheck size={15} />
-            5. Module Assessment
-          </button>
+            <option value="components">1. Component Identification & Specs</option>
+            <option value="safety">2. Tools & ESD Safety Protocols</option>
+            <option value="assembly">3. Assembly SOP Checklist (10 Steps)</option>
+            <option value="disassembly">4. Disassembly SOP Checklist (8 Steps)</option>
+          </select>
         </div>
 
         {/* TAB 1: Components */}
@@ -418,17 +392,7 @@ export default function Hardware() {
           </div>
         )}
 
-        {/* TAB 5: Module Assessment Quiz */}
-        {activeTab === 'quiz' && (
-          <div>
-            <div className="tech-callout" style={{ marginBottom: 32 }}>
-              <div className="tech-callout-text">
-                <strong>Module Assessment:</strong> Ang assessment na ito ay sumasaklaw sa lahat ng topics sa Hardware module — Component Identification, ESD Safety, Assembly, at Disassembly. Passing score ay <strong>75% (8 sa 10 items)</strong>.
-              </div>
-            </div>
-            <AssessmentQuiz questions={hardwareQuizQuestions} moduleTitle="Hardware" />
-          </div>
-        )}
+
 
         {/* Footer Link to PC Parts */}
         <div style={{ marginTop: '48px', textAlign: 'center' }}>
