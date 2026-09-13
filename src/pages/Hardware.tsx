@@ -14,10 +14,13 @@ import {
   ArrowRight,
   Sparkles,
   Maximize2,
+  ClipboardCheck,
 } from 'lucide-react'
 import '../styles/tech-pages.css'
 import PcDiagram from '../components/PcDiagram'
 import { assemblySteps, disassemblySteps } from '../data/assemblyGuide'
+import AssessmentQuiz from '../components/AssessmentQuiz'
+import { hardwareQuizQuestions } from '../data/hardwareQuiz'
 
 interface ComponentItem {
   name: string
@@ -94,7 +97,7 @@ const components: ComponentItem[] = [
 ]
 
 export default function Hardware() {
-  const [activeTab, setActiveTab] = useState<'components' | 'safety' | 'assembly' | 'disassembly'>('components')
+  const [activeTab, setActiveTab] = useState<'components' | 'safety' | 'assembly' | 'disassembly' | 'quiz'>('components')
   const [completedSteps, setCompletedSteps] = useState<Record<number, boolean>>({})
   const [selectedPartId, setSelectedPartId] = useState<string>('chassis')
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -199,6 +202,14 @@ export default function Hardware() {
             <Box size={15} />
             4. Disassembly SOP Checklist (8 Steps)
           </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('quiz')}
+            className={`tech-tab-btn ${activeTab === 'quiz' ? 'active' : ''}`}
+          >
+            <ClipboardCheck size={15} />
+            5. Module Assessment
+          </button>
         </div>
 
         {/* TAB 1: Components */}
@@ -211,7 +222,7 @@ export default function Hardware() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
               {components.map(c => {
                 const Icon = c.icon
                 return (
@@ -245,7 +256,7 @@ export default function Hardware() {
 
         {/* TAB 2: Tools & Safety */}
         {activeTab === 'safety' && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
             <div className="tech-card">
               <div className="tech-card-header">
                 <span className="tech-card-title">
@@ -404,6 +415,18 @@ export default function Hardware() {
                 />
               </div>
             </div>
+          </div>
+        )}
+
+        {/* TAB 5: Module Assessment Quiz */}
+        {activeTab === 'quiz' && (
+          <div>
+            <div className="tech-callout" style={{ marginBottom: 32 }}>
+              <div className="tech-callout-text">
+                <strong>Module Assessment:</strong> Ang assessment na ito ay sumasaklaw sa lahat ng topics sa Hardware module — Component Identification, ESD Safety, Assembly, at Disassembly. Passing score ay <strong>75% (8 sa 10 items)</strong>.
+              </div>
+            </div>
+            <AssessmentQuiz questions={hardwareQuizQuestions} moduleTitle="Hardware" />
           </div>
         )}
 

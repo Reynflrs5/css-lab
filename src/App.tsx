@@ -9,6 +9,7 @@ import Networking from './pages/Networking'
 import CableLab from './pages/CableLab'
 import Troubleshooting from './pages/Troubleshooting'
 import Glossary from './pages/Glossary'
+import Assessment from './pages/Assessment'
 
 export default function App() {
   const location = useLocation()
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/cable-lab"      element={<CableLab />} />
         <Route path="/troubleshooting" element={<Troubleshooting />} />
         <Route path="/glossary"        element={<Glossary />} />
+        <Route path="/assessment"      element={<Assessment />} />
       </Routes>
       {!isPcParts && <Footer note="CSS NC II Study Reference — Academic use only" />}
     </>

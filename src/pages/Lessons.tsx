@@ -11,6 +11,7 @@ import {
   Network,
   Cable,
   Wrench,
+  ClipboardCheck,
 } from 'lucide-react'
 import '../styles/tech-pages.css'
 
@@ -271,6 +272,42 @@ export default function Lessons() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Assessment Hub CTA */}
+        <div style={{
+          marginTop: 40,
+          background: 'linear-gradient(135deg, #0f172a, #1e1b4b)',
+          borderRadius: 16, padding: '32px', textAlign: 'center',
+          border: '1px solid #312e81', position: 'relative', overflow: 'hidden'
+        }}>
+          <div style={{ position: 'absolute', top: -60, right: -60, width: 200, height: 200, borderRadius: '50%', background: 'rgba(99, 102, 241, 0.12)', pointerEvents: 'none' }} />
+          <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'rgba(99, 102, 241, 0.2)', border: '1px solid rgba(129, 140, 248, 0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+            <ClipboardCheck size={26} color="#818cf8" />
+          </div>
+          <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: '#ffffff', marginBottom: 8 }}>
+            Handa ka na bang i-test ang iyong kaalaman?
+          </h3>
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: 24, maxWidth: 480, margin: '0 auto 24px', lineHeight: 1.6 }}>
+            Ang Assessment Hub ay may 10-item quiz para sa bawat module — mula sa Hardware hanggang Networking. 
+            I-track ang iyong scores at alamin kung saan ka pa kailangang mag-review.
+          </p>
+          <Link
+            to="/assessment"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+              color: '#ffffff', textDecoration: 'none',
+              borderRadius: 10, padding: '13px 32px',
+              fontWeight: 700, fontSize: '0.95rem',
+              boxShadow: '0 4px 20px rgba(99, 102, 241, 0.4)',
+              transition: 'all 0.2s'
+            }}
+          >
+            <ClipboardCheck size={18} />
+            Go to Assessment Hub
+            <ArrowRight size={16} />
+          </Link>
         </div>
       </div>
     </main>

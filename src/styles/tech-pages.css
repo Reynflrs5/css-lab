@@ -155,6 +155,7 @@
   border: 1px solid #1f2330;
   margin-bottom: 32px;
   overflow-x: auto;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .tech-tab-btn {
