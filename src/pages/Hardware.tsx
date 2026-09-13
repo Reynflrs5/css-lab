@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Cpu,
@@ -13,8 +13,11 @@ import {
   Disc,
   ArrowRight,
   Sparkles,
+  Maximize2,
 } from 'lucide-react'
 import '../styles/tech-pages.css'
+import PcDiagram from '../components/PcDiagram'
+import { assemblySteps, disassemblySteps } from '../data/assemblyGuide'
 
 interface ComponentItem {
   name: string
@@ -90,36 +93,36 @@ const components: ComponentItem[] = [
   },
 ]
 
-const assemblySteps = [
-  { title: 'ESD Precautions & Prep', detail: 'Ground yourself using an anti-static wrist strap attached to unpainted case chassis. Clear non-conductive, flat workspace.' },
-  { title: 'Install CPU in Socket', detail: 'Align CPU corner golden triangle with socket pin-1 indicator. For LGA: release retention arm, insert without force, lower clamp. For PGA: drop into ZIF socket and lock lever.' },
-  { title: 'Apply Thermal Compound', detail: 'Apply a pea-sized dot (~0.1 g) of thermal compound at the center of the CPU integrated heat spreader (IHS).' },
-  { title: 'Mount CPU Cooler', detail: 'Align cooler bracket diagonally over retention holes. Tighten screws in an X-pattern to ensure even thermal paste spread. Connect 4-pin PWM cable to CPU_FAN.' },
-  { title: 'Install Memory Modules (RAM)', detail: 'Open DIMM latches. Match notch key with slot ridge. Press down firmly on both ends until both latches click into place. Use slots A2 and B2 for dual-channel.' },
-  { title: 'Install I/O Shield & Motherboard', detail: 'Snap I/O shield firmly into case rear cutout. Verify motherboard standoff placement matches board holes. Lower board gently and secure with standard screws.' },
-  { title: 'Mount Power Supply Unit (PSU)', detail: 'Slide PSU into lower mounting compartment with fan oriented toward dust filter vent. Fasten with 4 hex screws. Route 24-pin ATX, 8-pin EPS, and PCIe lines.' },
-  { title: 'Install Storage Drives', detail: 'Insert M.2 NVMe SSD at a 30-degree angle into M.2 socket, push flat, and secure with M.2 retention screw or toolless latch. Connect SATA drives if present.' },
-  { title: 'Install Graphics Card (GPU)', detail: 'Remove corresponding rear PCIe expansion covers. Insert GPU into top PCIe x16 slot until safety retention lock snaps. Secure bracket screws and plug in PCIe power cables.' },
-  { title: 'Connect Headers & Initial POST Test', detail: 'Connect front panel pins (PWR_SW, RESET_SW, HDD_LED, POWER_LED), USB 3.0, and HD Audio headers. Connect display to GPU output and perform initial diagnostic POST.' },
-]
-
-const disassemblySteps = [
-  { title: 'Power Down & Discharge Residual Charge', detail: 'Perform OS shutdown. Toggle PSU rocker switch to 0 (OFF). Disconnect AC power cord from wall. Press chassis power button for 5 seconds to discharge PSU capacitors.' },
-  { title: 'Open Case Side Panels', detail: 'Unscrew rear thumbscrews and remove tempered glass or side aluminum panels. Store glass safely on a padded surface.' },
-  { title: 'Disconnect Internal Wiring Harness', detail: 'Unhook 24-pin ATX power connector by depressing its safety latch. Disconnect 8-pin CPU EPS, PCIe GPU power, SATA cables, and front panel pin headers.' },
-  { title: 'Remove GPU (Graphics Card)', detail: 'Unscrew PCIe slot bracket thumbscrews. Depress the PCIe slot locking tab with your finger and lift graphics card straight up.' },
-  { title: 'Remove M.2 SSDs & Storage', detail: 'Unscrew M.2 heatsink and drive mounting screw. Gently slide M.2 SSD out at a 30-degree angle. Disconnect and remove 2.5-inch SATA drives.' },
-  { title: 'Remove CPU Cooler & Processor', detail: 'Loosen cooler screws gradually in diagonal sequence. Twist cooler gently to break thermal paste suction before lifting. Release CPU socket latch and lift processor by edges.' },
-  { title: 'Remove RAM DIMM Modules', detail: 'Press DIMM retention latches outward. The RAM module will elevate slightly. Pull straight out by the upper PCB corners.' },
-  { title: 'Unfasten & Remove Motherboard', detail: 'Remove all mounting screws from brass standoffs. Carefully lift motherboard out of chassis, taking care not to scrape against rear I/O shield.' },
-]
-
 export default function Hardware() {
   const [activeTab, setActiveTab] = useState<'components' | 'safety' | 'assembly' | 'disassembly'>('components')
   const [completedSteps, setCompletedSteps] = useState<Record<number, boolean>>({})
+  const [selectedPartId, setSelectedPartId] = useState<string>('chassis')
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const diagramContainerRef = useRef<HTMLDivElement>(null)
 
-  const toggleStep = (idx: number) => {
+  const toggleStep = (idx: number, partId?: string) => {
     setCompletedSteps(prev => ({ ...prev, [idx]: !prev[idx] }))
+    if (partId) {
+      setSelectedPartId(partId)
+    }
+  }
+
+  // Handle Fullscreen for PcDiagram container
+  useEffect(() => {
+    const handleFsChange = () => {
+      setIsFullscreen(!!document.fullscreenElement)
+    }
+    document.addEventListener('fullscreenchange', handleFsChange)
+    return () => document.removeEventListener('fullscreenchange', handleFsChange)
+  }, [])
+
+  const toggleFullScreen = () => {
+    if (!diagramContainerRef.current) return
+    if (!document.fullscreenElement) {
+      diagramContainerRef.current.requestFullscreen().catch(() => {})
+    } else {
+      document.exitFullscreen().catch(() => {})
+    }
   }
 
   return (
@@ -182,7 +185,7 @@ export default function Hardware() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('assembly')}
+            onClick={() => { setActiveTab('assembly'); setSelectedPartId('chassis'); }}
             className={`tech-tab-btn ${activeTab === 'assembly' ? 'active-blue' : ''}`}
           >
             <Wrench size={15} />
@@ -190,7 +193,7 @@ export default function Hardware() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('disassembly')}
+            onClick={() => { setActiveTab('disassembly'); setSelectedPartId('psu'); }}
             className={`tech-tab-btn ${activeTab === 'disassembly' ? 'active-blue' : ''}`}
           >
             <Box size={15} />
@@ -297,103 +300,109 @@ export default function Hardware() {
           </div>
         )}
 
-        {/* TAB 3: Assembly Procedure */}
-        {activeTab === 'assembly' && (
-          <div>
-            <div className="tech-callout">
-              <div className="tech-callout-text">
-                <strong>Interactive Assembly Checklist:</strong> Click on each step as you complete it during your workshop practice. 
-                Following this chronological order prevents disassembly due to clearance conflicts.
+        {/* TAB 3 & 4: Interactive Assembly / Disassembly with PC Diagram */}
+        {/* TAB 3 & 4: Interactive Assembly / Disassembly with PC Diagram */}
+        {(activeTab === 'assembly' || activeTab === 'disassembly') && (
+          <div 
+            ref={diagramContainerRef}
+            className={`tech-split-view ${isFullscreen ? 'fullscreen-mode' : ''}`}
+          >
+            {/* Left Column: Steps */}
+            <div>
+              <div className={`tech-callout ${activeTab === 'assembly' ? '' : 'amber'}`}>
+                <div className="tech-callout-text">
+                  <strong>{activeTab === 'assembly' ? 'Interactive Assembly Checklist:' : 'Caution on Disassembly:'}</strong> 
+                  {activeTab === 'assembly' 
+                    ? ' Click on each step to highlight the component in the 3D model.' 
+                    : ' Click steps to view components. Always verify that all display cables and power cords are disconnected.'}
+                </div>
+              </div>
+
+              <div className="steps-list-container" style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: isFullscreen ? 'none' : '600px', overflowY: isFullscreen ? 'visible' : 'auto', paddingRight: '8px' }}>
+                {(activeTab === 'assembly' ? assemblySteps : disassemblySteps).map((s, idx) => {
+                  const stepIndex = activeTab === 'assembly' ? idx : idx + 50
+                  const done = !!completedSteps[stepIndex]
+                  const isSelected = selectedPartId === s.partId
+                  
+                  return (
+                    <div
+                      key={s.title}
+                      onClick={() => toggleStep(stepIndex, s.partId)}
+                      className="tech-step-card"
+                      style={{
+                        cursor: 'pointer',
+                        background: done ? '#f0fdf4' : (isSelected ? '#f8fafc' : '#ffffff'),
+                        borderColor: done ? '#86efac' : (isSelected ? '#3b82f6' : '#e2e8f0'),
+                        boxShadow: isSelected ? '0 0 0 1px #3b82f6' : 'none',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <div
+                        className="tech-step-index"
+                        style={{
+                          background: done ? '#22c55e' : (isSelected ? '#3b82f6' : '#f1f5f9'),
+                          color: done || isSelected ? '#ffffff' : '#0f172a',
+                        }}
+                      >
+                        {done ? <CheckCircle2 size={18} /> : `${idx + 1}`}
+                      </div>
+                      <div className="tech-step-content" style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <h4 style={{ 
+                            textDecoration: done ? 'line-through' : 'none', 
+                            color: done ? '#15803d' : (isSelected ? '#1d4ed8' : '#0f172a'),
+                            marginBottom: '4px'
+                          }}>
+                            Step {idx + 1}: {s.title}
+                          </h4>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: done ? '#16a34a' : '#94a3b8' }}>
+                            {done ? 'COMPLETED' : 'PENDING'}
+                          </span>
+                        </div>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>{s.detail}</p>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {assemblySteps.map((s, idx) => {
-                const done = !!completedSteps[idx]
-                return (
-                  <div
-                    key={s.title}
-                    onClick={() => toggleStep(idx)}
-                    className="tech-step-card"
-                    style={{
-                      cursor: 'pointer',
-                      background: done ? '#f0fdf4' : '#ffffff',
-                      borderColor: done ? '#86efac' : '#e2e8f0',
-                    }}
-                  >
-                    <div
-                      className="tech-step-index"
-                      style={{
-                        background: done ? '#22c55e' : '#f1f5f9',
-                        color: done ? '#ffffff' : '#0f172a',
-                      }}
-                    >
-                      {done ? <CheckCircle2 size={18} /> : `${idx + 1}`}
-                    </div>
-                    <div className="tech-step-content" style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <h4 style={{ textDecoration: done ? 'line-through' : 'none', color: done ? '#15803d' : '#0f172a' }}>
-                          Step {idx + 1}: {s.title}
-                        </h4>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: done ? '#16a34a' : '#94a3b8' }}>
-                          {done ? 'COMPLETED' : 'PENDING'}
-                        </span>
-                      </div>
-                      <p>{s.detail}</p>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 4: Disassembly Procedure */}
-        {activeTab === 'disassembly' && (
-          <div>
-            <div className="tech-callout amber">
-              <div className="tech-callout-text">
-                <strong>Caution on Disassembly:</strong> Always verify that all display cables, power cords, and peripheral lines are disconnected before removing chassis panels. Store screws in labeled containers.
+            {/* Right Column: Interactive 3D Model */}
+            <div 
+              style={{ 
+                position: 'sticky', 
+                top: '80px', 
+                height: '650px', 
+                borderRadius: '12px',
+                overflow: 'hidden',
+                border: '1px solid #e2e8f0',
+                background: '#0f172a',
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
+              <div style={{ 
+                position: 'absolute', top: 16, right: 16, zIndex: 10, display: 'flex', gap: 8 
+              }}>
+                <button
+                  type="button"
+                  onClick={toggleFullScreen}
+                  className="btn-tech-secondary"
+                  style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(255,255,255,0.1)' }}
+                >
+                  <Maximize2 size={14} />
+                  {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+                </button>
               </div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {disassemblySteps.map((s, idx) => {
-                const done = !!completedSteps[idx + 50]
-                return (
-                  <div
-                    key={s.title}
-                    onClick={() => toggleStep(idx + 50)}
-                    className="tech-step-card"
-                    style={{
-                      cursor: 'pointer',
-                      background: done ? '#f0fdf4' : '#ffffff',
-                      borderColor: done ? '#86efac' : '#e2e8f0',
-                    }}
-                  >
-                    <div
-                      className="tech-step-index"
-                      style={{
-                        background: done ? '#22c55e' : '#f1f5f9',
-                        color: done ? '#ffffff' : '#0f172a',
-                      }}
-                    >
-                      {done ? <CheckCircle2 size={18} /> : `${idx + 1}`}
-                    </div>
-                    <div className="tech-step-content" style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <h4 style={{ textDecoration: done ? 'line-through' : 'none', color: done ? '#15803d' : '#0f172a' }}>
-                          Step {idx + 1}: {s.title}
-                        </h4>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: done ? '#16a34a' : '#94a3b8' }}>
-                          {done ? 'COMPLETED' : 'PENDING'}
-                        </span>
-                      </div>
-                      <p>{s.detail}</p>
-                    </div>
-                  </div>
-                )
-              })}
+              <div style={{ flex: 1, position: 'relative' }}>
+                <PcDiagram 
+                  selectedId={selectedPartId} 
+                  onSelect={setSelectedPartId}
+                  isFullscreen={isFullscreen} 
+                  initialZoom={1.2}
+                  atlasMode={true}
+                />
+              </div>
             </div>
           </div>
         )}

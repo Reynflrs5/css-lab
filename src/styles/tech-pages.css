@@ -370,3 +370,89 @@
   margin: 0;
   line-height: 1.5;
 }
+
+/* ── SPLIT VIEW (HARDWARE ASSEMBLY) ─────────────────────── */
+.tech-split-view {
+  display: grid;
+  grid-template-columns: minmax(300px, 4fr) 5fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.tech-split-view.fullscreen-mode {
+  grid-template-columns: 1fr !important;
+  height: 100vh;
+  overflow: hidden; /* Prevent body scroll */
+  background: #0f172a;
+  padding: 16px;
+  gap: 16px;
+}
+
+.tech-split-view.fullscreen-mode > div:first-child {
+  order: 2; /* Move steps to bottom */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make steps grid in fullscreen so they fit */
+.tech-split-view.fullscreen-mode .steps-list-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 6px !important;
+  padding-right: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.tech-split-view.fullscreen-mode .tech-callout {
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.tech-split-view.fullscreen-mode .tech-step-card {
+  padding: 8px 10px;
+  margin-bottom: 0;
+  gap: 8px;
+}
+
+.tech-split-view.fullscreen-mode .tech-step-index {
+  width: 24px;
+  height: 24px;
+  font-size: 0.7rem;
+}
+
+.tech-split-view.fullscreen-mode .tech-step-content h4 {
+  font-size: 0.8rem;
+  margin-bottom: 2px;
+}
+
+.tech-split-view.fullscreen-mode .tech-step-content p {
+  font-size: 0.65rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tech-split-view.fullscreen-mode > div:last-child {
+  order: 1; /* Move 3D model to top */
+  position: relative !important;
+  top: 0 !important;
+  height: 60vh !important;
+  border: none !important;
+  border-radius: 8px;
+}
+
+@media (max-width: 992px) {
+  .tech-split-view {
+    grid-template-columns: 1fr;
+  }
+  
+  .tech-split-view > div:last-child {
+    position: relative !important;
+    top: 0 !important;
+    height: 400px !important;
+    order: -1; /* Make the 3D viewer appear on top of the list on mobile */
+  }
+}

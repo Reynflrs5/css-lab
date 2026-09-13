@@ -242,9 +242,27 @@ export default function PcDiagram({
     setPan({ x: 0, y: 0 })
   }
 
-  // Auto-focus whenever selectedId or fullscreen state changes (controlled mode from AtlasExplorer)
+  const prevSelectedId = useRef(selectedId)
+
+  // Auto-focus whenever selectedId changes (controlled mode from AtlasExplorer)
   useEffect(() => {
     if (!selectedId) return
+
+    if (selectedId === prevSelectedId.current) {
+      // If it hasn't changed, this is either initial mount, strict mode re-run, or an isFs change.
+      // We only apply preset adjustments if we are ALREADY focused.
+      if (focusMode) {
+        const preset = getFocusPreset(selectedId, isFs)
+        if (preset) {
+          setZoom(preset.zoom)
+          setRotation(preset.rotation)
+          setPan(preset.pan)
+        }
+      }
+      return
+    }
+
+    prevSelectedId.current = selectedId
     setFocusMode(true)
     setIsAutoSpinning(false)
     const preset = getFocusPreset(selectedId, isFs)
@@ -253,7 +271,7 @@ export default function PcDiagram({
       setRotation(preset.rotation)
       setPan(preset.pan)
     }
-  }, [selectedId, isFs])
+  }, [selectedId, isFs, focusMode])
 
 
   useEffect(() => {
