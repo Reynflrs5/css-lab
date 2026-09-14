@@ -3,6 +3,9 @@ import Rj45Simulator from '../components/Rj45Simulator'
 import WiringChallenge from '../components/WiringChallenge'
 import CableCalculator from '../components/CableCalculator'
 import KeystoneGuide from '../components/KeystoneGuide'
+import DataFlowVisualizer from '../components/DataFlowVisualizer'
+import CableBestPractices from '../components/CableBestPractices'
+import AdvancedDiagnostics from '../components/AdvancedDiagnostics'
 import {
   WIRE_COLORS,
   T568B_PINOUT,
@@ -23,7 +26,7 @@ import {
 import '../styles/tech-pages.css'
 
 export default function CableLab() {
-  const [activeTab, setActiveTab] = useState<'sim' | 'standards' | 'procedure' | 'troubleshooting' | 'challenge' | 'calculator' | 'keystone'>('sim')
+  const [activeTab, setActiveTab] = useState<'sim' | 'standards' | 'procedure' | 'troubleshooting' | 'challenge' | 'calculator' | 'keystone' | 'dataflow' | 'bestpractices' | 'advdiag'>('sim')
 
   return (
     <main className="page" style={{ padding: 0 }}>
@@ -71,13 +74,16 @@ export default function CableLab() {
             className="tech-dropdown"
           >
             {[
-              { id: 'sim', label: '1. Virtual Workbench & Tester' },
-              { id: 'standards', label: '2. Pinout Standards (T568A / T568B)' },
-              { id: 'procedure', label: '3. Step-by-Step Crimping Guide' },
+              { id: 'sim',           label: '1. Virtual Workbench & Tester' },
+              { id: 'standards',     label: '2. Pinout Standards (T568A / T568B)' },
+              { id: 'procedure',     label: '3. Step-by-Step Crimping Guide' },
               { id: 'troubleshooting', label: '4. LAN Tester Diagnostics' },
-              { id: 'challenge', label: '5. ⏱ Timed Wiring Challenge' },
-              { id: 'calculator', label: '6. 📏 Cable Performance Calculator' },
-              { id: 'keystone', label: '7. 🔌 Keystone Jack & Patch Panel' },
+              { id: 'challenge',     label: '5. Timed Wiring Challenge' },
+              { id: 'calculator',    label: '6. Cable Performance Calculator' },
+              { id: 'keystone',      label: '7. Keystone Jack & Patch Panel' },
+              { id: 'dataflow',      label: '8. Data Flow Visualizer' },
+              { id: 'bestpractices', label: '9. Installation Best Practices' },
+              { id: 'advdiag',       label: '10. Advanced Diagnostics' },
             ].map(tab => (
               <option key={tab.id} value={tab.id}>
                 {tab.label}
@@ -401,6 +407,21 @@ export default function CableLab() {
         {/* TAB 7: KEYSTONE GUIDE */}
         {activeTab === 'keystone' && (
           <KeystoneGuide />
+        )}
+
+        {/* TAB 8: DATA FLOW VISUALIZER */}
+        {activeTab === 'dataflow' && (
+          <DataFlowVisualizer />
+        )}
+
+        {/* TAB 9: INSTALLATION BEST PRACTICES */}
+        {activeTab === 'bestpractices' && (
+          <CableBestPractices />
+        )}
+
+        {/* TAB 10: ADVANCED DIAGNOSTICS */}
+        {activeTab === 'advdiag' && (
+          <AdvancedDiagnostics />
         )}
 
       </div>

@@ -228,3 +228,36 @@ export const KEYSTONE_PROCEDURE = [
     keyTip: 'The cap prevents the wires from being pulled out of the IDC slots when the jack is stuffed into a tight wall box.'
   }
 ]
+
+export const BEST_PRACTICES = [
+  {
+    title: 'Bend Radius',
+    description: 'Do not bend UTP cables tighter than 4 times the cable diameter (roughly 1 inch or 25mm).',
+    why: 'Sharp bends stretch the outer jacket, untwist the pairs inside, and can even break the solid copper core, causing signal loss or complete failure.'
+  },
+  {
+    title: 'Electromagnetic Interference (EMI)',
+    description: 'Never run data cables parallel to unshielded electrical AC power lines or fluorescent light ballasts.',
+    why: 'Copper UTP cables act like antennas. The 60Hz hum from power lines induces electrical noise onto the data lines, causing high packet loss. If you must cross power lines, do so at exactly 90 degrees.'
+  },
+  {
+    title: 'Cable Tying (Velcro vs Zip Ties)',
+    description: 'Always use Velcro hook-and-loop straps instead of nylon zip ties.',
+    why: 'Zip ties can easily be over-tightened, which crushes the cable jacket and alters the precise twisting of the pairs, causing Near-End Crosstalk (NEXT). Velcro provides gentle, distributed support.'
+  }
+]
+
+export const ADVANCED_DIAGNOSTICS = [
+  {
+    name: 'Near-End Crosstalk (NEXT)',
+    testerPattern: 'Fails certification test on Fluke or similar advanced network tester.',
+    cause: 'The most common cause is untwisting the wire pairs too much (more than 0.5 inches) before they enter the RJ45 plug or keystone jack.',
+    fix: 'Re-terminate the connection, ensuring the twists are maintained right up to the point of contact.'
+  },
+  {
+    name: 'Attenuation (Insertion Loss)',
+    testerPattern: 'Signal strength drops below acceptable thresholds; devices negotiate to 10/100 instead of 1000 Mbps.',
+    cause: 'Cable run exceeds the 100-meter (328 ft) limit for twisted pair Ethernet, or the cable has suffered physical damage/stretching.',
+    fix: 'Install a switch or repeater mid-way to boost the signal, or replace with fiber optic cabling for long runs.'
+  }
+]
