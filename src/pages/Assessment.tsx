@@ -1,10 +1,13 @@
-﻿import { useState, useEffect } from 'react'
-import { Cpu, Layers, Network, Cable, Wrench, ClipboardCheck, CheckCircle2, Lock, ChevronRight } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Cpu, Layers, Network, Cable, Wrench, ClipboardCheck, CheckCircle2, Lock, ChevronRight, History, MonitorPlay, Server } from 'lucide-react'
 import { hardwareQuizQuestions } from '../data/hardwareQuiz'
 import { networkingQuizQuestions } from '../data/networkingQuiz'
 import { cableLabQuizQuestions } from '../data/cableLabQuiz'
 import { troubleshootingQuizQuestions } from '../data/troubleshootingQuiz'
 import { pcPartsQuizQuestions } from '../data/pcPartsQuiz'
+import { historyQuiz } from '../data/historyQuiz'
+import { osQuiz } from '../data/osQuiz'
+import { serverQuiz } from '../data/serverQuiz'
 import AssessmentQuiz from '../components/AssessmentQuiz'
 import '../styles/tech-pages.css'
 import type { QuizQuestion } from '../data/hardwareQuiz'
@@ -15,7 +18,7 @@ interface ModuleInfo {
   coc: string
   title: string
   desc: string
-  icon: typeof Cpu
+  icon: any
   color: string
   glowColor: string
   hours: string
@@ -23,6 +26,18 @@ interface ModuleInfo {
 }
 
 const modules: ModuleInfo[] = [
+  {
+    id: 'history',
+    code: 'MOD-00',
+    coc: 'Core',
+    title: 'Fundamentals & History',
+    desc: 'Evolution of computers, ARPANET to Internet, IT basic concepts, and Occupational Health & Safety (OHS).',
+    icon: History,
+    color: '#ec4899',
+    glowColor: 'rgba(236, 72, 153, 0.15)',
+    hours: '4 hrs',
+    questions: historyQuiz,
+  },
   {
     id: 'hardware',
     code: 'MOD-01',
@@ -48,8 +63,20 @@ const modules: ModuleInfo[] = [
     questions: pcPartsQuizQuestions,
   },
   {
-    id: 'networking',
+    id: 'osinstallation',
     code: 'MOD-03',
+    coc: 'COC 1',
+    title: 'OS Installation & Configuration',
+    desc: 'BIOS/UEFI setup, creating bootable media, installing Windows 10/11, and device driver configuration.',
+    icon: MonitorPlay,
+    color: '#eab308',
+    glowColor: 'rgba(234, 179, 8, 0.15)',
+    hours: '10 hrs',
+    questions: osQuiz,
+  },
+  {
+    id: 'networking',
+    code: 'MOD-04',
     coc: 'COC 3',
     title: 'Networking & IP Subnetting',
     desc: 'OSI 7-layer model, IPv4 subnetting, topologies, TCP/UDP, and routing concepts.',
@@ -72,8 +99,20 @@ const modules: ModuleInfo[] = [
     questions: cableLabQuizQuestions,
   },
   {
+    id: 'serversetup',
+    code: 'MOD-05',
+    coc: 'COC 3',
+    title: 'Server Setup & Administration',
+    desc: 'Deploying Windows Server, Active Directory Domain Services, DHCP, DNS, and Group Policy Objects.',
+    icon: Server,
+    color: '#6366f1',
+    glowColor: 'rgba(99, 102, 241, 0.15)',
+    hours: '16 hrs',
+    questions: serverQuiz,
+  },
+  {
     id: 'troubleshooting',
-    code: 'MOD-04',
+    code: 'MOD-06',
     coc: 'COC 1 & 4',
     title: 'Troubleshooting & Diagnostics',
     desc: 'POST sequence, BIOS beep codes, BSOD stop codes, multimeter PSU testing, and preventive maintenance.',

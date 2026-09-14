@@ -12,6 +12,9 @@ import {
   Cable,
   Wrench,
   ClipboardCheck,
+  History,
+  MonitorPlay,
+  Server
 } from 'lucide-react'
 import '../styles/tech-pages.css'
 
@@ -20,7 +23,7 @@ interface SyllabusModule {
   coc: string
   title: string
   desc: string
-  icon: typeof Cpu
+  icon: any
   topics: string[]
   hours: string
   to: string
@@ -28,6 +31,16 @@ interface SyllabusModule {
 }
 
 const syllabus: SyllabusModule[] = [
+  {
+    module: 'MOD-00',
+    coc: 'Core',
+    title: 'Fundamentals & History',
+    desc: 'Evolution of computers, ARPANET to Internet, IT basic concepts, and Occupational Health & Safety (OHS).',
+    icon: History,
+    topics: ['History of Computers', 'History of Networking', 'Data vs Information', 'OHS & 5S Methodology', 'ESD Prevention'],
+    hours: '4 hrs',
+    to: '/history',
+  },
   {
     module: 'MOD-01',
     coc: 'COC 1',
@@ -50,6 +63,16 @@ const syllabus: SyllabusModule[] = [
   },
   {
     module: 'MOD-03',
+    coc: 'COC 1',
+    title: 'OS Installation & Configuration',
+    desc: 'BIOS/UEFI setup, creating bootable media, installing Windows 10/11, and device driver configuration.',
+    icon: MonitorPlay,
+    topics: ['BIOS vs UEFI', 'Bootable USB creation', 'Disk Partitioning', 'Windows Installation', 'Device Drivers'],
+    hours: '10 hrs',
+    to: '/os-installation',
+  },
+  {
+    module: 'MOD-04',
     coc: 'COC 3',
     title: 'Networking & IP Subnetting',
     desc: 'LAN/WAN topologies, OSI 7-layer architecture, IPv4 Classful/CIDR subnet calculations, and Ethernet cable categories.',
@@ -70,7 +93,17 @@ const syllabus: SyllabusModule[] = [
     isLab: true,
   },
   {
-    module: 'MOD-04',
+    module: 'MOD-05',
+    coc: 'COC 3',
+    title: 'Server Setup & Administration',
+    desc: 'Deploying Windows Server, Active Directory Domain Services, DHCP, DNS, and Group Policy Objects.',
+    icon: Server,
+    topics: ['Windows Server Installation', 'Active Directory (ADDS)', 'DHCP & DNS Config', 'Folder Redirection', 'Group Policy (GPO)'],
+    hours: '16 hrs',
+    to: '/server-setup',
+  },
+  {
+    module: 'MOD-06',
     coc: 'COC 1 & 4',
     title: 'Troubleshooting & Diagnostics',
     desc: 'Methodical diagnostic flowcharts, synthesized BIOS POST beep code decoder, BSOD stop-codes, and multimeter rail testing.',
