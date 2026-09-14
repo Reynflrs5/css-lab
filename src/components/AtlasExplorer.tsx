@@ -84,10 +84,10 @@ export default function AtlasExplorer() {
 
   const filteredParts = searchQuery.trim()
     ? pcParts.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.shortName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.category.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.shortName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.category.toLowerCase().includes(searchQuery.toLowerCase())
+    )
     : []
 
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -113,9 +113,9 @@ export default function AtlasExplorer() {
 
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => {})
+      document.documentElement.requestFullscreen().then(() => setIsFullscreen(true)).catch(() => { })
     } else {
-      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => {})
+      document.exitFullscreen().then(() => setIsFullscreen(false)).catch(() => { })
     }
   }
 
@@ -378,9 +378,8 @@ export default function AtlasExplorer() {
             <div className="landscape-cat-dropdown-wrap" ref={catDropdownRef}>
               <button
                 type="button"
-                className={`landscape-cat-dropdown-trigger${isCatDropdownOpen ? ' open' : ''}${
-                  selectedCategory ? ' filtered' : ''
-                }`}
+                className={`landscape-cat-dropdown-trigger${isCatDropdownOpen ? ' open' : ''}${selectedCategory ? ' filtered' : ''
+                  }`}
                 onClick={() => setIsCatDropdownOpen(o => !o)}
                 aria-haspopup="listbox"
                 aria-expanded={isCatDropdownOpen}
