@@ -183,3 +183,48 @@ export const FAULT_TYPES: FaultType[] = [
     fix: 'Follow color code strictly; do not just match arbitrary pins by color.'
   }
 ]
+
+export const KEYSTONE_COLORS = {
+  A: {
+    left: ['wg', 'g', 'wbr', 'br'],
+    right: ['wb', 'bl', 'wo', 'o']
+  },
+  B: {
+    left: ['wo', 'o', 'wbr', 'br'],
+    right: ['wb', 'bl', 'wg', 'g']
+  }
+}
+
+export const KEYSTONE_PROCEDURE = [
+  {
+    step: 1,
+    title: 'Strip Outer Sheath',
+    action: 'Score and remove about 1.5 to 2 inches (40-50 mm) of the outer jacket. A longer strip is needed here compared to RJ45 crimping.',
+    keyTip: 'Keep the twist of the pairs intact as close to the punchdown block as possible (maximum 1/2 inch of untwisted wire).'
+  },
+  {
+    step: 2,
+    title: 'Separate Pairs & Identify Standard',
+    action: 'Separate the four pairs. Look at the color-coded sticker on the side of the keystone jack and choose either the A or B row (T-568B is standard in most commercial installs).',
+    keyTip: 'The keystone jack sticker is split horizontally. The top half is usually B and the bottom half is A, or vice versa. Follow the solid/striped color blocks.'
+  },
+  {
+    step: 3,
+    title: 'Seat the Wires',
+    action: 'Place the cable in the center channel of the jack. Untwist each pair just enough to lay them into the V-shaped IDC (Insulation Displacement Contact) slots according to the color code.',
+    keyTip: 'Push the wires down firmly with your thumbs first so they stay in place before using the tool.'
+  },
+  {
+    step: 4,
+    title: 'Punch Down with 110 Tool',
+    action: 'Place the punchdown tool over the wire. Make sure the CUTTING BLADE is facing the OUTSIDE of the jack. Push down forcefully until the tool "clicks" or "pops".',
+    keyTip: 'Always double-check blade orientation! If the blade faces inside, you will cut the connection to the pin, ruining the jack.',
+    warning: 'Do not use a flathead screwdriver as a substitute for a punchdown tool on an exam or professional job. It spreads the IDC contacts and causes loose connections.'
+  },
+  {
+    step: 5,
+    title: 'Snap on Dust Cap',
+    action: 'Once all 8 wires are punched down and the excess tails are trimmed off by the tool, place the plastic dust cap/strain relief cap over the contacts.',
+    keyTip: 'The cap prevents the wires from being pulled out of the IDC slots when the jack is stuffed into a tight wall box.'
+  }
+]

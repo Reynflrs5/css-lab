@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Rj45Simulator from '../components/Rj45Simulator'
 import WiringChallenge from '../components/WiringChallenge'
 import CableCalculator from '../components/CableCalculator'
+import KeystoneGuide from '../components/KeystoneGuide'
 import {
   WIRE_COLORS,
   T568B_PINOUT,
@@ -22,7 +23,7 @@ import {
 import '../styles/tech-pages.css'
 
 export default function CableLab() {
-  const [activeTab, setActiveTab] = useState<'sim' | 'standards' | 'procedure' | 'troubleshooting' | 'challenge' | 'calculator'>('sim')
+  const [activeTab, setActiveTab] = useState<'sim' | 'standards' | 'procedure' | 'troubleshooting' | 'challenge' | 'calculator' | 'keystone'>('sim')
 
   return (
     <main className="page" style={{ padding: 0 }}>
@@ -76,6 +77,7 @@ export default function CableLab() {
               { id: 'troubleshooting', label: '4. LAN Tester Diagnostics' },
               { id: 'challenge', label: '5. ⏱ Timed Wiring Challenge' },
               { id: 'calculator', label: '6. 📏 Cable Performance Calculator' },
+              { id: 'keystone', label: '7. 🔌 Keystone Jack & Patch Panel' },
             ].map(tab => (
               <option key={tab.id} value={tab.id}>
                 {tab.label}
@@ -394,6 +396,11 @@ export default function CableLab() {
         {/* TAB 6: CABLE PERFORMANCE CALCULATOR */}
         {activeTab === 'calculator' && (
           <CableCalculator />
+        )}
+
+        {/* TAB 7: KEYSTONE GUIDE */}
+        {activeTab === 'keystone' && (
+          <KeystoneGuide />
         )}
 
       </div>
