@@ -2,14 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Network,
-  Layers,
   Cable,
   Server,
   ArrowRight,
   Sliders,
   Monitor,
-  Wifi,
-  Globe,
   Terminal,
 } from 'lucide-react'
 import '../styles/tech-pages.css'

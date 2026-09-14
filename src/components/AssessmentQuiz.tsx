@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { CheckCircle2, XCircle, ChevronRight, RotateCcw, Trophy, AlertTriangle, BookOpen } from 'lucide-react'
 import { type QuizQuestion } from '../data/hardwareQuiz'
 
@@ -13,7 +13,7 @@ export default function AssessmentQuiz({ questions, moduleTitle, onReset }: Asse
   const [currentIdx, setCurrentIdx] = useState(0)
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
-  const [answers, setAnswers] = useState<{ questionId: number; selectedIndex: number; isCorrect: boolean }[]>([])
+  const [answers, setAnswers] = useState<{ questionId: number | string; selectedIndex: number; isCorrect: boolean }[]>([])
   const [shuffled, setShuffled] = useState<QuizQuestion[]>([])
 
   const startQuiz = () => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Cpu, Layers, Network, Cable, Wrench, ClipboardCheck, CheckCircle2, Lock, ChevronRight, History, MonitorPlay, Server } from 'lucide-react'
+import { Cpu, Layers, Network, Cable, Wrench, ClipboardCheck, CheckCircle2, ChevronRight, History, MonitorPlay, Server } from 'lucide-react'
 import { hardwareQuizQuestions } from '../data/hardwareQuiz'
 import { networkingQuizQuestions } from '../data/networkingQuiz'
 import { cableLabQuizQuestions } from '../data/cableLabQuiz'
@@ -8,7 +8,6 @@ import { pcPartsQuizQuestions } from '../data/pcPartsQuiz'
 import { historyQuiz } from '../data/historyQuiz'
 import { osQuiz } from '../data/osQuiz'
 import { serverQuiz } from '../data/serverQuiz'
-import AssessmentQuiz from '../components/AssessmentQuiz'
 import '../styles/tech-pages.css'
 import type { QuizQuestion } from '../data/hardwareQuiz'
 
@@ -349,7 +348,7 @@ function AssessmentQuizWithCallback({ questions, moduleTitle, onReset, onComplet
   const [currentIdx, setCurrentIdx] = useState(0)
   const [selectedChoice, setSelectedChoice] = useState<number | null>(null)
   const [isAnswered, setIsAnswered] = useState(false)
-  const [answers, setAnswers] = useState<{ questionId: number; selectedIndex: number; isCorrect: boolean }[]>([])
+  const [answers, setAnswers] = useState<{ questionId: number | string; selectedIndex: number; isCorrect: boolean }[]>([])
   const [shuffled, setShuffled] = useState<QuizQuestion[]>([])
   const [scoreSaved, setScoreSaved] = useState(false)
 

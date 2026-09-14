@@ -128,19 +128,11 @@ export default function PcParts() {
   }
 
   const allSelected = Object.values(build).every(v => v !== '')
-  const { issues, totalWatt, cpu, mb, ram, gpu, psu } = getCompatibilityIssues()
+  const { issues, totalWatt, cpu, ram, gpu, psu } = getCompatibilityIssues()
 
   // ── Helpers ──────────────────────────────────────────────────
   const partA = pcParts.find(p => p.id === compareA)
   const partB = pcParts.find(p => p.id === compareB)
-
-  const tabBtnStyle = (t: Tab) => ({
-    padding: '8px 18px', border: '1px solid', borderRadius: '6px', cursor: 'pointer',
-    fontSize: '0.82rem', fontWeight: 600, transition: 'all 0.15s',
-    background: activeTab === t ? '#0f172a' : '#f8fafc',
-    color: activeTab === t ? '#fff' : '#475569',
-    borderColor: activeTab === t ? '#0f172a' : '#e2e8f0',
-  })
 
   if (activeTab === 'atlas') return (
     <div>

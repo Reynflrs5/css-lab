@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import {
-  Wrench,
   Activity,
   AlertTriangle,
   Volume2,
-  Terminal,
   ShieldAlert,
 } from 'lucide-react'
 import '../styles/tech-pages.css'

@@ -16,12 +16,8 @@ import {
 } from '../data/cablingData'
 import {
   Wrench,
-  FileText,
-  AlertTriangle,
-  Layers,
   Sparkles,
-  Timer,
-  Ruler
+  Timer
 } from 'lucide-react'
 import '../styles/tech-pages.css'
 

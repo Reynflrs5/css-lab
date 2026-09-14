@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MonitorPlay, HardDrive, Usb, Cpu, Settings, Download } from 'lucide-react'
+import { MonitorPlay, Usb, Cpu, Settings } from 'lucide-react'
 import '../styles/tech-pages.css'
 
 export default function OsInstallation() {

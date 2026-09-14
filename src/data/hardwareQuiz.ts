@@ -1,5 +1,5 @@
-﻿export interface QuizQuestion {
-  id: number
+export interface QuizQuestion {
+  id: number | string
   question: string
   choices: string[]
   correctIndex: number

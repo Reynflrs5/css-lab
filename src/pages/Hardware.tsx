@@ -14,7 +14,6 @@ import {
   ArrowRight,
   Sparkles,
   Maximize2,
-  ClipboardCheck,
 } from 'lucide-react'
 import '../styles/tech-pages.css'
 import PcDiagram from '../components/PcDiagram'
