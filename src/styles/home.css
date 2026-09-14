@@ -1219,3 +1219,121 @@
   padding: 5px 10px;
   border-radius: 3px;
 }
+
+/* ==========================================================================
+   HOME PAGE — COMPREHENSIVE RESPONSIVE OVERRIDES
+   ========================================================================== */
+
+/* Tablet: max-width 1024px */
+@media (max-width: 1024px) {
+  .home-hero { padding-top: calc(var(--nav-h) + 18px); padding-bottom: 40px; }
+  .hero-main-title { font-size: clamp(2rem, 5vw, 3rem); }
+  .workbench-panel { padding: 20px; }
+  .wb-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .wb-tabs-nav { flex-wrap: wrap; width: 100%; }
+  .wb-nav-btn { flex: 1; justify-content: center; padding: 6px 10px; font-size: 0.72rem; }
+  .standards-banner { flex-direction: column; align-items: flex-start; gap: 16px; padding: 20px; }
+}
+
+/* Tablet: max-width 900px */
+@media (max-width: 900px) {
+  .hero-telemetry-strip { gap: 12px; }
+  .hero-telemetry-item { font-size: 0.68rem; }
+  .home-section-head { margin-bottom: 20px; }
+  .section-main-title { font-size: clamp(1.4rem, 4vw, 1.9rem); }
+  .workbench-panel { margin-bottom: 40px; }
+  .cidr-tool-layout { grid-template-columns: 1fr; }
+  .cable-matrix-grid { grid-template-columns: 1fr; }
+  .fp-diagram-container { grid-template-columns: 1fr; }
+}
+
+/* Mobile: max-width 768px */
+@media (max-width: 768px) {
+  .home-hero { padding-top: calc(var(--nav-h) + 12px); padding-bottom: 32px; }
+  .home-hero-glow { width: 300px; height: 300px; top: -60px; right: -20px; opacity: 0.5; }
+  .hero-main-title { font-size: clamp(1.85rem, 7vw, 2.5rem); margin-bottom: 12px; }
+  .hero-subtitle { font-size: 0.95rem; margin-bottom: 20px; }
+  .hero-ctas { flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .btn-tech-primary, .btn-tech-secondary { width: 100%; justify-content: center; padding: 12px 18px; }
+  .hero-badge-pill { font-size: 0.68rem; padding: 4px 10px; }
+  .hero-telemetry-strip { gap: 10px; padding-top: 14px; }
+  .hero-telemetry-item { font-size: 0.65rem; }
+  .home-stats-bar { padding: 16px 0; }
+  .stat-val { font-size: 1.4rem; }
+  .hud-header { padding: 8px 12px; flex-wrap: wrap; }
+  .hud-title { font-size: 0.65rem; }
+  .hud-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .hud-tabs::-webkit-scrollbar { display: none; }
+  .hud-tab-btn { font-size: 0.65rem; padding: 6px 8px; white-space: nowrap; }
+  .hud-body { padding: 12px; min-height: 200px; }
+  .hud-beep-chip { font-size: 0.62rem; padding: 4px 7px; }
+  .hud-rails-grid { grid-template-columns: 1fr; }
+  .workbench-panel { padding: 16px; margin-bottom: 32px; }
+  .wb-content-area { padding: 14px; }
+  .cidr-metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .standards-banner { padding: 16px; margin-bottom: 40px; }
+  .standards-info { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .standards-icon { width: 36px; height: 36px; }
+  .bento-card { padding: 20px; }
+  .bento-card h3 { font-size: 1.05rem; }
+  .bento-icon-box { width: 38px; height: 38px; margin-bottom: 12px; }
+  .pin-wire-bar { width: 12px; height: 36px; }
+  .pin-wire-name { font-size: 0.48rem; }
+}
+
+/* Mobile: max-width 640px */
+@media (max-width: 640px) {
+  .home-hero { padding-top: calc(var(--nav-h) + 8px); padding-bottom: 24px; }
+  .home-bento-grid { gap: 14px; margin-bottom: 36px; }
+  .bento-card { padding: 18px 16px; }
+  .bento-tags { gap: 4px; padding-top: 10px; }
+  .home-section-head { margin-bottom: 16px; }
+  .section-eyebrow { font-size: 0.68rem; }
+  .section-main-title { font-size: clamp(1.3rem, 6vw, 1.7rem); }
+  .section-subtitle { font-size: 0.88rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0; }
+  .stat-item { padding: 12px; border-left: none; border-top: 2px solid #202432; }
+  .stat-val { font-size: 1.3rem; }
+  .wb-title-group h3 { font-size: 1.05rem; }
+  .wb-title-group p { font-size: 0.8rem; }
+  .competency-card { padding: 16px; }
+  .competency-card h4 { font-size: 0.9rem; }
+  .standard-badge { font-size: 0.62rem; padding: 4px 8px; }
+}
+
+/* Mobile: max-width 480px */
+@media (max-width: 480px) {
+  .home-hero { padding-bottom: 20px; }
+  .home-hero-glow { display: none; }
+  .hero-main-title { font-size: clamp(1.6rem, 8vw, 2.2rem); }
+  .hero-subtitle { font-size: 0.88rem; }
+  .hero-telemetry-strip { display: none; }
+  .hud-controls-dots { display: none; }
+  .hud-body { min-height: 180px; }
+  .home-stats-bar { padding: 12px 0; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-val { font-size: 1.2rem; }
+  .stat-label { font-size: 0.65rem; }
+  .stat-desc { font-size: 0.68rem; }
+  .bento-card { padding: 16px 14px; }
+  .bento-card p { font-size: 0.82rem; margin-bottom: 12px; }
+  .competency-timeline { grid-template-columns: 1fr; gap: 10px; }
+  .workbench-panel { padding: 14px; }
+  .wb-content-area { padding: 12px; }
+  .wb-nav-btn { font-size: 0.68rem; padding: 5px 8px; }
+  .cidr-metrics-grid { grid-template-columns: 1fr 1fr; }
+  .standards-banner { padding: 14px; }
+  .standards-text h4 { font-size: 0.88rem; }
+  .standards-text p { font-size: 0.75rem; }
+}
+
+/* Very small: max-width 360px */
+@media (max-width: 360px) {
+  .home-bento-grid { gap: 10px; }
+  .bento-card { padding: 14px 12px; }
+  .hero-main-title { font-size: clamp(1.4rem, 9vw, 1.85rem); }
+  .btn-tech-primary, .btn-tech-secondary { font-size: 0.75rem; padding: 10px 14px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .cidr-metrics-grid { grid-template-columns: 1fr; }
+  .hud-tab-btn { font-size: 0.6rem; padding: 5px 6px; }
+}

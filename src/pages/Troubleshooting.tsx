@@ -463,7 +463,7 @@ export default function Troubleshooting() {
                   </span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: '#f8fafc', padding: '14px 16px', borderRadius: 4, border: '1px solid #e2e8f0' }}>
+                <div className="grid-responsive-split" style={{ gap: '16px', background: '#f8fafc', padding: '14px 16px', borderRadius: 4, border: '1px solid #e2e8f0' }}>
                   <div>
                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: '#64748b', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
                       Likely Causes
@@ -673,7 +673,7 @@ export default function Troubleshooting() {
                   <code style={{ fontFamily: 'var(--font-mono)', fontSize: '0.82rem', fontWeight: 700, color: '#ef4444' }}>{b.code}</code>
                   <strong style={{ fontSize: '0.88rem', color: '#0f172a' }}>{b.name}</strong>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: '#f8fafc', padding: '12px 16px', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
+                <div className="grid-responsive-split" style={{ gap: '16px', background: '#f8fafc', padding: '12px 16px', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
                   <div>
                     <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.68rem', color: '#64748b', display: 'block', marginBottom: '4px', textTransform: 'uppercase' }}>Cause</span>
                     <p style={{ margin: 0, fontSize: '0.84rem', color: '#334155' }}>{b.cause}</p>

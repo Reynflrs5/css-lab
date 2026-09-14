@@ -285,7 +285,7 @@ export default function PcParts() {
 
                 {partA && partB && (
                   <div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '24px' }}>
+                    <div className="grid-responsive-2" style={{ gap: '16px', marginBottom: '24px' }}>
                       {[partA, partB].map((part, i) => (
                         <div key={i} style={{ padding: '16px', background: i === 0 ? '#eff6ff' : '#f0fdf4', border: `1px solid ${i === 0 ? '#93c5fd' : '#86efac'}`, borderRadius: '8px' }}>
                           <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: i === 0 ? '#1d4ed8' : '#16a34a', fontWeight: 700, marginBottom: '4px' }}>
@@ -300,21 +300,23 @@ export default function PcParts() {
                       ))}
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: '#1e293b', padding: '10px 14px', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700 }}>
-                        <span>SPECIFICATION</span><span>PART A</span><span>PART B</span>
+                    <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch' }}>
+                      <div style={{ minWidth: '460px', display: 'flex', flexDirection: 'column', gap: '1px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: '#1e293b', padding: '10px 14px', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: '#94a3b8', fontWeight: 700 }}>
+                          <span>SPECIFICATION</span><span>PART A</span><span>PART B</span>
+                        </div>
+                        {Array.from({ length: Math.max(partA.specs.length, partB.specs.length) }, (_, i) => {
+                          const sA = partA.specs[i]
+                          const sB = partB.specs[i]
+                          return (
+                            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: i % 2 === 0 ? '#fff' : '#f8fafc', padding: '10px 14px', fontSize: '0.82rem', gap: '8px' }}>
+                              <span style={{ fontWeight: 600, color: '#475569' }}>{sA?.label ?? sB?.label ?? '—'}</span>
+                              <span style={{ color: '#0f172a' }}>{sA?.value ?? '—'}</span>
+                              <span style={{ color: '#0f172a' }}>{sB?.value ?? '—'}</span>
+                            </div>
+                          )
+                        })}
                       </div>
-                      {Array.from({ length: Math.max(partA.specs.length, partB.specs.length) }, (_, i) => {
-                        const sA = partA.specs[i]
-                        const sB = partB.specs[i]
-                        return (
-                          <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', background: i % 2 === 0 ? '#fff' : '#f8fafc', padding: '10px 14px', fontSize: '0.82rem', gap: '8px' }}>
-                            <span style={{ fontWeight: 600, color: '#475569' }}>{sA?.label ?? sB?.label ?? '—'}</span>
-                            <span style={{ color: '#0f172a' }}>{sA?.value ?? '—'}</span>
-                            <span style={{ color: '#0f172a' }}>{sB?.value ?? '—'}</span>
-                          </div>
-                        )
-                      })}
                     </div>
                   </div>
                 )}

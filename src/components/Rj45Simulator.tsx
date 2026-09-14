@@ -277,15 +277,16 @@ export default function Rj45Simulator() {
           </div>
 
           {/* Visual RJ45 Transparent Plug Graphic */}
-          <div className="rj45-plug-display" style={{
-            background: 'linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%)',
-            border: '2px solid #64748b',
-            borderRadius: '4px',
-            padding: '24px 20px',
-            position: 'relative',
-            boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.08)',
-            marginBottom: '28px'
-          }}>
+          <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch', marginBottom: '28px' }}>
+            <div className="rj45-plug-display" style={{
+              minWidth: '480px',
+              background: 'linear-gradient(180deg, #f1f5f9 0%, #e2e8f0 100%)',
+              border: '2px solid #64748b',
+              borderRadius: '4px',
+              padding: '24px 20px',
+              position: 'relative',
+              boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.08)'
+            }}>
             {/* Top Indicator */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -479,9 +480,9 @@ export default function Rj45Simulator() {
               fontFamily: 'var(--font-mono)'
             }}>
               <span>▼ RETENTION WEDGE (CABLE JACKET MUST ENTER 6MM HERE)</span>
-              <span>CAT 5e / CAT 6 UTP 4-PAIR</span>
             </div>
           </div>
+        </div>
 
           {/* Wire Palette / Color Tray */}
           <div>

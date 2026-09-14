@@ -308,10 +308,10 @@ export default function CableCalculator() {
       </div>
 
       {/* ── Inputs + Live Results ───────────────────────────────── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 360px) 1fr', gap: '24px', alignItems: 'start' }}>
+      <div className="grid-responsive-split" style={{ alignItems: 'start' }}>
 
         {/* INPUT PANEL */}
-        <div className="frame" style={{ position: 'sticky', top: 'calc(var(--nav-h) + 16px)' }}>
+        <div className="frame tech-sticky-panel">
           <div className="frame-inner">
             <span className="label" style={{ display: 'block', marginBottom: '20px' }}>Input Parameters</span>
 

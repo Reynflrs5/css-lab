@@ -1893,3 +1893,123 @@
   color: #38bdf8;
   box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
 }
+/* ==========================================================================
+   PC WORKBENCH — COMPREHENSIVE RESPONSIVE OVERRIDES
+   ========================================================================== */
+
+/* Tablet: max-width 1024px */
+@media (max-width: 1024px) {
+  .pc-parts-workbench {
+    gap: 16px;
+  }
+  .workbench-toolbar {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .toolbar-group {
+    gap: 6px;
+  }
+  .header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .system-telemetry-strip {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Tablet: max-width 900px */
+@media (max-width: 900px) {
+  .view-presets {
+    display: none;
+  }
+  .auto-spin-btn span:not(:first-child),
+  .glass-toggle-btn span:not(:first-child),
+  .reset-btn span:not(:first-child) {
+    display: none;
+  }
+  .auto-spin-btn, .glass-toggle-btn, .reset-btn {
+    padding: 7px 10px;
+  }
+}
+
+/* Mobile: max-width 768px */
+@media (max-width: 768px) {
+  .pc-parts-page .pc-parts-header {
+    margin-bottom: 4px;
+  }
+  .header-meta {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .header-title {
+    font-size: clamp(1.5rem, 5.5vw, 2rem);
+    margin-bottom: 6px;
+  }
+  .header-desc {
+    font-size: 13px;
+  }
+  .system-telemetry-strip {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .system-telemetry-strip::-webkit-scrollbar { display: none; }
+  .telemetry-pill {
+    min-width: 100px;
+    padding: 6px 10px;
+  }
+  .pill-key { font-size: 9px; }
+  .pill-val { font-size: 12px; }
+  .workbench-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+  .toolbar-group {
+    width: 100%;
+  }
+}
+
+/* Mobile: max-width 640px */
+@media (max-width: 640px) {
+  .pc-parts-workbench {
+    gap: 12px;
+  }
+  .workbench-toolbar {
+    padding: 8px;
+    gap: 6px;
+  }
+  .mono-label {
+    font-size: 10px;
+  }
+  .view-btn {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+  .auto-spin-btn, .glass-toggle-btn, .reset-btn {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+  .header-title {
+    font-size: clamp(1.3rem, 7vw, 1.8rem);
+  }
+}
+
+/* Mobile: max-width 480px */
+@media (max-width: 480px) {
+  .header-meta {
+    gap: 6px;
+  }
+  .mono-sub {
+    font-size: 10px;
+  }
+  .workbench-toolbar {
+    padding: 6px 8px;
+  }
+  .rule-heavy {
+    margin: 16px 0 20px;
+  }
+}

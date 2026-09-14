@@ -588,7 +588,7 @@ export default function WiringChallenge() {
 
             {/* ── RJ45 Plug ────────────────────────────────── */}
             <div style={{ marginBottom: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', marginBottom: '10px' }}>
                 <span className="label">
                   RJ45 Connector — Pin 1 (Left) to Pin 8 (Right) — Gold Contacts Facing Up
                 </span>
@@ -599,53 +599,57 @@ export default function WiringChallenge() {
                 )}
               </div>
 
-              {/* Gold pin header */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '6px', padding: '0 2px', marginBottom: '6px' }}>
-                {[1,2,3,4,5,6,7,8].map(p => (
-                  <div key={p} style={{
-                    height: '14px',
-                    background: 'linear-gradient(180deg, #fef08a 0%, #ca8a04 100%)',
-                    border: '1px solid #a16207',
-                    borderRadius: '1px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '0.6rem',
+              <div style={{ overflowX: 'auto', width: '100%', WebkitOverflowScrolling: 'touch', paddingBottom: '4px' }}>
+                <div style={{ minWidth: '420px' }}>
+                  {/* Gold pin header */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '6px', padding: '0 2px', marginBottom: '6px' }}>
+                    {[1,2,3,4,5,6,7,8].map(p => (
+                      <div key={p} style={{
+                        height: '14px',
+                        background: 'linear-gradient(180deg, #fef08a 0%, #ca8a04 100%)',
+                        border: '1px solid #a16207',
+                        borderRadius: '1px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '0.6rem',
+                        fontFamily: 'var(--font-mono)',
+                        fontWeight: 700,
+                        color: '#713f12',
+                      }}>P{p}</div>
+                    ))}
+                  </div>
+
+                  {/* Slots grid */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '6px' }}>
+                    {slots.map((wid, i) => (
+                      <Slot
+                        key={i}
+                        pinIndex={i}
+                        wireId={wid}
+                        targetId={target[i]}
+                        showResult={showResult}
+                        onClick={() => handleSlotClick(i)}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Cable jacket bar */}
+                  <div style={{
+                    marginTop: '8px',
+                    padding: '8px 14px',
+                    background: '#334155',
+                    color: '#f8fafc',
+                    borderRadius: '2px',
+                    fontSize: '0.72rem',
                     fontFamily: 'var(--font-mono)',
-                    fontWeight: 700,
-                    color: '#713f12',
-                  }}>P{p}</div>
-                ))}
-              </div>
-
-              {/* Slots grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '6px' }}>
-                {slots.map((wid, i) => (
-                  <Slot
-                    key={i}
-                    pinIndex={i}
-                    wireId={wid}
-                    targetId={target[i]}
-                    showResult={showResult}
-                    onClick={() => handleSlotClick(i)}
-                  />
-                ))}
-              </div>
-
-              {/* Cable jacket bar */}
-              <div style={{
-                marginTop: '8px',
-                padding: '8px 14px',
-                background: '#334155',
-                color: '#f8fafc',
-                borderRadius: '2px',
-                fontSize: '0.72rem',
-                fontFamily: 'var(--font-mono)',
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}>
-                <span>▼ CABLE JACKET / STRAIN-RELIEF WEDGE</span>
-                <span>CAT 5e / CAT 6 UTP</span>
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}>
+                    <span>▼ CABLE JACKET / STRAIN-RELIEF WEDGE</span>
+                    <span>CAT 5e / CAT 6 UTP</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -790,55 +794,57 @@ export default function WiringChallenge() {
               </button>
             </div>
 
-            <table className="spec-table" style={{ fontSize: '0.8rem' }}>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Time</th>
-                  <th>Standard</th>
-                  <th>Duration</th>
-                  <th>Mistakes</th>
-                  <th>Wrong Pins</th>
-                  <th>Result</th>
-                </tr>
-              </thead>
-              <tbody>
-                {attempts.map((a, i) => (
-                  <tr key={i}>
-                    <td><span className="mono">{attempts.length - i}</span></td>
-                    <td><span className="mono" style={{ fontSize: '0.72rem' }}>{a.date}</span></td>
-                    <td><span className="mono" style={{ fontSize: '0.72rem' }}>{STANDARD_LABEL[a.standard]}</span></td>
-                    <td>
-                      <span className="mono" style={{ fontWeight: 700 }}>{fmtTime(a.timeMs)}</span>
-                    </td>
-                    <td>
-                      <span style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontWeight: 700,
-                        color: a.mistakes.length === 0 ? '#15803d' : '#b91c1c',
-                      }}>
-                        {a.mistakes.length}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--graphite)' }}>
-                        {a.mistakes.length > 0 ? `Pin ${a.mistakes.map(m => m + 1).join(', ')}` : '—'}
-                      </span>
-                    </td>
-                    <td>
-                      <span style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        color: a.passed ? '#15803d' : '#b91c1c',
-                      }}>
-                        {a.passed ? '✓ PASS' : '✕ FAIL'}
-                      </span>
-                    </td>
+            <div className="table-responsive">
+              <table className="spec-table" style={{ fontSize: '0.8rem' }}>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Time</th>
+                    <th>Standard</th>
+                    <th>Duration</th>
+                    <th>Mistakes</th>
+                    <th>Wrong Pins</th>
+                    <th>Result</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {attempts.map((a, i) => (
+                    <tr key={i}>
+                      <td><span className="mono">{attempts.length - i}</span></td>
+                      <td><span className="mono" style={{ fontSize: '0.72rem' }}>{a.date}</span></td>
+                      <td><span className="mono" style={{ fontSize: '0.72rem' }}>{STANDARD_LABEL[a.standard]}</span></td>
+                      <td>
+                        <span className="mono" style={{ fontWeight: 700 }}>{fmtTime(a.timeMs)}</span>
+                      </td>
+                      <td>
+                        <span style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: 700,
+                          color: a.mistakes.length === 0 ? '#15803d' : '#b91c1c',
+                        }}>
+                          {a.mistakes.length}
+                        </span>
+                      </td>
+                      <td>
+                        <span className="mono" style={{ fontSize: '0.72rem', color: 'var(--graphite)' }}>
+                          {a.mistakes.length > 0 ? `Pin ${a.mistakes.map(m => m + 1).join(', ')}` : '—'}
+                        </span>
+                      </td>
+                      <td>
+                        <span style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          color: a.passed ? '#15803d' : '#b91c1c',
+                        }}>
+                          {a.passed ? '✓ PASS' : '✕ FAIL'}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             {/* Recurring mistake pattern */}
             {attempts.length >= 3 && (() => {

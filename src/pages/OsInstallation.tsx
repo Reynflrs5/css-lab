@@ -61,7 +61,7 @@ export default function OsInstallation() {
           <div className="tech-card" style={{ padding: '32px' }}>
             <h2 style={{ fontSize: '1.5rem', marginBottom: '24px', color: '#0f172a' }}>Understanding BIOS and UEFI</h2>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            <div className="grid-responsive-2">
               <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                 <h3 style={{ color: '#475569', display: 'flex', alignItems: 'center', gap: '8px' }}><Cpu size={20} /> Legacy BIOS</h3>
                 <p style={{ color: '#64748b', fontSize: '0.9rem', marginTop: '12px' }}>Basic Input/Output System. The older standard that uses a simple text interface, keyboard-only navigation, and relies on the MBR (Master Boot Record) partition style which limits drives to 2TB.</p>

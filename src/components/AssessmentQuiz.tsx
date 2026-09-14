@@ -61,7 +61,7 @@ export default function AssessmentQuiz({ questions, moduleTitle, onReset }: Asse
         <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: 24, lineHeight: 1.6 }}>
           {questions.length} multiple-choice questions. Passing score: <strong>75%</strong>.
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(95px, 1fr))', gap: 12, marginBottom: 24 }}>
           {[{ label: 'Items', value: `${questions.length} Questions` }, { label: 'Passing', value: '75%' }, { label: 'Standard', value: 'TESDA NC II' }].map(s => (
             <div key={s.label} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '12px 8px' }}>
               <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1rem' }}>{s.value}</div>

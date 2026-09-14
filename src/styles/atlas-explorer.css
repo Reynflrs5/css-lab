@@ -1181,3 +1181,65 @@ body:has(.atlas-explorer) .footer {
   }
   .atlas-sidebar { display: none; }
 }
+
+/* ==========================================================================
+   ATLAS EXPLORER — ADDITIONAL RESPONSIVE OVERRIDES
+   ========================================================================== */
+
+/* Mobile: max-width 768px */
+@media (max-width: 768px) {
+  .atlas-topbar {
+    gap: 10px;
+    padding: 0 12px;
+    height: 46px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .atlas-topbar::-webkit-scrollbar { display: none; }
+  .atlas-brand-name { display: none; }
+  .atlas-meta-tag { display: none; }
+  .atlas-view-switcher {
+    flex-shrink: 0;
+  }
+  .view-mode-btn {
+    padding: 5px 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+  .fullscreen-toggle-btn {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+  .drawer-toggle-btn {
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+  .atlas-explorer {
+    top: var(--nav-h, 52px);
+    height: calc(100vh - var(--nav-h, 52px));
+    max-height: calc(100vh - var(--nav-h, 52px));
+  }
+}
+
+/* Mobile: max-width 640px */
+@media (max-width: 640px) {
+  .atlas-topbar {
+    padding: 0 8px;
+    height: 44px;
+    gap: 6px;
+  }
+  .atlas-brand-icon { font-size: 15px; }
+  .view-mode-btn {
+    padding: 4px 6px;
+    font-size: 10.5px;
+  }
+  .fullscreen-toggle-btn,
+  .drawer-toggle-btn {
+    padding: 4px 8px;
+    font-size: 10.5px;
+  }
+  .atlas-topbar-right {
+    gap: 6px;
+  }
+}
