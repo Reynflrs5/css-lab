@@ -66,12 +66,19 @@ export default function AtlasExplorer() {
     () => Object.fromEntries(CATEGORIES.map(c => [c.label, true]))
   )
 
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
+  )
+  const [mobileSheetExpanded, setMobileSheetExpanded] = useState<boolean>(false)
+  const [mobileSheetOpen, setMobileSheetOpen] = useState<boolean>(true)
+
   const selected: PcPart = pcParts.find(p => p.id === selectedId) ?? pcParts[1]
   const catColor = getCategoryColor(selectedId)
 
   const handleSelect = useCallback((id: string) => {
     setSelectedId(id)
     setActiveTab('specs')
+    setMobileSheetOpen(true)
   }, [])
 
   const toggleCat = (label: string) => {
@@ -103,11 +110,16 @@ export default function AtlasExplorer() {
     const handleFsChange = () => {
       setIsFullscreen(!!document.fullscreenElement)
     }
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
     document.addEventListener('mousedown', handleClickOutside)
     document.addEventListener('fullscreenchange', handleFsChange)
+    window.addEventListener('resize', handleResize)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
       document.removeEventListener('fullscreenchange', handleFsChange)
+      window.removeEventListener('resize', handleResize)
     }
   }, [])
 
@@ -120,7 +132,7 @@ export default function AtlasExplorer() {
   }
 
   return (
-    <div className={`atlas-explorer ${viewMode}`}>
+    <div className={`atlas-explorer ${isMobile ? 'mode-mobile' : viewMode}`}>
       {/* Top Navigation Bar */}
       <header className="atlas-topbar">
         <div className="atlas-brand">
@@ -128,27 +140,29 @@ export default function AtlasExplorer() {
           <span className="atlas-brand-name">CSS <strong>Hardware Explorer</strong></span>
         </div>
 
-        {/* View Mode Switcher */}
-        <div className="atlas-view-switcher" role="group" aria-label="Layout View Modes">
-          <button
-            type="button"
-            className={`view-mode-btn${viewMode === 'landscape' ? ' active' : ''}`}
-            onClick={() => setViewMode('landscape')}
-            title="Full Landscape Stage (Maximum 3D Space)"
-          >
-            <Maximize2 size={13} />
-            <span>Full Landscape</span>
-          </button>
-          <button
-            type="button"
-            className={`view-mode-btn${viewMode === 'atlas' ? ' active' : ''}`}
-            onClick={() => setViewMode('atlas')}
-            title="3-Column Anatomy Atlas Layout"
-          >
-            <Columns3 size={13} />
-            <span>3-Column Atlas</span>
-          </button>
-        </div>
+        {/* View Mode Switcher (Desktop Only) */}
+        {!isMobile && (
+          <div className="atlas-view-switcher" role="group" aria-label="Layout View Modes">
+            <button
+              type="button"
+              className={`view-mode-btn${viewMode === 'landscape' ? ' active' : ''}`}
+              onClick={() => setViewMode('landscape')}
+              title="Full Landscape Stage (Maximum 3D Space)"
+            >
+              <Maximize2 size={13} />
+              <span>Full Landscape</span>
+            </button>
+            <button
+              type="button"
+              className={`view-mode-btn${viewMode === 'atlas' ? ' active' : ''}`}
+              onClick={() => setViewMode('atlas')}
+              title="3-Column Anatomy Atlas Layout"
+            >
+              <Columns3 size={13} />
+              <span>3-Column Atlas</span>
+            </button>
+          </div>
+        )}
 
         {/* Topbar Right Actions */}
         <div className="atlas-topbar-right">
@@ -159,29 +173,40 @@ export default function AtlasExplorer() {
             title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen Mode'}
           >
             <Maximize2 size={13} />
-            <span>{isFullscreen ? 'Exit Full' : 'Fullscreen'}</span>
+            <span>{isFullscreen ? 'Exit' : 'Full'}</span>
           </button>
-          {viewMode === 'landscape' && (
+          {isMobile ? (
             <button
               type="button"
-              className={`drawer-toggle-btn${drawerOpen ? ' active' : ''}`}
-              onClick={() => setDrawerOpen(o => !o)}
-              title={drawerOpen ? 'Close Hardware Specs Drawer' : 'Open Hardware Specs & Diagnostic Guide'}
+              className={`drawer-toggle-btn${mobileSheetExpanded ? ' active' : ''}`}
+              onClick={() => setMobileSheetExpanded(o => !o)}
+              title="Toggle Hardware Specs & Guide"
             >
               <FileText size={13} />
-              <span>{drawerOpen ? 'Hide Specs' : 'Specs & Guide'}</span>
+              <span>{mobileSheetExpanded ? 'Close Specs' : 'Specs & Guide'}</span>
             </button>
+          ) : (
+            viewMode === 'landscape' && (
+              <button
+                type="button"
+                className={`drawer-toggle-btn${drawerOpen ? ' active' : ''}`}
+                onClick={() => setDrawerOpen(o => !o)}
+                title={drawerOpen ? 'Close Hardware Specs Drawer' : 'Open Hardware Specs & Diagnostic Guide'}
+              >
+                <FileText size={13} />
+                <span>{drawerOpen ? 'Hide Specs' : 'Specs & Guide'}</span>
+              </button>
+            )
           )}
-          <span className="atlas-meta-tag">TESDA CSS NC II</span>
-          <span className="atlas-meta-tag">3D Interactive</span>
+          {!isMobile && <span className="atlas-meta-tag">TESDA CSS NC II</span>}
         </div>
       </header>
 
       {/* Main Container */}
       <div className={`atlas-columns mode-${viewMode}`}>
 
-        {/* ── LEFT: Hierarchical Subsystems Sidebar (Shown in Atlas Mode) ── */}
-        {viewMode === 'atlas' && (
+        {/* ── LEFT: Hierarchical Subsystems Sidebar (Shown in Atlas Mode, Desktop only) ── */}
+        {viewMode === 'atlas' && !isMobile && (
           <aside className="atlas-sidebar" aria-label="PC Component Groups">
             <div className="sidebar-section-label">EXPLORE</div>
             <h2 className="sidebar-title">PC Systems</h2>
@@ -318,8 +343,8 @@ export default function AtlasExplorer() {
           </aside>
         )}
 
-        {/* ── LEFT PARTS PANEL: Landscape-only vertical parts list ── */}
-        {viewMode === 'landscape' && (
+        {/* ── LEFT PARTS PANEL: Landscape-only vertical parts list (Desktop only) ── */}
+        {viewMode === 'landscape' && !isMobile && (
           <aside className="landscape-parts-panel" aria-label="PC Parts List">
             <div className="lpp-header">
               <span>COMPONENTS</span>
@@ -365,11 +390,38 @@ export default function AtlasExplorer() {
 
         {/* ── CENTER: 3D Viewport Column ── */}
         <main className="atlas-viewport-wrapper" aria-label="3D PC Model Viewer">
-          {viewMode === 'atlas' && (
+          {viewMode === 'atlas' && !isMobile && (
             <div className="atlas-viewport-header">
               <span className="atlas-viewport-label">3D ANATOMICAL REFERENCE</span>
               <h1 className="atlas-viewport-title">Desktop PC Hardware Anatomy</h1>
               <div className="atlas-viewport-sub">{pcParts.length} / {pcParts.length} component structures loaded &bull; 360&deg; Orbit</div>
+            </div>
+          )}
+
+          {/* ── MOBILE: Horizontal Quick-Select Chip Strip ── */}
+          {isMobile && (
+            <div className="mobile-part-chips" role="listbox" aria-label="Select PC Component">
+              {CATEGORIES.map(cat =>
+                cat.ids.map(id => {
+                  const part = pcParts.find(p => p.id === id)
+                  if (!part) return null
+                  const isSel = id === selectedId
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      role="option"
+                      aria-selected={isSel}
+                      className={`mobile-part-chip${isSel ? ' active' : ''}`}
+                      style={isSel ? { borderColor: cat.color, color: cat.color, background: cat.color + '18' } : {}}
+                      onClick={() => handleSelect(id)}
+                    >
+                      <span className="mobile-chip-dot" style={{ background: cat.color }} />
+                      {part.shortName}
+                    </button>
+                  )
+                })
+              )}
             </div>
           )}
 
@@ -461,7 +513,8 @@ export default function AtlasExplorer() {
           </div>
         </main>
 
-        {/* ── RIGHT: Details & Diagnosis Panel (Always shown in Atlas mode, or as toggleable Drawer in Landscape) ── */}
+        {/* ── RIGHT: Details & Diagnosis Panel (Desktop: Atlas / Landscape Drawer) ── */}
+        {!isMobile && (
         <aside
           className={`atlas-details-panel${viewMode === 'landscape' && !drawerOpen ? ' closed' : ''}`}
           aria-label="Component Details"
@@ -608,8 +661,131 @@ export default function AtlasExplorer() {
             })}
           </div>
         </aside>
+        )} {/* end desktop details panel */}
 
       </div>
+
+      {/* ── MOBILE BOTTOM SHEET: Specs & Guide ── */}
+      {isMobile && (
+        <div
+          className={`mobile-specs-sheet${mobileSheetOpen ? ' open' : ''}${mobileSheetExpanded ? ' expanded' : ''}`}
+          role="complementary"
+          aria-label="Hardware Specs & Guide"
+        >
+          {/* Drag Handle */}
+          <div
+            className="mobile-sheet-handle"
+            onClick={() => setMobileSheetExpanded(e => !e)}
+            title="Expand specs & guide"
+          >
+            <span className="mobile-sheet-handle-bar" />
+          </div>
+
+          {/* Peek Header (always visible when open) */}
+          <div className="mobile-sheet-peek">
+            <div
+              className="mobile-sheet-badge"
+              style={{ background: catColor + '18', borderColor: catColor + '44', color: catColor }}
+            >
+              <span className="mobile-sheet-badge-dot" style={{ background: catColor }} />
+              {selected.category}
+            </div>
+            <div className="mobile-sheet-peek-row">
+              <div className="mobile-sheet-name">{selected.name}</div>
+              <button
+                type="button"
+                className="mobile-sheet-expand-btn"
+                onClick={() => setMobileSheetExpanded(e => !e)}
+                title={mobileSheetExpanded ? 'Minimize' : 'Open Specs & Guide'}
+              >
+                {mobileSheetExpanded ? '▼ Close' : '▲ Specs & Guide'}
+              </button>
+            </div>
+            <div className="mobile-sheet-pills">
+              <span className="mobile-sheet-pill">⚡ {selected.powerDraw}</span>
+              <span className="mobile-sheet-pill">🌡 {selected.temperature}</span>
+            </div>
+          </div>
+
+          {/* Expanded Content */}
+          {mobileSheetExpanded && (
+            <div className="mobile-sheet-content">
+              <p className="mobile-sheet-summary">{selected.body}</p>
+
+              {/* Tabs */}
+              <div className="mobile-sheet-tabs" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'specs'}
+                  className={`mobile-sheet-tab${activeTab === 'specs' ? ' active' : ''}`}
+                  onClick={() => setActiveTab('specs')}
+                  style={activeTab === 'specs' ? { borderBottomColor: catColor, color: catColor } : {}}
+                >
+                  📄 Specs
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'install'}
+                  className={`mobile-sheet-tab${activeTab === 'install' ? ' active' : ''}`}
+                  onClick={() => setActiveTab('install')}
+                  style={activeTab === 'install' ? { borderBottomColor: catColor, color: catColor } : {}}
+                >
+                  🔧 Install
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'diagnostics'}
+                  className={`mobile-sheet-tab${activeTab === 'diagnostics' ? ' active' : ''}`}
+                  onClick={() => setActiveTab('diagnostics')}
+                  style={activeTab === 'diagnostics' ? { borderBottomColor: catColor, color: catColor } : {}}
+                >
+                  ⚡ Diagnose
+                </button>
+              </div>
+
+              {/* Tab Body */}
+              <div className="mobile-sheet-tab-body">
+                {activeTab === 'specs' && (
+                  <div className="mobile-sheet-specs-list">
+                    {selected.specs.map(s => (
+                      <div key={s.label} className="mobile-sheet-spec-row">
+                        <div className="mobile-sheet-spec-key">{s.label}</div>
+                        <div className="mobile-sheet-spec-val">{s.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {activeTab === 'install' && (
+                  <div className="mobile-sheet-install-list">
+                    {selected.installGuide.map((step, i) => (
+                      <div key={i} className="mobile-sheet-step">
+                        <div className="mobile-sheet-step-num" style={{ color: catColor }}>{i + 1}</div>
+                        <div className="mobile-sheet-step-text">{step}</div>
+                      </div>
+                    ))}
+                    <div className="mobile-sheet-safety">
+                      ⚠️ Wear ESD wrist strap. Disconnect AC power before servicing.
+                    </div>
+                  </div>
+                )}
+                {activeTab === 'diagnostics' && (
+                  <div className="mobile-sheet-diag-list">
+                    {selected.troubleshootingTips.map((tip, i) => (
+                      <div key={i} className="mobile-sheet-fault">
+                        <div className="mobile-sheet-fault-label">Fault #{i + 1}</div>
+                        <div className="mobile-sheet-fault-text">{tip}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

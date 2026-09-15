@@ -73,16 +73,17 @@ const COMPONENT_FOCUS_PRESETS: Record<string, { zoom: number; rotation: Rotation
   chassis:     { zoom: 1.35, rotation: { x: 12, y: -18}, pan: { x: -20,  y: 0    } },
 }
 
-// Helper to get focus presets adjusted for fullscreen vs windowed mode
-function getFocusPreset(id: string, isFs: boolean) {
+// Helper to get focus presets adjusted for fullscreen vs windowed vs mobile mode
+function getFocusPreset(id: string, isFs: boolean, isMobile: boolean = false) {
   const base = COMPONENT_FOCUS_PRESETS[id]
   if (!base) return null
-  if (isFs) return base
+  if (isFs && !isMobile) return base
 
-  // When NOT in fullscreen, scale down zoom by ~32% so parts don't over-magnify or crop out
-  const zoomFactor = 0.68
-  const adjustedZoom = Math.max(1.18, +(base.zoom * zoomFactor).toFixed(2))
-  const panFactor = adjustedZoom / base.zoom
+  // When on mobile or NOT in fullscreen, scale down zoom so parts don't over-magnify or crop out
+  const zoomFactor = isMobile ? 0.44 : 0.68
+  const minZoom = isMobile ? 0.80 : 1.18
+  const adjustedZoom = Math.max(minZoom, +(base.zoom * zoomFactor).toFixed(2))
+  const panFactor = isMobile ? 0.52 : (adjustedZoom / base.zoom)
 
   return {
     zoom: adjustedZoom,
@@ -105,14 +106,34 @@ export default function PcDiagram({
     typeof document !== 'undefined' ? !!document.fullscreenElement : false
   )
 
+  const [isMobile, setIsMobile] = useState<boolean>(() =>
+    typeof window !== 'undefined' ? window.innerWidth <= 768 : false
+  )
+
+  const getMobileFitZoom = useCallback(() => {
+    if (typeof window === 'undefined') return 0.64
+    const w = window.innerWidth
+    // Fits a 330px case with rotation within mobile screen width
+    return Math.min(0.70, Math.max(0.48, parseFloat(((w - 32) / 460).toFixed(2))))
+  }, [])
+
   useEffect(() => {
     const onFsChange = () => setInternalFs(!!document.fullscreenElement)
+    const onResize = () => setIsMobile(window.innerWidth <= 768)
     document.addEventListener('fullscreenchange', onFsChange)
-    return () => document.removeEventListener('fullscreenchange', onFsChange)
+    window.addEventListener('resize', onResize)
+    return () => {
+      document.removeEventListener('fullscreenchange', onFsChange)
+      window.removeEventListener('resize', onResize)
+    }
   }, [])
 
   const isFs = isFsProp ?? internalFs
-  const defaultZoom = initialZoom ?? (atlasMode ? (isFs ? 1.35 : 1.1) : 1.0)
+  const defaultZoom = initialZoom ?? (
+    isMobile
+      ? getMobileFitZoom()
+      : (atlasMode ? (isFs ? 1.35 : 1.1) : 1.0)
+  )
   const [internalSelected, setInternalSelected] = useState<PcPart>(pcParts[1]) // Default to Motherboard
   // In controlled mode, derive selected from prop; fall back to internal state
   const selected = selectedId ? (pcParts.find(p => p.id === selectedId) ?? internalSelected) : internalSelected
@@ -188,13 +209,13 @@ export default function PcDiagram({
     // Always zoom in on click; if already focused on same part, toggle off
     if (alreadyFocused && forceFocus !== true) {
       setFocusMode(false)
-      setZoom(defaultZoom)
+      setZoom(isMobile ? getMobileFitZoom() : defaultZoom)
       setRotation(PRESET_ANGLES.interior)
       setPan({ x: 0, y: 0 })
     } else {
       setFocusMode(true)
       setIsAutoSpinning(false)
-      const preset = getFocusPreset(id, isFs)
+      const preset = getFocusPreset(id, isFs, isMobile)
       if (preset) {
         setZoom(preset.zoom)
         setRotation(preset.rotation)
@@ -207,7 +228,7 @@ export default function PcDiagram({
   const exitFocusMode = () => {
     playClickSound(750, 0.03)
     setFocusMode(false)
-    setZoom(defaultZoom)
+    setZoom(isMobile ? getMobileFitZoom() : defaultZoom)
     setRotation(PRESET_ANGLES.interior)
     setPan({ x: 0, y: 0 })
   }
@@ -238,7 +259,7 @@ export default function PcDiagram({
     setFocusMode(false)
     setActivePreset('interior')
     setRotation(PRESET_ANGLES.interior)
-    setZoom(defaultZoom)
+    setZoom(isMobile ? getMobileFitZoom() : defaultZoom)
     setPan({ x: 0, y: 0 })
   }
 
@@ -252,7 +273,7 @@ export default function PcDiagram({
       // If it hasn't changed, this is either initial mount, strict mode re-run, or an isFs change.
       // We only apply preset adjustments if we are ALREADY focused.
       if (focusMode) {
-        const preset = getFocusPreset(selectedId, isFs)
+        const preset = getFocusPreset(selectedId, isFs, isMobile)
         if (preset) {
           setZoom(preset.zoom)
           setRotation(preset.rotation)
@@ -265,13 +286,13 @@ export default function PcDiagram({
     prevSelectedId.current = selectedId
     setFocusMode(true)
     setIsAutoSpinning(false)
-    const preset = getFocusPreset(selectedId, isFs)
+    const preset = getFocusPreset(selectedId, isFs, isMobile)
     if (preset) {
       setZoom(preset.zoom)
       setRotation(preset.rotation)
       setPan(preset.pan)
     }
-  }, [selectedId, isFs, focusMode])
+  }, [selectedId, isFs, isMobile, focusMode])
 
 
   useEffect(() => {
@@ -344,17 +365,63 @@ export default function PcDiagram({
     return () => el.removeEventListener('wheel', onWheel)
   }, [])
 
+  // 2-Finger Pinch-to-Zoom touch handling
+  const touchDistanceRef = useRef<number | null>(null)
+  const initialPinchZoomRef = useRef<number>(1)
+
+  useEffect(() => {
+    const el = viewportRef.current
+    if (!el) return
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX
+        const dy = e.touches[0].clientY - e.touches[1].clientY
+        touchDistanceRef.current = Math.hypot(dx, dy)
+        initialPinchZoomRef.current = zoom
+      }
+    }
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && touchDistanceRef.current !== null) {
+        if (e.cancelable) e.preventDefault()
+        const dx = e.touches[0].clientX - e.touches[1].clientX
+        const dy = e.touches[0].clientY - e.touches[1].clientY
+        const currentDist = Math.hypot(dx, dy)
+        const scale = currentDist / touchDistanceRef.current
+        const nextZoom = Math.min(2.5, Math.max(0.45, parseFloat((initialPinchZoomRef.current * scale).toFixed(2))))
+        setZoom(nextZoom)
+      }
+    }
+
+    const onTouchEnd = () => {
+      touchDistanceRef.current = null
+    }
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchmove', onTouchMove, { passive: false })
+    el.addEventListener('touchend', onTouchEnd)
+    el.addEventListener('touchcancel', onTouchEnd)
+
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
+      el.removeEventListener('touchcancel', onTouchEnd)
+    }
+  }, [zoom])
+
   const zoomIn = () => {
     playClickSound(1000, 0.03)
     setZoom(prev => Math.min(2.5, parseFloat((prev + 0.15).toFixed(2))))
   }
   const zoomOut = () => {
     playClickSound(700, 0.03)
-    setZoom(prev => Math.max(0.5, parseFloat((prev - 0.15).toFixed(2))))
+    setZoom(prev => Math.max(0.45, parseFloat((prev - 0.15).toFixed(2))))
   }
   const zoomReset = () => {
     playClickSound(820, 0.03)
-    setZoom(defaultZoom)
+    setZoom(isMobile ? getMobileFitZoom() : defaultZoom)
   }
 
   const normalizedY = ((Math.round(rotation.y) % 360) + 360) % 360
@@ -568,16 +635,27 @@ export default function PcDiagram({
               </div>
               <div className={`active-part-indicator${focusMode ? ' focus-active' : ''}`}>
                 <span>{focusMode ? '🎯 FOCUSED:' : 'INSPECTING:'} <strong>{selected.shortName.toUpperCase()}</strong></span>
-                {focusMode && (
+                <div className="hud-actions-row" style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
+                  {focusMode && (
+                    <button
+                      type="button"
+                      className="unfocus-hud-btn"
+                      onClick={exitFocusMode}
+                      title="Exit focus mode and show all parts"
+                    >
+                      SHOW ALL
+                    </button>
+                  )}
                   <button
                     type="button"
-                    className="unfocus-hud-btn"
-                    onClick={exitFocusMode}
-                    title="Exit focus mode and show all parts"
+                    className="fit-screen-hud-btn"
+                    onClick={resetView}
+                    title="Fit 3D PC to Screen"
                   >
-                    SHOW ALL
+                    <Focus size={10} style={{ marginRight: 3, verticalAlign: 'middle' }} />
+                    FIT VIEW
                   </button>
-                )}
+                </div>
               </div>
               <div className="hud-angle" style={{ marginTop: 4 }}>
                 🔍 ZOOM: {zoomPct}%

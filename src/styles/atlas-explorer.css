@@ -1,10 +1,10 @@
-@import './pc-workbench.css';
+﻿@import './pc-workbench.css';
 
-/* ─────────────────────────────────────────────────────────────
-   atlas-explorer.css  –  Anatomy Atlas–style PC Parts Layout
-   ───────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   atlas-explorer.css  â€“  Anatomy Atlasâ€“style PC Parts Layout
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-/* ── Global Page Override for Atlas Mode ───────────────────── */
+/* â”€â”€ Global Page Override for Atlas Mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 html:has(.atlas-explorer),
 body:has(.atlas-explorer) {
   height: 100% !important;
@@ -19,7 +19,7 @@ body:has(.atlas-explorer) .footer {
   display: none !important;
 }
 
-/* ── Root shell ─────────────────────────────────────────────── */
+/* â”€â”€ Root shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .atlas-explorer {
   position: fixed;
   top: var(--nav-h, 56px);
@@ -39,7 +39,7 @@ body:has(.atlas-explorer) .footer {
   z-index: 10;
 }
 
-/* ── Top Bar ─────────────────────────────────────────────────── */
+/* â”€â”€ Top Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .atlas-topbar {
   display: flex;
   align-items: center;
@@ -63,7 +63,7 @@ body:has(.atlas-explorer) .footer {
 .atlas-brand-name { white-space: nowrap; }
 .atlas-brand-name strong { font-weight: 700; }
 
-/* ── View Switcher Pills ──────────────────────────────────── */
+/* â”€â”€ View Switcher Pills â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .atlas-view-switcher {
   display: flex;
   gap: 3px;
@@ -152,7 +152,7 @@ body:has(.atlas-explorer) .footer {
   white-space: nowrap;
 }
 
-/* ── Layout Modes ───────────────────────────────────────────── */
+/* â”€â”€ Layout Modes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .atlas-columns {
   display: grid;
   grid-template-columns: 220px 1fr 280px;
@@ -183,7 +183,7 @@ body:has(.atlas-explorer) .footer {
   background: radial-gradient(circle at 50% 45%, #191b26 0%, #0a0b0e 100%);
 }
 
-/* ── LEFT: Sidebar ───────────────────────────────────────────── */
+/* â”€â”€ LEFT: Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .atlas-sidebar {
   background: #fff;
   border-right: 1px solid #e5e7eb;
@@ -423,7 +423,7 @@ body:has(.atlas-explorer) .footer {
   margin-top: 2px;
 }
 
-/* ── CENTER: 3D Viewport ─────────────────────────────────────── */
+/* â”€â”€ CENTER: 3D Viewport â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .atlas-viewport-wrapper {
   display: flex;
   flex-direction: column;
@@ -512,7 +512,7 @@ body:has(.atlas-explorer) .footer {
   justify-content: center;
 }
 
-/* ── Atlas Viewport Floating Dock ────────────────────────── */
+/* â”€â”€ Atlas Viewport Floating Dock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .atlas-viewport-dock {
   position: absolute;
   bottom: 14px;
@@ -613,7 +613,7 @@ body:has(.atlas-explorer) .footer {
 }
 .hint-dot { opacity: 0.35; }
 
-/* ── RIGHT: Details Panel ───────────────────────────────────── */
+/* â”€â”€ RIGHT: Details Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .atlas-details-panel {
   background: #fff;
   border-left: 1px solid #e5e7eb;
@@ -682,7 +682,7 @@ body:has(.atlas-explorer) .footer {
   margin: 0;
 }
 
-/* ── Landscape Floating Category Dropdown ───────────────────── */
+/* â”€â”€ Landscape Floating Category Dropdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .landscape-cat-dropdown-wrap {
   position: absolute;
   top: 14px;
@@ -880,7 +880,7 @@ body:has(.atlas-explorer) .footer {
   color: #fff;
 }
 
-/* ── Landscape Left Parts Panel ─────────────────────────────── */
+/* â”€â”€ Landscape Left Parts Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .landscape-parts-panel {
   width: 160px;
   min-width: 160px;
@@ -1168,7 +1168,7 @@ body:has(.atlas-explorer) .footer {
 .start-item-arrow { opacity: 0.4; flex-shrink: 0; }
 .details-start-item:hover .start-item-arrow { opacity: 0.8; }
 
-/* ── Responsive: collapse panels on narrow screens ─────────── */
+/* â”€â”€ Responsive: collapse panels on narrow screens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 1024px) {
   .atlas-columns {
     grid-template-columns: 200px 1fr 0;
@@ -1183,7 +1183,7 @@ body:has(.atlas-explorer) .footer {
 }
 
 /* ==========================================================================
-   ATLAS EXPLORER — ADDITIONAL RESPONSIVE OVERRIDES
+   ATLAS EXPLORER â€” ADDITIONAL RESPONSIVE OVERRIDES
    ========================================================================== */
 
 /* Mobile: max-width 768px */
@@ -1242,4 +1242,351 @@ body:has(.atlas-explorer) .footer {
   .atlas-topbar-right {
     gap: 6px;
   }
+}
+
+/* ================================================================
+   MOBILE LAYOUT (max-width 768px) - Complete Override
+   ================================================================ */
+@media (max-width: 768px) {
+  html:has(.atlas-explorer),
+  body:has(.atlas-explorer) {
+    overflow: hidden !important;
+    height: 100% !important;
+  }
+
+  .atlas-explorer {
+    position: fixed;
+    top: var(--nav-h, 56px);
+    left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .atlas-topbar {
+    height: 44px;
+    padding: 0 12px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .atlas-brand-name { font-size: 13px; }
+  .atlas-topbar-right { gap: 6px; margin-left: auto; }
+  .atlas-meta-tag { display: none; }
+
+  .atlas-explorer.mode-mobile .atlas-columns {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+    grid-template-columns: unset !important;
+    background: #0a0b0e;
+  }
+
+  .atlas-explorer.mode-mobile .atlas-viewport-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    position: relative;
+    background: radial-gradient(circle at 50% 45%, #191b26 0%, #0a0b0e 100%);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .atlas-explorer.mode-mobile .atlas-3d-frame {
+    position: absolute !important;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .atlas-explorer.mode-mobile .chassis-viewport {
+    min-height: 0 !important;
+    height: 100% !important;
+    flex: 1 !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  .atlas-explorer.mode-mobile .pc-parts-workbench {
+    height: 100%;
+    overflow: hidden;
+    gap: 0;
+  }
+  .atlas-explorer.mode-mobile .workbench-grid.atlas-mode {
+    height: 100%;
+    width: 100%;
+  }
+  .atlas-explorer.mode-mobile .viewport-column {
+    height: 100%;
+    gap: 0;
+  }
+
+  .atlas-explorer.mode-mobile .hud-code { font-size: 9px; }
+  .atlas-explorer.mode-mobile .hud-status { font-size: 9px; }
+  .atlas-explorer.mode-mobile .hud-angle { font-size: 9px; }
+  .atlas-explorer.mode-mobile .active-part-indicator { font-size: 9px; }
+  .atlas-explorer.mode-mobile .viewport-footer { display: none; }
+
+  /* Mobile Quick-Select Chip Strip */
+  .mobile-part-chips {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    padding: 7px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    background: linear-gradient(to bottom, rgba(10,11,14,0.92) 0%, rgba(10,11,14,0) 100%);
+    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
+  }
+  .mobile-part-chips::-webkit-scrollbar { display: none; }
+
+  .mobile-part-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 11.5px;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-part-chip.active {
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  }
+  .mobile-chip-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* Mobile Bottom Sheet */
+  .mobile-specs-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60;
+    background: #fff;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -6px 32px rgba(0,0,0,0.22);
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(100%);
+    display: flex;
+    flex-direction: column;
+    max-height: 88vh;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .mobile-specs-sheet.open {
+    transform: translateY(0);
+  }
+
+  .mobile-sheet-handle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .mobile-sheet-handle-bar {
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 999px;
+    background: #d1d5db;
+  }
+
+  .mobile-sheet-peek {
+    padding: 0 18px 12px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  .mobile-sheet-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid;
+    margin-bottom: 6px;
+  }
+  .mobile-sheet-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .mobile-sheet-peek-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .mobile-sheet-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.3;
+    flex: 1;
+  }
+  .mobile-sheet-expand-btn {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border: 1px solid #3b82f6;
+    border-radius: 999px;
+    background: #eff6ff;
+    color: #2563eb;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-sheet-expand-btn:active { background: #2563eb; color: #fff; }
+  .mobile-sheet-pills { display: flex; gap: 7px; flex-wrap: wrap; }
+  .mobile-sheet-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: #374151;
+  }
+
+  .mobile-sheet-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .mobile-sheet-summary {
+    font-size: 13px;
+    line-height: 1.65;
+    color: #4b5563;
+    padding: 14px 18px 0;
+    margin: 0;
+  }
+
+  .mobile-sheet-tabs {
+    display: flex;
+    border-bottom: 2px solid #e5e7eb;
+    margin: 10px 18px 0;
+    flex-shrink: 0;
+  }
+  .mobile-sheet-tab {
+    flex: 1;
+    padding: 9px 4px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6b7280;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-bottom-color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-sheet-tab.active { font-weight: 600; }
+
+  .mobile-sheet-tab-body { padding: 14px 18px 28px; flex: 1; overflow-y: auto; }
+
+  .mobile-sheet-specs-list { display: flex; flex-direction: column; gap: 1px; }
+  .mobile-sheet-spec-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 0;
+    border-bottom: 1px solid #f9fafb;
+  }
+  .mobile-sheet-spec-key { font-size: 12px; color: #6b7280; flex-shrink: 0; min-width: 90px; }
+  .mobile-sheet-spec-val { font-size: 12.5px; font-weight: 600; color: #111827; text-align: right; flex: 1; }
+
+  .mobile-sheet-install-list { display: flex; flex-direction: column; gap: 10px; }
+  .mobile-sheet-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 10px 12px;
+    background: #f9fafb;
+    border-radius: 10px;
+  }
+  .mobile-sheet-step-num { font-size: 16px; font-weight: 800; flex-shrink: 0; min-width: 22px; line-height: 1.4; }
+  .mobile-sheet-step-text { font-size: 12.5px; line-height: 1.6; color: #374151; }
+  .mobile-sheet-safety {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #92400e;
+    line-height: 1.5;
+  }
+
+  .mobile-sheet-diag-list { display: flex; flex-direction: column; gap: 10px; }
+  .mobile-sheet-fault {
+    padding: 10px 12px;
+    background: #fef2f2;
+    border-left: 3px solid #ef4444;
+    border-radius: 0 8px 8px 0;
+  }
+  .mobile-sheet-fault-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #ef4444;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .mobile-sheet-fault-text { font-size: 12.5px; color: #374151; line-height: 1.55; }
+
+  .atlas-viewport-dock {
+    bottom: 8px;
+    padding: 5px 8px;
+    gap: 4px;
+    max-width: 98%;
+  }
+  .atlas-dock-btn { padding: 4px 7px; font-size: 10px; }
+  .atlas-dock-btn > span { display: none; }
+  .atlas-dock-btn.pct { min-width: 36px; font-size: 10px; display: flex; }
+  .atlas-dock-sep { height: 12px; }
+}
+
+@media (max-width: 380px) {
+  .atlas-topbar { height: 40px; padding: 0 8px; }
+  .atlas-brand-name { font-size: 12px; }
+  .mobile-part-chip { font-size: 10.5px; padding: 4px 8px; }
+  .mobile-sheet-name { font-size: 14px; }
+  .fit-screen-hud-btn { display: none; }
 }
