@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import '../styles/tech-pages.css'
 import PcDiagram from '../components/PcDiagram'
+import ServerDiagram from '../components/ServerDiagram'
 import { assemblySteps, disassemblySteps } from '../data/assemblyGuide'
 
 
@@ -95,7 +96,7 @@ const components: ComponentItem[] = [
 ]
 
 export default function Hardware() {
-  const [activeTab, setActiveTab] = useState<'components' | 'safety' | 'assembly' | 'disassembly' | 'quiz'>('components')
+  const [activeTab, setActiveTab] = useState<'components' | 'safety' | 'assembly' | 'disassembly' | 'quiz' | 'server-components'>('components')
   const [completedSteps, setCompletedSteps] = useState<Record<number, boolean>>({})
   const [selectedPartId, setSelectedPartId] = useState<string>('chassis')
   const [isFullscreen, setIsFullscreen] = useState(false)
@@ -171,7 +172,7 @@ export default function Hardware() {
           <select 
             value={activeTab} 
             onChange={(e) => {
-              const val = e.target.value as 'components' | 'safety' | 'assembly' | 'disassembly' | 'quiz';
+              const val = e.target.value as typeof activeTab;
               setActiveTab(val);
               if (val === 'assembly') setSelectedPartId('chassis');
               if (val === 'disassembly') setSelectedPartId('psu');
@@ -182,6 +183,7 @@ export default function Hardware() {
             <option value="safety">2. Tools & ESD Safety Protocols</option>
             <option value="assembly">3. Assembly SOP Checklist (10 Steps)</option>
             <option value="disassembly">4. Disassembly SOP Checklist (8 Steps)</option>
+            <option value="server-components">5. Server Components & Architecture</option>
           </select>
         </div>
 
@@ -391,7 +393,12 @@ export default function Hardware() {
           </div>
         )}
 
-
+        {/* TAB 5: Server Components */}
+        {activeTab === 'server-components' && (
+          <div style={{ marginTop: '24px' }}>
+            <ServerDiagram />
+          </div>
+        )}
 
         {/* Footer Link to PC Parts */}
         <div style={{ marginTop: '48px', textAlign: 'center' }}>

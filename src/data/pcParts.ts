@@ -9,6 +9,7 @@ export interface PcPart {
   specs: { label: string; value: string }[]
   installGuide: string[]
   troubleshootingTips: string[]
+  systemType?: 'pc' | 'server' | 'laptop' | 'networking' | 'both'
 }
 
 export const pcParts: PcPart[] = [
@@ -20,6 +21,7 @@ export const pcParts: PcPart[] = [
     powerDraw: 'Passive / LED (~2W)',
     temperature: 'Ambient Case Temp',
     body: 'The protective structural enclosure that houses, grounds, and shields internal electronic components from physical impact and electromagnetic interference (EMI). Features front panel I/O ports, dedicated cable management channels, dust filters, and optimized positive/negative airflow intake paths.',
+    systemType: 'pc',
     specs: [
       { label: 'Form Factor Class', value: 'Mid-Tower ATX (Supports ATX, mATX, Mini-ITX)' },
       { label: 'Construction Materials', value: '0.8mm SPCC Steel + Tempered Glass Side Panel' },
@@ -46,6 +48,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '25 – 70 W',
     temperature: '35 – 55 °C',
     body: 'The central nervous system and structural backbone of the computer. Houses the CPU socket, RAM slots, PCIe lanes, chipset, and power regulation VRMs (Voltage Regulator Modules). Connects every subsystem and routes power and high-speed data buses across multilayer copper traces.',
+    systemType: 'pc',
     specs: [
       { label: 'Form Factor', value: 'ATX (305 × 244 mm), Micro-ATX, Mini-ITX' },
       { label: 'CPU Sockets', value: 'LGA1700 / LGA1851 (Intel), AM5 (AMD)' },
@@ -72,6 +75,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '65 – 253 W TDP',
     temperature: '38 – 85 °C',
     body: 'The computational engine and primary processor. Coordinates calculations, branch predictions, logic operations, and microcode instructions. Modern architectures pair high-performance compute cores with power-efficient cores along with ultra-fast multi-megabyte L2/L3 cache blocks.',
+    systemType: 'pc',
     specs: [
       { label: 'Architecture', value: 'Hybrid P-Core + E-Core (x86-64 / AMD64)' },
       { label: 'Cores / Threads', value: '16 Cores / 24 Threads (Typical Performance Build)' },
@@ -98,6 +102,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '3 – 15 W (Fans + Pump)',
     temperature: 'Ambient Dependent',
     body: 'Maintains semiconductor stability by absorbing intense heat flux from the CPU integrated heat spreader (IHS) through sintered copper heatpipes or liquid coolant loops into aluminum fin arrays cooled by high-static-pressure PWM fans.',
+    systemType: 'pc',
     specs: [
       { label: 'Cooler Type', value: 'High-Density Dual-Tower Air Cooler / 280mm AIO' },
       { label: 'Heatpipes', value: '6 × 6mm sintered copper sintered heat pipes' },
@@ -124,6 +129,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '5 – 12 W',
     temperature: '32 – 50 °C',
     body: 'Ultra-low latency volatile workspace memory utilized by the CPU for active processes, kernel buffers, and program assets. Features integrated On-Die ECC (Error Correction Code) and onboard Power Management ICs (PMIC) for razor-sharp voltage regulation.',
+    systemType: 'pc',
     specs: [
       { label: 'Memory Standard', value: 'DDR5 SDRAM (288-pin DIMM)' },
       { label: 'Configuration', value: '32 GB (2 × 16 GB Dual-Channel Kit)' },
@@ -150,6 +156,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '180 – 350 W',
     temperature: '40 – 78 °C',
     body: 'Parallel processing powerhouse housing thousands of stream multiprocessors, tensor calculation cores, and ray tracing accelerators. Driven by high-bandwidth GDDR6X video memory to render photorealistic geometry, simulations, video encoding, and AI neural networks.',
+    systemType: 'pc',
     specs: [
       { label: 'Bus Interface', value: 'PCIe 4.0 / 5.0 x16 mechanical & electrical' },
       { label: 'VRAM Capacity', value: '16 GB GDDR6X (256-bit bus, 716 GB/s bandwidth)' },
@@ -177,6 +184,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '2 – 8 W',
     temperature: '35 – 65 °C',
     body: 'High-density, non-volatile persistent storage delivering instant operating system boots and zero-lag file access. Connects directly to CPU PCIe root lanes via the M.2 interface using 3D TLC NAND flash chips orchestrated by an intelligent multi-core flash memory controller.',
+    systemType: 'both',
     specs: [
       { label: 'Form Factor', value: 'M.2 Type 2280 (22mm width × 80mm length)' },
       { label: 'Protocol / Interface', value: 'NVMe 2.0 over PCIe 4.0 x4 lanes' },
@@ -203,6 +211,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '5 – 10 W',
     temperature: '30 – 45 °C',
     body: 'High-capacity magnetic or SATA solid-state mass storage installed in the chassis front drive cage. Utilizes dual cables: a 7-pin SATA 6 Gb/s data cable to the motherboard and a 15-pin SATA power connector from the power supply unit.',
+    systemType: 'pc',
     specs: [
       { label: 'Interface Standard', value: 'SATA III (Serial ATA 6.0 Gb/s)' },
       { label: 'Spindle Speed', value: '7,200 RPM (Mechanical HDD) or 0 RPM (2.5" SSD)' },
@@ -229,6 +238,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '2 – 5 W per Fan',
     temperature: 'Ambient Flow',
     body: 'Dynamic ventilation array establishing directional airflow throughout the chassis. Front intake fans draw cool filtered air across the storage cages and motherboard, while rear and top exhaust fans expel heated air generated by the CPU and GPU.',
+    systemType: 'pc',
     specs: [
       { label: 'Fan Configuration', value: '2 × 120mm front intake + 1 × 120mm rear exhaust' },
       { label: 'Airflow Flow Type', value: 'Positive Pressure setup (Intake CFM > Exhaust CFM)' },
@@ -255,6 +265,7 @@ export const pcParts: PcPart[] = [
     powerDraw: 'Micro-amperes (~0.01W)',
     temperature: 'Ambient (~30°C)',
     body: 'A 3-volt lithium coin cell battery that supplies continuous backup power to the motherboard Real-Time Clock (RTC) and non-volatile CMOS memory, preserving system clock time, hardware date, and user-configured BIOS/UEFI settings when the AC power cord is unplugged.',
+    systemType: 'both',
     specs: [
       { label: 'Cell Chemistry', value: 'Lithium Manganese Dioxide (Li/MnO2)' },
       { label: 'Nominal Voltage', value: '3.0 Volts DC' },
@@ -281,6 +292,7 @@ export const pcParts: PcPart[] = [
     powerDraw: 'Low Voltage Logic (~1W)',
     temperature: 'Ambient',
     body: 'The 9-pin motherboard header block connecting the chassis front controls: Power Switch (PWR_SW), Reset Switch (RESET_SW), Hard Drive Activity LED (HDD_LED), and Power Indicator LED (POWER_LED). Crucial competency in TESDA CSS NC II assembly.',
+    systemType: 'pc',
     specs: [
       { label: 'Header Block Standard', value: 'Intel 9-pin Standard Front Panel Layout (2 × 5 key-pin 10)' },
       { label: 'Power / Reset Logic', value: 'Momentary contact switch (non-polarized closure to ground)' },
@@ -307,6 +319,7 @@ export const pcParts: PcPart[] = [
     powerDraw: '850 W Capacity (80+ Gold)',
     temperature: 'Internal Fan Cooled',
     body: 'The electrical powerhouse that rectifies dangerous 110V/220V AC wall current into strictly regulated, ripple-free DC rails (+12V, +5V, +3.3V) with over-voltage, short-circuit, and over-power protection safeguards (OVP, UVP, OCP, OTP, SCP).',
+    systemType: 'pc',
     specs: [
       { label: 'Continuous Output', value: '850 Watts (1000W excursion headroom)' },
       { label: 'Efficiency Rating', value: '80 PLUS Gold (≥ 90% efficiency @ 50% load)' },
@@ -325,4 +338,365 @@ export const pcParts: PcPart[] = [
       'Paperclip test: jump Green wire (PS_ON#) to any Black ground wire on 24-pin ATX connector to test standalone PSU fan spin.',
     ],
   },
+  {
+    id: 'server-chassis',
+    name: 'Server Chassis — 2U Rackmount Enclosure',
+    shortName: '2U Rack Chassis',
+    category: 'Enclosure',
+    powerDraw: 'Passive',
+    temperature: 'Server Ambient',
+    body: 'A heavy-duty rack-mountable enclosure designed to fit in a standard 19-inch equipment rack. Features hot-swap drive bays in the front and redundant power supply slots in the rear, prioritizing density, airflow, and physical security.',
+    systemType: 'server',
+    specs: [
+      { label: 'Form Factor Class', value: '2U Rackmount' },
+      { label: 'Drive Bays', value: '12 × 3.5" or 24 × 2.5" Hot-Swap SAS/SATA' },
+      { label: 'Motherboard Support', value: 'E-ATX, EE-ATX, SSI-EEB' },
+      { label: 'Expansion Slots', value: '7 × Low Profile PCIe or 3 × Full Height (with riser)' }
+    ],
+    installGuide: [
+      'Install sliding rack rails into the server rack before mounting the chassis.',
+      'Ensure the chassis cover is securely closed to maintain proper positive air pressure for the high-RPM fans.'
+    ],
+    troubleshootingTips: [
+      'Chassis intrusion alarm triggered: Ensure the top lid is completely flush and the microswitch is depressed.'
+    ]
+  },
+  {
+    id: 'server-cpu',
+    name: 'Server CPU — Enterprise Multi-Core Processor',
+    shortName: 'Server CPU',
+    category: 'Processing',
+    powerDraw: '250 – 350 W TDP',
+    temperature: '45 – 80 °C',
+    body: 'Enterprise-grade processor optimized for 24/7 uptime, massive virtualization, and heavy database workloads. Features support for multi-socket configurations and hundreds of PCIe lanes.',
+    systemType: 'server',
+    specs: [
+      { label: 'Architecture', value: 'Enterprise x86-64 / ARM' },
+      { label: 'Cores / Threads', value: '64 Cores / 128 Threads per socket' },
+      { label: 'Smart Cache (L3)', value: '256 MB L3 Cache' },
+      { label: 'PCIe Lanes', value: '128 × PCIe 5.0 lanes' }
+    ],
+    installGuide: [
+      'Install into the server socket using the included carrier frame to prevent pin damage.',
+      'Fasten heatsink in a diagonal star pattern to ensure even pressure according to torque specifications.'
+    ],
+    troubleshootingTips: [
+      'Check Baseboard Management Controller (BMC) system event log (SEL) for Machine Check Exceptions (MCE).'
+    ]
+  },
+  {
+    id: 'server-mobo',
+    name: 'Server Motherboard — Dual-Socket SSI-EEB',
+    shortName: 'Server Board',
+    category: 'Interconnect',
+    powerDraw: '50 – 100 W',
+    temperature: '40 – 60 °C',
+    body: 'A massive, enterprise-grade printed circuit board featuring dual CPU sockets, dozens of memory slots, and integrated out-of-band management (IPMI/BMC). Designed for absolute stability and continuous operation.',
+    systemType: 'server',
+    specs: [
+      { label: 'Form Factor', value: 'SSI-EEB or Proprietary Rackmount' },
+      { label: 'Sockets', value: 'Dual LGA 4189 / Socket SP5' },
+      { label: 'Memory', value: 'Up to 32 × DDR5 RDIMM slots' },
+      { label: 'Management', value: 'Dedicated ASPEED AST2600 BMC for IPMI 2.0 / Redfish' }
+    ],
+    installGuide: [
+      'Ensure the chassis standoffs match the SSI-EEB mounting holes precisely to avoid shorts.',
+      'Connect the dedicated management LAN port to the out-of-band management network switch.'
+    ],
+    troubleshootingTips: [
+      'System unbootable: Log into the BMC web interface via the management IP to view POST codes and remote console.'
+    ]
+  },
+  {
+    id: 'server-ram',
+    name: 'Server RAM — ECC Registered Memory (RDIMM)',
+    shortName: 'ECC RAM',
+    category: 'Memory',
+    powerDraw: '8 – 15 W',
+    temperature: '35 – 55 °C',
+    body: 'Error-Correcting Code memory that detects and corrects single-bit memory errors on the fly. Essential for preventing data corruption in mission-critical applications and databases.',
+    systemType: 'server',
+    specs: [
+      { label: 'Memory Standard', value: 'DDR5 RDIMM (Registered DIMM)' },
+      { label: 'Configuration', value: '64 GB per module' },
+      { label: 'Error Correction', value: 'Advanced ECC and Chipkill' },
+      { label: 'Frequency', value: '4800 MT/s (JEDEC Standard)' }
+    ],
+    installGuide: [
+      'Populate DIMM slots according to the motherboard manual for optimal interleaving.',
+      'Ensure memory channels are balanced across both CPU sockets.'
+    ],
+    troubleshootingTips: [
+      'Memory training failure on boot: Check for unseated modules or dust in the socket.',
+      'Correctable errors logged: Monitor module health via IPMI; schedule replacement if threshold is exceeded.'
+    ]
+  },
+  {
+    id: 'server-cooling',
+    name: 'Server Cooling — High-RPM Counter-Rotating Fans',
+    shortName: 'Fan Wall',
+    category: 'Thermal',
+    powerDraw: '15 – 35 W per fan',
+    temperature: 'Ambient Flow',
+    body: 'A centralized mid-chassis fan wall composed of ultra-high RPM (10,000+ RPM), dual-rotor hot-swappable fans that force a massive volume of air through the server chassis.',
+    systemType: 'server',
+    specs: [
+      { label: 'Fan Type', value: 'Dual-Rotor Counter-Rotating' },
+      { label: 'Speed Range', value: '1,500 – 16,000 RPM' },
+      { label: 'Hot-Swap', value: 'Yes, toolless drop-in modules' }
+    ],
+    installGuide: [
+      'Drop fan modules straight down into the mid-plane connectors while the server is running (hot-swap).',
+      'Keep fingers clear of the exposed high-speed blades when the lid is removed.'
+    ],
+    troubleshootingTips: [
+      'Loud jet-engine noise constantly: Normal during POST, but if sustained, check BMC for thermal sensor failures or missing chassis lid.'
+    ]
+  },
+  {
+    id: 'server-storage',
+    name: 'Server Storage — Hot-Swap SAS/SATA Enterprise Drives',
+    shortName: 'SAS HDD/SSD',
+    category: 'Storage',
+    powerDraw: '7 – 12 W',
+    temperature: '35 – 45 °C',
+    body: 'Enterprise-grade storage drives designed for RAID arrays, offering higher endurance (DWPD), continuous 24/7 duty cycles, and dual-port SAS interfaces for high availability.',
+    systemType: 'server',
+    specs: [
+      { label: 'Interface Standard', value: 'SAS (Serial Attached SCSI) 12Gb/s' },
+      { label: 'Spindle Speed', value: '10,000 RPM / 15,000 RPM (HDD) or TLC NAND (SSD)' },
+      { label: 'Hot-Swap', value: 'Yes, front-accessible carriers' },
+      { label: 'MTBF', value: '2.5 Million Hours' }
+    ],
+    installGuide: [
+      'Mount drives into the hot-swap caddies using the provided flat-head screws.',
+      'Slide the caddy into the front backplane and close the lever until it clicks.'
+    ],
+    troubleshootingTips: [
+      'Drive LED flashing amber/red: The drive has failed or is in a predictive failure state; hot-swap with a replacement for RAID rebuild.'
+    ]
+  },
+  {
+    id: 'server-psu',
+    name: 'Redundant Power Supply Unit (1U/2U)',
+    shortName: 'Redundant PSU',
+    category: 'Power',
+    powerDraw: '1600 W (Titanium)',
+    temperature: 'Server Fan Cooled',
+    body: 'Hot-swappable power supplies designed for N+1 redundancy. If one PSU fails or loses AC power, the other takes over instantly without dropping the server.',
+    systemType: 'server',
+    specs: [
+      { label: 'Continuous Output', value: '1600 Watts per module' },
+      { label: 'Efficiency Rating', value: '80 PLUS Titanium (96% Efficiency)' },
+      { label: 'Hot-Swap Support', value: 'Yes, toolless removal with handle' }
+    ],
+    installGuide: [
+      'Slide PSU module into the rear chassis bay until the locking latch clicks.',
+      'Connect PSU 1 and PSU 2 to independent power grids or separate UPS units for maximum availability.'
+    ],
+    troubleshootingTips: [
+      'Amber fault LED on PSU: Check input voltage or replace the failed module.',
+      'Server shuts down under heavy load: Check if redundant PSU is disabled or operating in cold-standby mode via BMC.'
+    ]
+  },
+  {
+    id: 'laptop-mobo',
+    name: 'Laptop Logic Board',
+    shortName: 'Logic Board',
+    category: 'Interconnect',
+    powerDraw: '5 – 45 W',
+    temperature: '40 – 75 °C',
+    body: 'The highly integrated mainboard of a laptop. Contains the embedded CPU, GPU, memory controller, and I/O interfaces on a single dense multi-layer PCB to save space.',
+    systemType: 'laptop',
+    specs: [
+      { label: 'Form Factor', value: 'Proprietary Custom PCB' },
+      { label: 'Embedded SoC', value: 'BGA-soldered CPU / APU' },
+    ],
+    installGuide: [
+      'Ensure the internal battery is disconnected before touching the logic board to prevent short circuits.'
+    ],
+    troubleshootingTips: [
+      'Laptop turns off abruptly: check for liquid damage or burnt VRM ICs.'
+    ],
+  },
+  {
+    id: 'laptop-battery',
+    name: 'Lithium-Ion Polymer Battery',
+    shortName: 'Battery',
+    category: 'Power',
+    powerDraw: 'Discharging / Charging',
+    temperature: '30 – 45 °C',
+    body: 'A flat, high-density energy storage pack providing portable power. Contains multiple Li-Po cells and a Battery Management System (BMS) for safety.',
+    systemType: 'laptop',
+    specs: [
+      { label: 'Capacity', value: '50 - 99 Watt-hours (Wh)' },
+      { label: 'Chemistry', value: 'Lithium-Ion Polymer (Li-Po)' },
+    ],
+    installGuide: [
+      'Do not bend or puncture battery packs. A damaged pack poses a severe fire risk.'
+    ],
+    troubleshootingTips: [
+      'Swollen battery: immediately stop using the device and dispose of the battery safely.'
+    ],
+  },
+  {
+    id: 'laptop-cooling',
+    name: 'Laptop Thermal Module',
+    shortName: 'Cooling / Heatpipe',
+    category: 'Thermal',
+    powerDraw: '2 – 5 W',
+    temperature: 'Exhausts 60 – 90 °C heat',
+    body: 'A compact cooling solution using flattened copper heatpipes to transfer heat from the CPU/GPU die to a fin stack, where a low-profile blower fan exhausts the heat.',
+    systemType: 'laptop',
+    specs: [
+      { label: 'Thermal Interface', value: 'Liquid Metal or High-Performance Thermal Paste' },
+      { label: 'Fan Type', value: '5V Blower Fan (Centrifugal)' },
+    ],
+    installGuide: [
+      'Tighten heatsink screws in a diagonal pattern (1-3-2-4) to ensure even mounting pressure.'
+    ],
+    troubleshootingTips: [
+      'Loud grinding noise: fan bearing may be failing due to dust buildup or wear.'
+    ],
+  },
+  {
+    id: 'laptop-ram',
+    name: 'SO-DIMM Memory',
+    shortName: 'SO-DIMM RAM',
+    category: 'Memory',
+    powerDraw: '2 – 4 W',
+    temperature: '35 – 50 °C',
+    body: 'Small Outline Dual In-line Memory Module. A smaller form factor version of regular desktop RAM designed specifically for laptops and mini-PCs.',
+    systemType: 'laptop',
+    specs: [
+      { label: 'Form Factor', value: '262-pin SO-DIMM (DDR5)' },
+      { label: 'Voltage', value: '1.1V (DDR5)' },
+    ],
+    installGuide: [
+      'Insert the stick into the slot at a 30-degree angle, then press down until the side clips lock into place.'
+    ],
+    troubleshootingTips: [
+      'Memory failure: unclip and reseat the RAM, or try a single stick in alternating slots.'
+    ],
+  },
+  {
+    id: 'laptop-storage',
+    name: 'M.2 NVMe SSD',
+    shortName: 'NVMe SSD',
+    category: 'Storage',
+    powerDraw: '3 – 6 W',
+    temperature: '40 – 70 °C',
+    body: 'A gum-stick sized solid state drive that connects directly to the PCIe bus for ultra-fast storage speeds in compact spaces.',
+    systemType: 'laptop',
+    specs: [
+      { label: 'Form Factor', value: 'M.2 2280' },
+      { label: 'Interface', value: 'PCIe Gen 4.0 x4' },
+    ],
+    installGuide: [
+      'Insert at a slight angle and secure with the single M.2 hold-down screw.'
+    ],
+    troubleshootingTips: [
+      'Drive not detected: ensure it is fully inserted; sometimes thermal pads can prevent full seating.'
+    ],
+  },
+  {
+    id: 'laptop-wifi',
+    name: 'WLAN / Wi-Fi + Bluetooth Card',
+    shortName: 'Wi-Fi Card',
+    category: 'Interconnect',
+    powerDraw: '1 – 3 W',
+    temperature: '35 – 45 °C',
+    body: 'An M.2 2230 sized wireless network adapter providing Wi-Fi and Bluetooth connectivity. Features microscopic U.FL antenna connectors.',
+    systemType: 'laptop',
+    specs: [
+      { label: 'Form Factor', value: 'M.2 2230 Key E' },
+      { label: 'Standard', value: 'Wi-Fi 6E / Wi-Fi 7' },
+    ],
+    installGuide: [
+      'Be extremely gentle when snapping the fragile antenna cables onto the U.FL terminals.'
+    ],
+    troubleshootingTips: [
+      'Poor signal strength: ensure both main and auxiliary antenna cables are securely attached.'
+    ],
+  },
+  {
+    id: 'wifi-router',
+    name: 'Wireless Router',
+    shortName: 'Wi-Fi Router',
+    category: 'Interconnect',
+    powerDraw: '5 – 15 W',
+    temperature: '40 – 50 °C',
+    body: 'A networking device that forwards data packets between computer networks and provides Wi-Fi access. Acts as the gateway, DHCP server, and firewall for the local network.',
+    systemType: 'networking',
+    specs: [
+      { label: 'Standard', value: '802.11ax (Wi-Fi 6)' },
+      { label: 'Ports', value: '1× WAN, 4× Gigabit LAN' },
+    ],
+    installGuide: [
+      'Place in an open, central location away from thick concrete walls for optimal signal coverage.'
+    ],
+    troubleshootingTips: [
+      'No internet connection: check the WAN link light and reboot the router.'
+    ],
+  },
+  {
+    id: 'network-switch',
+    name: '24-Port Gigabit Ethernet Switch',
+    shortName: 'Network Switch',
+    category: 'Interconnect',
+    powerDraw: '10 – 30 W',
+    temperature: '35 – 45 °C',
+    body: 'Connects devices together on a computer network by using packet switching to receive and forward data to the destination device.',
+    systemType: 'networking',
+    specs: [
+      { label: 'Ports', value: '24× 10/100/1000 Mbps RJ45' },
+      { label: 'Switching Capacity', value: '48 Gbps Non-blocking' },
+    ],
+    installGuide: [
+      'Mount securely in a 19-inch rack and connect the uplink port to the main router or core switch.'
+    ],
+    troubleshootingTips: [
+      'Port LED off: check cable for breaks or verify the connected device is powered on.'
+    ],
+  },
+  {
+    id: 'patch-panel',
+    name: '24-Port RJ45 Patch Panel',
+    shortName: 'Patch Panel',
+    category: 'Interconnect',
+    powerDraw: 'Passive',
+    temperature: 'Ambient',
+    body: 'A mounted hardware unit containing an assembly of port locations. It serves as a static switchboard to connect and manage incoming and outgoing LAN cables.',
+    systemType: 'networking',
+    specs: [
+      { label: 'Category', value: 'Cat 6 UTP' },
+      { label: 'Punch Down', value: '110 Block (T568B Standard)' },
+    ],
+    installGuide: [
+      'Use a punch-down tool to terminate horizontal cabling onto the rear 110 blocks following the T568B color code.'
+    ],
+    troubleshootingTips: [
+      'Intermittent connection: re-punch the wire to ensure the insulation displacement contact (IDC) has bitten through the wire jacket.'
+    ],
+  },
+  {
+    id: 'lan-tester',
+    name: 'RJ45 LAN Cable Tester',
+    shortName: 'Cable Tester',
+    category: 'Interconnect',
+    powerDraw: '9V Battery',
+    temperature: 'Ambient',
+    body: 'A diagnostic tool used to verify the electrical connections in a twisted-pair network cable. Checks for continuity, open circuits, short circuits, and crossed wires.',
+    systemType: 'networking',
+    specs: [
+      { label: 'Compatibility', value: 'RJ45, RJ11, RJ12' },
+      { label: 'Display', value: '1-8 LED Pin Indicators' },
+    ],
+    installGuide: [
+      'Connect one end of the terminated cable to the master unit and the other to the remote unit. Turn on to scan pins 1 through 8.'
+    ],
+    troubleshootingTips: [
+      'LEDs skipping numbers: Indicates an open circuit (wire not making contact) or a broken wire.'
+    ],
+  }
 ]

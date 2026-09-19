@@ -22,6 +22,9 @@ import {
   ZoomOut,
   Maximize2,
   Focus,
+  Zap,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import { pcParts, type PcPart } from '../data/pcParts'
 import '../styles/pc-workbench.css'
@@ -46,6 +49,9 @@ export interface PcDiagramProps {
   atlasMode?: boolean
   initialZoom?: number
   isFullscreen?: boolean
+  systemType?: 'pc' | 'server' | 'laptop' | 'networking'
+  /** Increment this to trigger a clean view reset without entering focus mode */
+  viewResetKey?: number
 }
 
 const PRESET_ANGLES: Record<CameraPreset, Rotation> = {
@@ -71,6 +77,15 @@ const COMPONENT_FOCUS_PRESETS: Record<string, { zoom: number; rotation: Rotation
   'cmos-battery': { zoom: 2.5, rotation: { x: 4, y: -5}, pan: { x: -75,  y: -1   } },
   fpanel:      { zoom: 2.4,  rotation: { x: 4, y: -5  }, pan: { x: -145, y: -189 } },
   chassis:     { zoom: 1.35, rotation: { x: 12, y: -18}, pan: { x: -20,  y: 0    } },
+
+  // Server Parts
+  'server-mobo':    { zoom: 1.6,  rotation: { x: 0, y: -4  }, pan: { x: 0,   y: 0   } },
+  'server-cpu':     { zoom: 2.4,  rotation: { x: 0, y: -6  }, pan: { x: 0,   y: 40  } },
+  'server-ram':     { zoom: 2.2,  rotation: { x: 0, y: -8  }, pan: { x: 0,   y: 40  } },
+  'server-cooling': { zoom: 1.8,  rotation: { x: 0, y: -12 }, pan: { x: 0,   y: 100 } },
+  'server-psu':     { zoom: 2.0,  rotation: { x: 0, y: -12 }, pan: { x: 60,  y: -150} },
+  'server-storage': { zoom: 2.1,  rotation: { x: 0, y: 10  }, pan: { x: -60, y: 180 } },
+  'server-chassis': { zoom: 1.1,  rotation: { x: 12, y: -18}, pan: { x: 0,   y: 0   } },
 }
 
 // Helper to get focus presets adjusted for fullscreen vs windowed vs mobile mode
@@ -101,6 +116,8 @@ export default function PcDiagram({
   atlasMode = false,
   initialZoom,
   isFullscreen: isFsProp,
+  systemType = 'pc',
+  viewResetKey,
 }: PcDiagramProps = {}) {
   const [internalFs, setInternalFs] = useState<boolean>(() =>
     typeof document !== 'undefined' ? !!document.fullscreenElement : false
@@ -140,6 +157,9 @@ export default function PcDiagram({
   const [activePreset, setActivePreset] = useState<CameraPreset>('interior')
   const [rotation, setRotation] = useState<Rotation>(PRESET_ANGLES.interior)
   const [isAutoSpinning, setIsAutoSpinning] = useState<boolean>(false)
+  const [wiringMode, setWiringMode] = useState<boolean>(false)
+  const [workbenchProps, setWorkbenchProps] = useState<boolean>(false)
+  const [buildStep, setBuildStep] = useState<number>(10) // 10 = fully assembled
   const [powerOn, setPowerOn] = useState<boolean>(true)
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true)
   const [glassPanelOn, setGlassPanelOn] = useState<boolean>(false) // Default OPEN CASE
@@ -294,6 +314,18 @@ export default function PcDiagram({
     }
   }, [selectedId, isFs, isMobile, focusMode])
 
+  // When viewResetKey changes (system type switch), exit focus and reset camera
+  const prevResetKey = useRef(viewResetKey)
+  useEffect(() => {
+    if (viewResetKey === undefined) return
+    if (viewResetKey === prevResetKey.current) return
+    prevResetKey.current = viewResetKey
+    setFocusMode(false)
+    setIsAutoSpinning(false)
+    setZoom(isMobile ? getMobileFitZoom() : defaultZoom)
+    setRotation(PRESET_ANGLES.interior)
+    setPan({ x: 0, y: 0 })
+  }, [viewResetKey, isMobile, getMobileFitZoom, defaultZoom])
 
   useEffect(() => {
     if (!isAutoSpinning) return
@@ -663,7 +695,8 @@ export default function PcDiagram({
             </div>
 
             {/* 3D Scene Root */}
-            <div className="scene-container">
+            <div className={`scene-container build-step-${buildStep}`}>
+              {systemType === 'pc' && (
               <div
                 className={`pc-case-3d ${activePreset}${powerOn ? ' pwr-on' : ''}${
                   isDragging ? ' no-transition' : ''
@@ -673,6 +706,25 @@ export default function PcDiagram({
                   transition: isDragging ? 'none' : 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
                 }}
               >
+                {/* ⚡ WIRING SVG OVERLAY ⚡ */}
+                {wiringMode && (
+                  <svg className="wiring-svg-overlay" width="280" height="280" viewBox="0 0 280 280">
+                     <path className="wire-power" d="M120,240 C120,200 230,200 230,120" />
+                     <path className="wire-data" d="M180,240 C180,220 180,180 180,160 C180,140 140,140 140,140" />
+                     <path className="wire-eps" d="M110,240 C110,240 -10,240 -10,80 C-10,30 50,30 50,30" />
+                  </svg>
+                )}
+
+                {/* 🔧 WORKBENCH PROPS 🔧 */}
+                {workbenchProps && (
+                  <div className="workbench-props-layer">
+                    <div className="prop-wrist-strap" />
+                    <div className="prop-multimeter">
+                      <div className="multimeter-screen">12.0V</div>
+                    </div>
+                    <div className="prop-screwdriver" />
+                  </div>
+                )}
                 {/* ── 1. CHASSIS OUTER FRAMEWORK ───────────────────── */}
                 {/* Chassis Main Tray Backplane */}
                 <div
@@ -1096,6 +1148,316 @@ export default function PcDiagram({
                   </div>
                 )}
               </div>
+              )}
+              {systemType === 'server' && (
+                <div
+                  className={`server-case-3d ${activePreset}${powerOn ? ' pwr-on' : ''}${
+                    isDragging ? ' no-transition' : ''
+                  }${focusMode ? ` focus-mode focusing-${selected.id}` : ''}`}
+                  style={{
+                    transform: `translateX(${pan.x}px) translateY(${pan.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(${zoom})`,
+                    transition: isDragging ? 'none' : 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
+                  }}
+                >
+                  {/* Chassis Outer Structure */}
+                  <div
+                    className={`server-backplane${selected.id === 'server-chassis' ? ' selected' : ''}`}
+                    onClick={e => {
+                      e.stopPropagation()
+                      select('server-chassis')
+                    }}
+                    title="2U Rackmount Server Chassis"
+                  >
+                  </div>
+                  <div className="server-roof" />
+                  <div className="server-base" />
+
+                  {/* Fan Wall */}
+                  <div
+                    className={`hardware-layer server-fan-wall${selected.id === 'server-cooling' ? ' selected' : ''}`}
+                    onClick={e => {
+                      e.stopPropagation()
+                      select('server-cooling')
+                    }}
+                  >
+                    {[1, 2, 3, 4, 5, 6].map(i => (
+                      <div key={i} className="server-fan">
+                        <div className={`fan-rotor${powerOn ? ' spinning' : ''}`} />
+                      </div>
+                    ))}
+                    <div className="comp-tag mini">FAN WALL</div>
+                  </div>
+
+                  {/* Dual Socket Motherboard */}
+                  <div
+                    className={`hardware-layer server-mobo-plane${selected.id === 'server-mobo' ? ' selected' : ''}`}
+                    onClick={e => {
+                      e.stopPropagation()
+                      select('server-mobo')
+                    }}
+                  >
+                  </div>
+
+                  {/* CPU 1 & 2 */}
+                  <div
+                    className={`hardware-layer server-cpu cpu-1${selected.id === 'server-cpu' ? ' selected' : ''}`}
+                    onClick={e => {
+                      e.stopPropagation()
+                      select('server-cpu')
+                    }}
+                  >
+                    <div className="comp-tag mini">CPU 0</div>
+                  </div>
+                  <div
+                    className={`hardware-layer server-cpu cpu-2${selected.id === 'server-cpu' ? ' selected' : ''}`}
+                    onClick={e => {
+                      e.stopPropagation()
+                      select('server-cpu')
+                    }}
+                  >
+                    <div className="comp-tag mini">CPU 1</div>
+                  </div>
+
+                  {/* RAM Banks */}
+                    <div
+                      className={`hardware-layer server-ram-banks${selected.id === 'server-ram' ? ' selected' : ''}`}
+                      onClick={e => {
+                        e.stopPropagation()
+                        select('server-ram')
+                      }}
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                        <div key={i} className={`ram-stick bank-${i}`} />
+                      ))}
+                      <div className="comp-tag mini">ECC RDIMM</div>
+                    </div>
+
+                    {/* GPU */}
+                    <div
+                      className={`hardware-layer server-gpu${selected.id === 'server-gpu' ? ' selected' : ''}`}
+                      onClick={e => {
+                        e.stopPropagation()
+                        select('server-gpu')
+                      }}
+                      title="GPU Accelerator"
+                    >
+                      <div className="comp-tag mini">GPU</div>
+                    </div>
+
+                    {/* RAID Controller */}
+                    <div
+                      className={`hardware-layer server-raid${selected.id === 'server-raid' ? ' selected' : ''}`}
+                      onClick={e => {
+                        e.stopPropagation()
+                        select('server-raid')
+                      }}
+                      title="RAID Controller"
+                    >
+                      <div className="comp-tag mini">RAID</div>
+                    </div>
+
+                    {/* NIC */}
+                    <div
+                      className={`hardware-layer server-nic${selected.id === 'server-nic' ? ' selected' : ''}`}
+                      onClick={e => {
+                        e.stopPropagation()
+                        select('server-nic')
+                      }}
+                      title="Network Interface Card"
+                    >
+                      <div className="comp-tag mini">NIC</div>
+                    </div>
+
+                    {/* Expansion Cards */}
+                    <div
+                      className={`hardware-layer server-expansion${selected.id === 'server-expansion' ? ' selected' : ''}`}
+                      onClick={e => {
+                        e.stopPropagation()
+                        select('server-expansion')
+                      }}
+                      title="PCIe Expansion"
+                    >
+                      <div className="comp-tag mini">EXP</div>
+                    </div>
+
+                    {/* BMC */}
+                    <div
+                      className={`hardware-layer server-bmc${selected.id === 'server-bmc' ? ' selected' : ''}`}
+                      onClick={e => {
+                        e.stopPropagation()
+                        select('server-bmc')
+                      }}
+                      title="BMC/IPMI Controller"
+                    >
+                      <div className="comp-tag mini">BMC</div>
+                    </div>
+
+                  {/* Rear Network Ports */}
+                  <div
+                    className={`hardware-layer server-network-ports${selected.id === 'server-network-ports' ? ' selected' : ''}`}
+                    onClick={e => {
+                      e.stopPropagation()
+                      select('server-network-ports')
+                    }}
+                    title="Rear I/O Network Ports"
+                  >
+                    <div className="comp-tag mini">I/O PORTS</div>
+                  </div>
+
+                  {/* Hot Swap Drive Bays (Front) */}
+                  <div
+                    className={`hardware-layer server-front-bays${selected.id === 'server-storage' ? ' selected' : ''}`}
+                    onClick={e => {
+                      e.stopPropagation()
+                      select('server-storage')
+                    }}
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                      <div key={i} className="hot-swap-bay">
+                        <div className="bay-handle" />
+                        <div className={`bay-led${powerOn ? ' active' : ''}`} />
+                      </div>
+                    ))}
+                    <div className="comp-tag mini">SAS/SATA BAYS</div>
+                  </div>
+
+                  {/* Redundant PSU (Rear) */}
+                  <div
+                    className={`hardware-layer server-psu-block${selected.id === 'server-psu' ? ' selected' : ''}`}
+                    onClick={e => {
+                      e.stopPropagation()
+                      select('server-psu')
+                    }}
+                  >
+                    <div className="server-psu-module psu-1">
+                      <div className="psu-handle" />
+                      <div className={`psu-fan-rotor${powerOn ? ' spinning' : ''}`} />
+                    </div>
+                    <div className="server-psu-module psu-2">
+                      <div className="psu-handle" />
+                      <div className={`psu-fan-rotor${powerOn ? ' spinning' : ''}`} />
+                    </div>
+                    <div className="comp-tag mini">REDUNDANT PSU</div>
+                  </div>
+
+                </div>
+              )}
+              {systemType === 'laptop' && (
+                <div className="laptop-case-3d">
+                  <div className="laptop-palmrest" />
+                  <div className="laptop-screen-hinge" />
+                  
+                  {/* Motherboard / Logic Board */}
+                  <div
+                    className={`hardware-layer laptop-mobo${selected.id === 'laptop-mobo' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('laptop-mobo') }}
+                  />
+
+                  {/* Battery */}
+                  <div
+                    className={`hardware-layer laptop-battery${selected.id === 'laptop-battery' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('laptop-battery') }}
+                  >
+                    <div className="comp-tag mini">LITHIUM-ION</div>
+                  </div>
+
+                  {/* Cooling / Heatpipes */}
+                  <div
+                    className={`hardware-layer laptop-cooling${selected.id === 'laptop-cooling' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('laptop-cooling') }}
+                  >
+                    <div className="laptop-heatpipe" />
+                    <div className="laptop-blower-fan">
+                      <div className={`fan-rotor${powerOn ? ' spinning' : ''}`} />
+                    </div>
+                  </div>
+
+                  {/* RAM (SO-DIMM) */}
+                  <div
+                    className={`hardware-layer laptop-ram${selected.id === 'laptop-ram' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('laptop-ram') }}
+                  >
+                    <div className="sodimm-stick stick-1" />
+                    <div className="sodimm-stick stick-2" />
+                    <div className="comp-tag mini">SO-DIMM</div>
+                  </div>
+
+                  {/* NVMe SSD */}
+                  <div
+                    className={`hardware-layer laptop-storage${selected.id === 'laptop-storage' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('laptop-storage') }}
+                  >
+                    <div className="comp-tag mini">M.2 NVMe</div>
+                  </div>
+
+                  {/* Wi-Fi Card */}
+                  <div
+                    className={`hardware-layer laptop-wifi${selected.id === 'laptop-wifi' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('laptop-wifi') }}
+                  >
+                    <div className="comp-tag mini">WLAN</div>
+                  </div>
+                </div>
+              )}
+
+              {systemType === 'networking' && (
+                <div className="networking-rack-3d">
+                  <div className="rack-frame" />
+                  
+                  {/* Wi-Fi Router */}
+                  <div
+                    className={`hardware-layer net-wifi-router${selected.id === 'wifi-router' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('wifi-router') }}
+                  >
+                    <div className="router-antennas">
+                      <div className="antenna" />
+                      <div className="antenna" />
+                      <div className="antenna" />
+                      <div className="antenna" />
+                    </div>
+                    <div className="comp-tag mini">ROUTER</div>
+                  </div>
+
+                  {/* Network Switch */}
+                  <div
+                    className={`hardware-layer net-switch${selected.id === 'network-switch' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('network-switch') }}
+                  >
+                    <div className="switch-ports">
+                      {[...Array(24)].map((_, i) => (
+                        <div key={i} className={`rj45-port${powerOn ? ' active' : ''}`} />
+                      ))}
+                    </div>
+                    <div className="comp-tag mini">24-PORT SWITCH</div>
+                  </div>
+
+                  {/* Patch Panel */}
+                  <div
+                    className={`hardware-layer net-patch-panel${selected.id === 'patch-panel' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('patch-panel') }}
+                  >
+                    <div className="patch-ports">
+                      {[...Array(24)].map((_, i) => (
+                        <div key={i} className="rj45-port patched" />
+                      ))}
+                    </div>
+                    <div className="comp-tag mini">PATCH PANEL</div>
+                  </div>
+
+                  {/* LAN Tester (prop on side) */}
+                  <div
+                    className={`hardware-layer net-lan-tester${selected.id === 'lan-tester' ? ' selected' : ''}`}
+                    onClick={e => { e.stopPropagation(); select('lan-tester') }}
+                  >
+                    <div className="tester-leds">
+                      {[...Array(8)].map((_, i) => (
+                        <div key={i} className={`tester-led${powerOn ? ' active' : ''}`} />
+                      ))}
+                    </div>
+                    <div className="comp-tag mini">TESTER</div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Viewport Footer / Atlas Mode Dock */}
@@ -1137,6 +1499,55 @@ export default function PcDiagram({
                   >
                     <Play size={13} strokeWidth={1.75} aria-hidden="true" />
                     <span>{isAutoSpinning ? 'Pause' : '360°'}</span>
+                  </button>
+                </div>
+
+                <div className="atlas-dock-sep" />
+
+                <div className="atlas-dock-group">
+                  <button
+                    type="button"
+                    className={`atlas-dock-btn${wiringMode ? ' active' : ''}`}
+                    onClick={() => setWiringMode(prev => !prev)}
+                    title="Toggle Wiring & Power Flow Mode"
+                  >
+                    <Zap size={13} strokeWidth={1.75} />
+                    <span>Wiring</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`atlas-dock-btn${workbenchProps ? ' active' : ''}`}
+                    onClick={() => setWorkbenchProps(prev => !prev)}
+                    title="Toggle Workbench Tools (Multimeter, Strap)"
+                  >
+                    <Wrench size={13} strokeWidth={1.75} />
+                    <span>Props</span>
+                  </button>
+                </div>
+
+                <div className="atlas-dock-sep" />
+
+                <div className="atlas-dock-group" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <button
+                    type="button"
+                    className="atlas-dock-btn icon-only"
+                    onClick={() => setBuildStep(s => Math.max(0, s - 1))}
+                    disabled={buildStep === 0}
+                    title="Previous Build Step"
+                  >
+                    <ChevronLeft size={13} strokeWidth={1.75} />
+                  </button>
+                  <span style={{ fontSize: '11px', color: '#9ca3af', minWidth: '40px', textAlign: 'center' }}>
+                    Step {buildStep}/10
+                  </span>
+                  <button
+                    type="button"
+                    className="atlas-dock-btn icon-only"
+                    onClick={() => setBuildStep(s => Math.min(10, s + 1))}
+                    disabled={buildStep === 10}
+                    title="Next Build Step"
+                  >
+                    <ChevronRight size={13} strokeWidth={1.75} />
                   </button>
                 </div>
 

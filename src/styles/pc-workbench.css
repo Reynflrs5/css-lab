@@ -2053,3 +2053,953 @@
   background: rgba(245, 158, 11, 0.25);
   border-color: var(--accent-gold);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   SERVER CHASSIS 3D — 2U Rackmount Model
+   The root .server-case-3d is a wide, shallow "pizza box" shape.
+   Dimensions: 500×100px face, 280px deep.
+   ═══════════════════════════════════════════════════════════════ */
+
+.server-case-3d {
+  position: relative;
+  width: 500px;
+  height: 100px;
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  cursor: default;
+}
+
+.server-case-3d.no-transition {
+  transition: none !important;
+}
+
+/* ── Backplane (rear face) ── */
+.server-backplane {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #1b1c24 0%, #111318 100%);
+  border: 2px solid #2e3040;
+  transform: translateZ(-50px);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.server-backplane.selected {
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.45);
+}
+
+/* Top panel with ventilation slits */
+.server-roof {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: repeating-linear-gradient(
+    90deg,
+    #22232e 0px, #22232e 8px,
+    #1a1b23 8px, #1a1b23 12px
+  );
+  border: 1.5px solid #323444;
+  transform: rotateX(90deg) translateZ(50px);
+  transform-origin: top center;
+}
+
+/* Bottom rail / mounting ears */
+.server-base {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: #111218;
+  border: 1.5px solid #272834;
+  transform: rotateX(-90deg) translateZ(50px);
+  transform-origin: bottom center;
+}
+
+/* ── Motherboard Plane (the SSI-EEB board that fills the interior) ── */
+.server-mobo-plane {
+  position: absolute;
+  top: 8px;
+  left: 120px;   /* leave room for front bays on the right */
+  width: 260px;
+  height: 84px;
+  background: #14311e;
+  border: 1.5px solid #1f4d2a;
+  transform: translateZ(-10px);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.server-mobo-plane.selected {
+  border-color: #22c55e;
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.35);
+}
+/* PCB trace pattern on the server mobo */
+.server-mobo-plane::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 12px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 12px);
+  pointer-events: none;
+}
+
+/* ── Dual CPUs ── */
+.server-cpu {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(135deg, #a1a1aa, #71717a);
+  border: 1.5px solid #52525b;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 3px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.server-cpu::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  background: repeating-linear-gradient(
+    45deg, #606060 0px, #606060 2px, #787878 2px, #787878 6px
+  );
+  border-radius: 2px;
+  opacity: 0.6;
+}
+.server-cpu.selected {
+  border-color: #ef4444;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
+}
+.server-cpu.cpu-1 {
+  top: 20px;
+  left: 132px;
+}
+.server-cpu.cpu-2 {
+  top: 20px;
+  left: 192px;
+}
+
+/* ── RAM Banks (8x RDIMM sticks in two rows of 4) ── */
+.server-ram-banks {
+  position: absolute;
+  top: 12px;
+  left: 256px;
+  width: 112px;
+  height: 92px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-content: center;
+  padding: 4px;
+  cursor: pointer;
+  transition: outline 0.2s;
+}
+.server-ram-banks.selected .ram-stick {
+  border-color: #a855f7;
+  box-shadow: 0 0 6px rgba(168, 85, 247, 0.5);
+}
+.ram-stick {
+  width: 10px;
+  height: 36px;
+  background: linear-gradient(180deg, #1e3a5f 0%, #1a3050 100%);
+  border: 1px solid #2563eb;
+  border-radius: 1px;
+  flex-shrink: 0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* ── Fan Wall (6 high-RPM 40mm fans) ── */
+.server-fan-wall {
+  position: absolute;
+  top: 4px;
+  left: 266px;
+  width: 100px;
+  height: 92px;
+  background: #0e0f14;
+  border: 1.5px solid #2e3040;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.server-fan-wall.selected {
+  border-color: #06b6d4;
+  box-shadow: 0 0 14px rgba(6, 182, 212, 0.35);
+}
+.server-fan {
+  width: 28px;
+  height: 28px;
+  background: #111318;
+  border: 1px solid #3b3d4e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.server-fan .fan-rotor {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(6, 182, 212, 0.4) 0deg 20deg, transparent 20deg 60deg);
+}
+
+/* ── Hot-Swap Drive Bays (front panel, 8 bays 2 columns) ── */
+.server-front-bays {
+  position: absolute;
+  top: 4px;
+  right: 12px;
+  width: 112px;
+  height: 92px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 3px;
+  padding: 4px;
+  background: #0c0d11;
+  border: 1.5px solid #272834;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.server-front-bays.selected {
+  border-color: #10b981;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+}
+.hot-swap-bay {
+  width: 50px;
+  height: 19px;
+  background: #191a22;
+  border: 1px solid #373946;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+  gap: 4px;
+  position: relative;
+}
+.bay-handle {
+  width: 8px;
+  height: 12px;
+  background: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.bay-led {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #374151;
+  flex-shrink: 0;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.bay-led.active {
+  background: #10b981;
+  box-shadow: 0 0 5px rgba(16, 185, 129, 0.8);
+}
+/* Stagger every other LED to amber to simulate disk activity */
+.hot-swap-bay:nth-child(odd) .bay-led.active {
+  background: #f59e0b;
+  box-shadow: 0 0 5px rgba(245, 158, 11, 0.8);
+}
+
+/* ── Redundant PSU modules (rear, 2 side-by-side) ── */
+.server-psu-block {
+  position: absolute;
+  top: 4px;
+  left: 0px;
+  width: 110px;
+  height: 92px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  background: #0c0d11;
+  border: 1.5px solid #272834;
+  transform: translateZ(-50px);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.server-psu-block.selected {
+  border-color: #f59e0b;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.4);
+}
+.server-psu-module {
+  flex: 1;
+  background: linear-gradient(135deg, #1c1d26, #141520);
+  border: 1px solid #33354a;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 5px;
+  position: relative;
+}
+.server-psu-module .psu-handle {
+  width: 8px;
+  height: 20px;
+  background: #374151;
+  border: 1px solid #4b5563;
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+.server-psu-module .psu-fan-rotor {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(245, 158, 11, 0.45) 0deg 20deg, transparent 20deg 60deg);
+}
+
+/* ── Focus mode dimming (mirrors PC rules) ── */
+.server-case-3d.focus-mode .hardware-layer:not(.selected),
+.server-case-3d.focus-mode .server-backplane:not(.selected) {
+  filter: brightness(0.3) saturate(0.4);
+  transition: filter 0.35s ease;
+}
+.server-case-3d.focus-mode .hardware-layer.selected,
+.server-case-3d.focus-mode .server-backplane.selected {
+  filter: brightness(1.1) saturate(1.2) !important;
+}
+
+/* 🔵 New Server Components (GPU, RAID, NIC, EXP, BMC, Network Ports) 🔵 */
+.server-gpu {
+  position: absolute;
+  top: 68px;
+  left: 132px;
+  width: 90px;
+  height: 20px;
+  background: #3b0764;
+  border: 1px solid #7e22ce;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.server-gpu.selected {
+  border-color: #a855f7;
+  box-shadow: 0 0 14px rgba(168, 85, 247, 0.5);
+}
+.server-raid {
+  position: absolute;
+  top: 70px;
+  left: 228px;
+  width: 40px;
+  height: 16px;
+  background: #7c2d12;
+  border: 1px solid #ea580c;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.server-raid.selected {
+  border-color: #f97316;
+  box-shadow: 0 0 14px rgba(249, 115, 22, 0.5);
+}
+.server-nic {
+  position: absolute;
+  top: 14px;
+  left: 124px;
+  width: 24px;
+  height: 34px;
+  background: #1e3a8a;
+  border: 1px solid #3b82f6;
+  border-left: 4px solid #93c5fd;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.server-nic.selected {
+  border-color: #60a5fa;
+  box-shadow: 0 0 14px rgba(59, 130, 246, 0.5);
+}
+.server-expansion {
+  position: absolute;
+  top: 54px;
+  left: 124px;
+  width: 24px;
+  height: 32px;
+  background: #831843;
+  border: 1px solid #ec4899;
+  border-left: 4px solid #f9a8d4;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.server-expansion.selected {
+  border-color: #f472b6;
+  box-shadow: 0 0 14px rgba(236, 72, 153, 0.5);
+}
+.server-bmc {
+  position: absolute;
+  top: 12px;
+  left: 178px;
+  width: 12px;
+  height: 12px;
+  background: #14532d;
+  border: 1px solid #22c55e;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.server-bmc.selected {
+  border-color: #4ade80;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.6);
+}
+.server-network-ports {
+  position: absolute;
+  top: 20px;
+  left: 112px;
+  width: 8px;
+  height: 60px;
+  background: #0f172a;
+  border: 1px solid #14b8a6;
+  border-radius: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.server-network-ports.selected {
+  border-color: #2dd4bf;
+  box-shadow: 0 0 14px rgba(45, 212, 191, 0.5);
+}
+
+/* 🔵 LAPTOP SYSTEM STYLES 🔵 */
+.laptop-case-3d {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 220px;
+  transform-style: preserve-3d;
+  margin-left: -160px;
+  margin-top: -110px;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.3s;
+}
+
+/* Base chassis (bottom half) */
+.laptop-palmrest {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #18181b, #09090b);
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  transform: translateZ(-5px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+.laptop-palmrest::before {
+  content: '';
+  position: absolute;
+  top: 10px; left: 10px; right: 10px; bottom: 10px;
+  border: 1px dashed #3f3f46;
+  border-radius: 4px;
+}
+
+/* Screen hinge area */
+.laptop-screen-hinge {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  right: 10px;
+  height: 20px;
+  background: #27272a;
+  border-radius: 4px;
+  transform: translateZ(5px);
+}
+
+/* Motherboard */
+.laptop-mobo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 280px;
+  height: 120px;
+  background: #064e3b;
+  border: 1px solid #047857;
+  transform: translateZ(2px);
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.laptop-mobo.selected {
+  border-color: #34d399;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.5);
+}
+
+/* Battery */
+.laptop-battery {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 280px;
+  height: 50px;
+  background: #1c1917;
+  border: 1px solid #44403c;
+  transform: translateZ(3px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.laptop-battery.selected {
+  border-color: #a8a29e;
+  box-shadow: 0 0 14px rgba(168, 162, 158, 0.5);
+}
+
+/* Cooling (Heatpipes + Fan) */
+.laptop-cooling {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 120px;
+  height: 60px;
+  transform: translateZ(4px);
+  cursor: pointer;
+  display: flex;
+  transition: all 0.2s;
+}
+.laptop-cooling.selected .laptop-heatpipe,
+.laptop-cooling.selected .laptop-blower-fan {
+  border-color: #fb923c;
+  box-shadow: 0 0 14px rgba(251, 146, 60, 0.5);
+}
+.laptop-heatpipe {
+  width: 70px;
+  height: 20px;
+  background: #7c2d12;
+  border: 1px solid #9a3412;
+  margin-top: 20px;
+}
+.laptop-blower-fan {
+  width: 50px;
+  height: 50px;
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* RAM SO-DIMM */
+.laptop-ram {
+  position: absolute;
+  top: 50px;
+  left: 40px;
+  width: 60px;
+  height: 60px;
+  transform: translateZ(5px);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  transition: all 0.2s;
+}
+.laptop-ram.selected .sodimm-stick {
+  border-color: #a855f7;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+.sodimm-stick {
+  width: 100%;
+  height: 18px;
+  background: #1e3a8a;
+  border: 1px solid #2563eb;
+}
+
+/* NVMe Storage */
+.laptop-storage {
+  position: absolute;
+  top: 90px;
+  left: 120px;
+  width: 80px;
+  height: 22px;
+  background: #172554;
+  border: 1px solid #1d4ed8;
+  transform: translateZ(4px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.laptop-storage.selected {
+  border-color: #60a5fa;
+  box-shadow: 0 0 14px rgba(96, 165, 250, 0.5);
+}
+
+/* Wi-Fi Card */
+.laptop-wifi {
+  position: absolute;
+  top: 30px;
+  left: 140px;
+  width: 30px;
+  height: 40px;
+  background: #022c22;
+  border: 1px solid #059669;
+  transform: translateZ(4px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.laptop-wifi.selected {
+  border-color: #34d399;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.5);
+}
+
+/* Dimming for laptop components */
+.laptop-case-3d.focus-mode .hardware-layer:not(.selected) {
+  filter: brightness(0.3) saturate(0.4);
+}
+.laptop-case-3d.focus-mode .hardware-layer.selected {
+  filter: brightness(1.1) saturate(1.2) !important;
+}
+
+/* 🔵 2. WIRING & POWER FLOW MODE 🔵 */
+.wiring-svg-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  transform: translateZ(50px);
+}
+.wire-power, .wire-data, .wire-eps {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+.wire-power {
+  stroke: #ef4444; /* ATX Power / PCIe Power */
+  stroke-dasharray: 10, 10;
+  animation: flow 1s linear infinite;
+}
+.wire-data {
+  stroke: #3b82f6; /* SATA Data */
+  stroke-dasharray: 8, 8;
+  animation: flow 1.5s linear infinite;
+}
+.wire-eps {
+  stroke: #eab308; /* CPU EPS Power */
+  stroke-dasharray: 10, 10;
+  animation: flow 0.8s linear infinite;
+}
+@keyframes flow {
+  from { stroke-dashoffset: 20; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* 🔵 3. WORKBENCH PROPS (Tools) 🔵 */
+.workbench-props-layer {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  transform: translateZ(-20px);
+}
+
+.prop-wrist-strap {
+  position: absolute;
+  bottom: -40px; left: -30px;
+  width: 50px; height: 50px;
+  border: 4px solid #fcd34d;
+  border-radius: 50%;
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 0 70%);
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+}
+.prop-wrist-strap::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: -20px;
+  width: 40px; height: 2px;
+  background: #fcd34d;
+  transform: rotate(-30deg);
+}
+
+.prop-multimeter {
+  position: absolute;
+  bottom: -60px; right: 20px;
+  width: 40px; height: 70px;
+  background: #fb923c;
+  border: 2px solid #ea580c;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px;
+  box-shadow: 2px 4px 10px rgba(0,0,0,0.6);
+  transform: rotate(15deg);
+}
+.multimeter-screen {
+  width: 100%; height: 20px;
+  background: #9ca3af;
+  border: 1px solid #4b5563;
+  color: #111827;
+  font-family: monospace;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.prop-multimeter::after {
+  content: '';
+  margin-top: 4px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid #374151;
+}
+
+.prop-screwdriver {
+  position: absolute;
+  top: -20px; right: -50px;
+  width: 8px; height: 80px;
+  background: linear-gradient(to right, #9ca3af, #d1d5db, #9ca3af);
+  border-radius: 2px;
+  transform: rotate(45deg);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+.prop-screwdriver::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: -2px;
+  width: 12px; height: 40px;
+  background: #ef4444;
+  border-radius: 2px;
+}
+
+/* 🔵 4. BUILD MODE (Assembly Animation) 🔵 */
+/* By default, in build steps 0-9, we hide parts. If step=10 (default), everything shows. */
+.scene-container:not(.build-step-10) .hardware-layer {
+  opacity: 0;
+  transform: translateY(-200px) scale(0.8) translateZ(50px) !important;
+  pointer-events: none;
+  transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Step 1: Motherboard */
+.scene-container.build-step-1 .comp-motherboard,
+.scene-container.build-step-1 .server-mobo-plane,
+.scene-container.build-step-1 .laptop-mobo {
+  opacity: 1; transform: translateZ(0) !important; pointer-events: auto;
+}
+
+/* Step 2: CPU */
+.scene-container.build-step-2 .comp-motherboard,
+.scene-container.build-step-2 .server-mobo-plane,
+.scene-container.build-step-2 .laptop-mobo,
+.scene-container.build-step-2 .comp-cpu,
+.scene-container.build-step-2 .server-cpu {
+  opacity: 1; transform: translateZ(0) !important; pointer-events: auto;
+}
+
+/* Step 3: RAM */
+.scene-container.build-step-3 .comp-motherboard, .scene-container.build-step-3 .server-mobo-plane, .scene-container.build-step-3 .laptop-mobo,
+.scene-container.build-step-3 .comp-cpu, .scene-container.build-step-3 .server-cpu,
+.scene-container.build-step-3 .comp-ram, .scene-container.build-step-3 .server-ram-banks, .scene-container.build-step-3 .laptop-ram {
+  opacity: 1; transform: translateZ(0) !important; pointer-events: auto;
+}
+
+/* Step 4: Storage */
+.scene-container.build-step-4 .comp-motherboard, .scene-container.build-step-4 .server-mobo-plane, .scene-container.build-step-4 .laptop-mobo,
+.scene-container.build-step-4 .comp-cpu, .scene-container.build-step-4 .server-cpu,
+.scene-container.build-step-4 .comp-ram, .scene-container.build-step-4 .server-ram-banks, .scene-container.build-step-4 .laptop-ram,
+.scene-container.build-step-4 .comp-storage, .scene-container.build-step-4 .server-front-bays, .scene-container.build-step-4 .laptop-storage {
+  opacity: 1; transform: translateZ(0) !important; pointer-events: auto;
+}
+
+/* Step 5: GPU / PCIe */
+.scene-container.build-step-5 .comp-motherboard, .scene-container.build-step-5 .server-mobo-plane, .scene-container.build-step-5 .laptop-mobo,
+.scene-container.build-step-5 .comp-cpu, .scene-container.build-step-5 .server-cpu,
+.scene-container.build-step-5 .comp-ram, .scene-container.build-step-5 .server-ram-banks, .scene-container.build-step-5 .laptop-ram,
+.scene-container.build-step-5 .comp-storage, .scene-container.build-step-5 .server-front-bays, .scene-container.build-step-5 .laptop-storage,
+.scene-container.build-step-5 .comp-gpu, .scene-container.build-step-5 .server-gpu, .scene-container.build-step-5 .server-nic, .scene-container.build-step-5 .server-raid, .scene-container.build-step-5 .laptop-wifi {
+  opacity: 1; transform: translateZ(0) !important; pointer-events: auto;
+}
+
+/* Step 6: Cooling */
+.scene-container.build-step-6 .comp-motherboard, .scene-container.build-step-6 .server-mobo-plane, .scene-container.build-step-6 .laptop-mobo,
+.scene-container.build-step-6 .comp-cpu, .scene-container.build-step-6 .server-cpu,
+.scene-container.build-step-6 .comp-ram, .scene-container.build-step-6 .server-ram-banks, .scene-container.build-step-6 .laptop-ram,
+.scene-container.build-step-6 .comp-storage, .scene-container.build-step-6 .server-front-bays, .scene-container.build-step-6 .laptop-storage,
+.scene-container.build-step-6 .comp-gpu, .scene-container.build-step-6 .server-gpu, .scene-container.build-step-6 .server-nic, .scene-container.build-step-6 .server-raid, .scene-container.build-step-6 .laptop-wifi,
+.scene-container.build-step-6 .comp-cooler, .scene-container.build-step-6 .server-fan-wall, .scene-container.build-step-6 .laptop-cooling {
+  opacity: 1; transform: translateZ(0) !important; pointer-events: auto;
+}
+
+/* Step 7-9: Power & Enclosure */
+.scene-container.build-step-7 .hardware-layer,
+.scene-container.build-step-8 .hardware-layer,
+.scene-container.build-step-9 .hardware-layer {
+  opacity: 1; transform: translateZ(0) !important; pointer-events: auto;
+}
+
+/* 🔵 5. NETWORKING GEAR 🔵 */
+.networking-rack-3d {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 300px; height: 350px;
+  transform-style: preserve-3d;
+  margin-left: -150px; margin-top: -175px;
+  transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.3s;
+}
+
+/* 19" Rack Frame (Mini Desktop Version) */
+.rack-frame {
+  position: absolute;
+  inset: 0;
+  border-left: 10px solid #1f2937;
+  border-right: 10px solid #1f2937;
+  border-bottom: 20px solid #111827;
+  transform: translateZ(-10px);
+}
+.rack-frame::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 10px;
+  background: #111827;
+}
+
+/* Shared Rack Mount Style */
+.net-switch, .net-patch-panel, .net-wifi-router {
+  position: absolute;
+  left: 20px;
+  width: 260px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  transform: translateZ(0);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.net-switch.selected, .net-patch-panel.selected, .net-wifi-router.selected, .net-lan-tester.selected {
+  border-color: #38bdf8;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+  filter: brightness(1.2) saturate(1.2);
+}
+
+/* Wi-Fi Router */
+.net-wifi-router {
+  top: 40px; height: 40px;
+  background: linear-gradient(to right, #1e293b, #0f172a);
+}
+.router-antennas {
+  position: absolute;
+  top: -30px; left: 0; width: 100%;
+  display: flex; justify-content: space-around;
+}
+.antenna {
+  width: 6px; height: 40px;
+  background: #334155;
+  border-radius: 3px;
+  transform-origin: bottom;
+  transform: rotate(-15deg);
+}
+
+/* Switch */
+.net-switch {
+  top: 100px; height: 44px; /* 1U */
+}
+.switch-ports, .patch-ports {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2px;
+  padding: 4px;
+  width: 90%;
+}
+.rj45-port {
+  width: 14px; height: 14px;
+  background: #000;
+  border: 1px solid #475569;
+  border-radius: 2px;
+  position: relative;
+}
+.rj45-port.active::after {
+  content: '';
+  position: absolute;
+  top: 1px; left: 1px;
+  width: 3px; height: 3px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #10b981;
+}
+.rj45-port.patched::before {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: 5px;
+  width: 4px; height: 40px;
+  background: #3b82f6; /* Blue patch cable */
+}
+
+/* Patch Panel */
+.net-patch-panel {
+  top: 154px; height: 44px;
+  background: #1e1e1e;
+}
+
+/* LAN Tester (standalone prop) */
+.net-lan-tester {
+  position: absolute;
+  bottom: 20px; right: -80px;
+  width: 60px; height: 120px;
+  background: #fef08a; /* Yellow tester body */
+  border: 2px solid #ca8a04;
+  border-radius: 4px;
+  transform: translateZ(5px) rotate(-10deg);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  transition: all 0.2s;
+}
+.tester-leds {
+  display: grid;
+  grid-template-rows: repeat(8, 1fr);
+  gap: 4px;
+}
+.tester-led {
+  width: 8px; height: 8px;
+  background: #4b5563;
+  border-radius: 50%;
+}
+.tester-led.active {
+  background: #22c55e;
+  box-shadow: 0 0 6px #22c55e;
+  animation: blink 2s infinite step-start;
+}
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Dimming */
+.networking-rack-3d.focus-mode .hardware-layer:not(.selected) {
+  filter: brightness(0.3) saturate(0.4);
+}
+

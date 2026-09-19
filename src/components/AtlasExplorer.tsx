@@ -34,14 +34,14 @@ interface CategoryMeta {
 }
 
 const CATEGORIES: CategoryMeta[] = [
-  { label: 'Processing', color: '#ef4444', icon: <Cpu size={14} />, ids: ['cpu'] },
-  { label: 'Interconnect', color: '#f97316', icon: <CircuitBoard size={14} />, ids: ['motherboard', 'cmos-battery', 'fpanel'] },
-  { label: 'Memory', color: '#a855f7', icon: <Server size={14} />, ids: ['ram'] },
+  { label: 'Processing', color: '#ef4444', icon: <Cpu size={14} />, ids: ['cpu', 'server-cpu'] },
+  { label: 'Interconnect', color: '#f97316', icon: <CircuitBoard size={14} />, ids: ['motherboard', 'cmos-battery', 'fpanel', 'server-mobo'] },
+  { label: 'Memory', color: '#a855f7', icon: <Server size={14} />, ids: ['ram', 'server-ram'] },
   { label: 'Graphics', color: '#3b82f6', icon: <Monitor size={14} />, ids: ['gpu'] },
-  { label: 'Storage', color: '#10b981', icon: <HardDrive size={14} />, ids: ['storage', 'sata-hdd'] },
-  { label: 'Thermal', color: '#06b6d4', icon: <Wind size={14} />, ids: ['cooling', 'case-fans'] },
-  { label: 'Power', color: '#f59e0b', icon: <Zap size={14} />, ids: ['psu'] },
-  { label: 'Enclosure', color: '#6b7280', icon: <Box size={14} />, ids: ['chassis'] },
+  { label: 'Storage', color: '#10b981', icon: <HardDrive size={14} />, ids: ['storage', 'sata-hdd', 'server-storage'] },
+  { label: 'Thermal', color: '#06b6d4', icon: <Wind size={14} />, ids: ['cooling', 'case-fans', 'server-cooling'] },
+  { label: 'Power', color: '#f59e0b', icon: <Zap size={14} />, ids: ['psu', 'server-psu'] },
+  { label: 'Enclosure', color: '#6b7280', icon: <Box size={14} />, ids: ['chassis', 'server-chassis'] },
 ]
 
 const QUICK_START = ['motherboard', 'cpu', 'gpu', 'ram', 'psu', 'storage']
@@ -53,6 +53,8 @@ function getCategoryColor(id: string): string {
 
 export default function AtlasExplorer() {
   const [viewMode, setViewMode] = useState<'landscape' | 'atlas'>('landscape')
+  const [systemType, setSystemType] = useState<'pc' | 'server' | 'laptop' | 'networking'>('pc')
+  const [viewResetKey, setViewResetKey] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
   const [selectedId, setSelectedId] = useState<string>('motherboard')
   const [activeTab, setActiveTab] = useState<'specs' | 'install' | 'diagnostics'>('specs')
@@ -72,7 +74,9 @@ export default function AtlasExplorer() {
   const [mobileSheetExpanded, setMobileSheetExpanded] = useState<boolean>(false)
   const [mobileSheetOpen, setMobileSheetOpen] = useState<boolean>(true)
 
-  const selected: PcPart = pcParts.find(p => p.id === selectedId) ?? pcParts[1]
+  const activeSystemParts = pcParts.filter(p => p.systemType === systemType || p.systemType === 'both')
+  
+  const selected: PcPart = pcParts.find(p => p.id === selectedId) ?? activeSystemParts[0]
   const catColor = getCategoryColor(selectedId)
 
   const handleSelect = useCallback((id: string) => {
@@ -90,7 +94,7 @@ export default function AtlasExplorer() {
   }
 
   const filteredParts = searchQuery.trim()
-    ? pcParts.filter(p =>
+    ? activeSystemParts.filter(p =>
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.shortName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.category.toLowerCase().includes(searchQuery.toLowerCase())
@@ -138,6 +142,38 @@ export default function AtlasExplorer() {
         <div className="atlas-brand">
           <Layers size={18} className="atlas-brand-icon" style={{ color: '#3b82f6' }} />
           <span className="atlas-brand-name">CSS <strong>Hardware Explorer</strong></span>
+        </div>
+
+        {/* System Type Picker */}
+        <div className="atlas-view-switcher" role="group" aria-label="System Type" style={{ marginRight: '10px' }}>
+          <button
+            type="button"
+            className={`view-mode-btn${systemType === 'pc' ? ' active' : ''}`}
+          onClick={() => { setSystemType('pc'); setSelectedId('motherboard'); setViewResetKey(k => k + 1) }}
+          >
+            <span>Desktop PC</span>
+          </button>
+          <button
+            type="button"
+            className={`view-mode-btn${systemType === 'server' ? ' active' : ''}`}
+          onClick={() => { setSystemType('server'); setSelectedId('server-mobo'); setViewResetKey(k => k + 1) }}
+          >
+            <span>Server</span>
+          </button>
+          <button
+            type="button"
+            className={`view-mode-btn${systemType === 'laptop' ? ' active' : ''}`}
+          onClick={() => { setSystemType('laptop'); setSelectedId('laptop-mobo'); setViewResetKey(k => k + 1) }}
+          >
+            <span>Laptop</span>
+          </button>
+          <button
+            type="button"
+            className={`view-mode-btn${systemType === 'networking' ? ' active' : ''}`}
+          onClick={() => { setSystemType('networking'); setSelectedId('wifi-router'); setViewResetKey(k => k + 1) }}
+          >
+            <span>Networking</span>
+          </button>
         </div>
 
         {/* View Mode Switcher (Desktop Only) */}
@@ -312,7 +348,7 @@ export default function AtlasExplorer() {
                         {isExpanded && (
                           <ul className="sidebar-sub-list" role="list">
                             {cat.ids.map(id => {
-                              const part = pcParts.find(p => p.id === id)
+                              const part = activeSystemParts.find(p => p.id === id)
                               if (!part) return null
                               return (
                                 <li key={id}>
@@ -360,7 +396,8 @@ export default function AtlasExplorer() {
               )}
             </div>
             {(selectedCategory ? CATEGORIES.filter(c => c.label === selectedCategory) : CATEGORIES).map(cat => {
-              const parts = pcParts.filter(p => cat.ids.includes(p.id))
+              const parts = activeSystemParts.filter(p => cat.ids.includes(p.id))
+              if (parts.length === 0) return null
               return (
                 <div key={cat.label} className="lpp-group">
                   <div className="lpp-group-label" style={{ color: cat.color }}>
@@ -403,7 +440,7 @@ export default function AtlasExplorer() {
             <div className="mobile-part-chips" role="listbox" aria-label="Select PC Component">
               {CATEGORIES.map(cat =>
                 cat.ids.map(id => {
-                  const part = pcParts.find(p => p.id === id)
+                  const part = activeSystemParts.find(p => p.id === id)
                   if (!part) return null
                   const isSel = id === selectedId
                   return (
@@ -509,6 +546,8 @@ export default function AtlasExplorer() {
               atlasMode={true}
               initialZoom={isFullscreen ? 1.38 : 1.12}
               isFullscreen={isFullscreen}
+              systemType={systemType}
+              viewResetKey={viewResetKey}
             />
           </div>
         </main>
@@ -644,7 +683,7 @@ export default function AtlasExplorer() {
           <div className="details-start-with">
             <div className="details-start-label">START WITH</div>
             {QUICK_START.map(id => {
-              const part = pcParts.find(p => p.id === id)
+              const part = activeSystemParts.find(p => p.id === id)
               if (!part) return null
               return (
                 <button

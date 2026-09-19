@@ -1,0 +1,576 @@
+/* ═══════════════════════════════════════════════════════════════
+   SERVER DIAGRAM 2D INTERACTIVE (Educational)
+   ═══════════════════════════════════════════════════════════════ */
+
+   .sd-root {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    background: #0f1115;
+    color: #e2e8f0;
+    border-radius: 12px;
+    border: 1px solid #1e293b;
+    font-family: var(--sans);
+  }
+  @media (min-width: 1024px) {
+    .sd-root {
+      flex-direction: row;
+      align-items: flex-start;
+      height: calc(100vh - 120px);
+      min-height: 600px;
+    }
+  }
+  
+  /* ── LEFT: Diagram Area ─────────────────────────────────────── */
+  .sd-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+  .sd-canvas-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sd-canvas-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #f8fafc;
+  }
+  .sd-canvas-sub {
+    font-size: 0.875rem;
+    color: #94a3b8;
+  }
+  
+  /* The Main Canvas Container */
+  .sd-canvas {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #151821;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    display: flex;
+    align-items: stretch;
+    padding: 16px;
+    gap: 8px;
+    overflow: hidden;
+  }
+  
+  /* Labels around the chassis */
+  .sd-side-label {
+    position: absolute;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #64748b;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+  .sd-label-front { left: 4px; writing-mode: vertical-lr; transform: translateY(-50%) rotate(180deg); }
+  .sd-label-rear { right: 4px; writing-mode: vertical-rl; }
+  
+  /* Chassis border background */
+  .sd-chassis-border {
+    position: absolute;
+    inset: 12px 24px; /* leave room for labels */
+    border: 3px solid #334155;
+    border-radius: 6px;
+    background: #11131a;
+    z-index: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .sd-chassis-border:hover {
+    border-color: #64748b;
+    background: #1a1d27;
+  }
+  .sd-chassis-border.sd-chassis-sel {
+    border-color: #64748b;
+    box-shadow: 0 0 20px rgba(100, 116, 139, 0.4);
+    background: #1c202b;
+  }
+  .sd-chassis-border.sd-chassis-dim {
+    border-color: #1e293b;
+    background: #0d0f15;
+  }
+  .sd-chassis-tag {
+    position: absolute;
+    bottom: -1px;
+    right: 12px;
+    background: #334155;
+    color: #cbd5e1;
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 4px 4px 0 0;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+  }
+  .sd-chassis-sel .sd-chassis-tag {
+    background: #64748b;
+    color: #fff;
+  }
+  
+  /* Interactive Blocks inside Chassis */
+  .sd-block {
+    position: relative;
+    z-index: 10;
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.2);
+  }
+  .sd-block:hover, .sd-sub:hover {
+    border-color: var(--cc);
+    background: color-mix(in srgb, var(--cc) 10%, transparent);
+  }
+  .sd-block.sd-sel, .sd-sub.sd-sel {
+    border-color: var(--cc);
+    background: color-mix(in srgb, var(--cc) 20%, transparent);
+    border-style: solid;
+    box-shadow: 0 0 16px color-mix(in srgb, var(--cc) 35%, transparent);
+    z-index: 20;
+  }
+  
+  /* Dimming logic */
+  .sd-block.sd-dim, .sd-sub.sd-dim, .sd-chassis-border.sd-chassis-dim {
+    opacity: 0.15;
+    filter: grayscale(0.8);
+    pointer-events: none; /* so clicks don't register on dimmed items */
+  }
+  /* If a parent is selected but not the child, dim the unselected children */
+  .sd-sel .sd-sub:not(.sd-sel) {
+    opacity: 0.4;
+  }
+  
+  /* ─ Column Layout inside canvas ─ */
+  .sd-col-bays { flex: 0 0 80px; margin-left: 24px; }
+  .sd-col-mobo { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .sd-col-fans { flex: 0 0 60px; }
+  .sd-col-rear { flex: 0 0 100px; margin-right: 24px; display: flex; flex-direction: column; gap: 8px; }
+  
+  /* Block Labels */
+  .sd-block-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin-top: auto;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+    line-height: 1.2;
+  }
+  .sd-block:hover .sd-block-label,
+  .sd-sel .sd-block-label {
+    opacity: 1;
+  }
+  .mobo-label { position: absolute; bottom: 8px; right: 8px; margin: 0; }
+  
+  /* ── 1. Storage Bays ── */
+  .sd-bays-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    height: 100%;
+    margin-bottom: 8px;
+  }
+  .sd-bay {
+    flex: 1;
+    background: #1e293b;
+    border-radius: 2px;
+    display: flex;
+    border: 1px solid #334155;
+    overflow: hidden;
+  }
+  .sd-bay-ear {
+    width: 6px;
+    background: #0f172a;
+    border-right: 1px solid #334155;
+  }
+  .sd-bay-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+  .sd-bay-leds {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sd-bay-led {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #334155;
+  }
+  .sd-bay-led.green.on { background: #10b981; box-shadow: 0 0 4px #10b981; }
+  .sd-bay-led.amber.on {
+    background: #f59e0b;
+    box-shadow: 0 0 4px #f59e0b;
+    animation: blink 0.8s infinite alternate;
+  }
+  .sd-bay:nth-child(even) .sd-bay-led.amber.on { animation-delay: 0.4s; }
+  @keyframes blink { 0% { opacity: 0.2; } 100% { opacity: 1; } }
+  .sd-bay-num { font-size: 8px; color: #64748b; }
+  
+  /* ── 2. Motherboard & Subcomponents ── */
+  .sd-col-mobo {
+    position: relative;
+    background: rgba(20, 49, 30, 0.3); /* green tint */
+  }
+  .sd-mobo-pcb-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(34,197,94,0.05) 0, rgba(34,197,94,0.05) 1px, transparent 1px, transparent 10px),
+      repeating-linear-gradient(90deg, rgba(34,197,94,0.05) 0, rgba(34,197,94,0.05) 1px, transparent 1px, transparent 10px);
+    pointer-events: none;
+  }
+  
+  .sd-sub {
+    position: absolute;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    background: rgba(0,0,0,0.4);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* CPU */
+  .sd-cpu-pair {
+    top: 10%; left: 8%; width: 28%; height: 35%;
+    display: flex; gap: 8%; padding: 4%;
+  }
+  .sd-cpu-socket {
+    flex: 1;
+    background: #1e293b;
+    border: 1px solid #475569;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
+  .sd-cpu-die {
+    width: 60%; aspect-ratio: 1;
+    background: repeating-linear-gradient(45deg, #64748b 0, #64748b 2px, #94a3b8 2px, #94a3b8 4px);
+    border: 1px solid #cbd5e1;
+  }
+  .sd-cpu-label { font-size: 8px; color: #cbd5e1; font-weight: bold; }
+  
+  /* RAM */
+  .sd-ram-area {
+    top: 10%; left: 40%; width: 20%; height: 35%;
+    flex-direction: column; gap: 2px; padding: 4px;
+  }
+  .sd-dimm {
+    flex: 1; width: 100%;
+    background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
+    border-left: 2px solid #60a5fa;
+    border-radius: 1px;
+  }
+  
+  /* PCIe Cards Shared */
+  .sd-pcie-card {
+    height: 18%; left: 8%;
+    background: #1e293b;
+    display: flex; align-items: center; padding: 0 8px; gap: 8px;
+    border: 1px solid #334155;
+    border-left: 4px solid var(--cc);
+  }
+  .sd-pcie-icon { font-size: 14px; color: var(--cc); }
+  .sd-pcie-name { font-size: 10px; font-weight: 600; color: #f8fafc; flex: 1; }
+  
+  /* NIC */
+  .sd-nic { top: 52%; width: 40%; }
+  .sd-pcie-ports { display: flex; gap: 4px; }
+  .sd-sfp { width: 12px; height: 16px; background: #0f172a; border: 1px solid #475569; }
+  
+  /* RAID */
+  .sd-raid { top: 74%; width: 40%; }
+  .sd-raid-cache {
+    background: #ea580c; color: white; font-size: 7px;
+    padding: 2px 4px; border-radius: 2px;
+  }
+  
+  /* GPU */
+  .sd-gpu { top: 52%; right: 8%; left: auto; width: 38%; height: 40%; background: #2e1065; flex-direction: column; align-items: stretch; padding: 0;}
+  .sd-gpu-body {
+    flex: 1; display: flex; align-items: center; padding: 8px; gap: 8px;
+    border-bottom: 1px solid #4c1d95;
+  }
+  .sd-gpu-fins {
+    height: 12px; display: flex; gap: 2px; padding: 2px 4px;
+    background: #1e1b4b;
+  }
+  .sd-fin { flex: 1; background: #4c1d95; }
+  
+  /* Expansion Row */
+  .sd-bottom-row {
+    position: absolute; bottom: 8px; left: 8px; display: flex; gap: 8px;
+    width: 65%; height: 16%;
+  }
+  .sd-exp { position: relative; top: 0; left: 0; height: 100%; flex: 1; }
+  
+  /* BMC */
+  .sd-bmc-chip {
+    position: relative; top: 0; left: 0; height: 100%; width: 40px;
+    flex-direction: column; gap: 2px; background: #14311e;
+  }
+  .sd-bmc-ic {
+    width: 16px; height: 16px; background: #3f6212;
+    border: 1px solid #65a30d; border-radius: 2px;
+  }
+  
+  /* ── 3. Fan Wall ── */
+  .sd-fan-grid {
+    display: flex; flex-direction: column; gap: 4px; height: 100%; margin-bottom: 8px;
+  }
+  .sd-fan-unit {
+    flex: 1; background: #0f172a; border: 2px solid #334155;
+    border-radius: 4px; display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .sd-fan-blades {
+    width: 80%; aspect-ratio: 1; border-radius: 50%;
+    background: #1e293b; position: relative;
+  }
+  .sd-fan-unit.spin .sd-fan-blades {
+    animation: spin 0.5s linear infinite;
+  }
+  .sd-fan-blade {
+    position: absolute; top: 10%; left: 45%; width: 10%; height: 40%;
+    background: #06b6d4; border-radius: 4px;
+    transform-origin: 50% 100%;
+    transform: rotate(calc(var(--b) * 90deg));
+  }
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+  
+  /* ── 4. Rear I/O & PSU ── */
+  .sd-psu-block { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+  .sd-psu-mod {
+    flex: 1; background: #1e293b; border: 1px solid #334155; border-radius: 2px;
+    display: flex; align-items: center; padding: 0 8px; gap: 8px;
+  }
+  .sd-psu-fan {
+    width: 16px; height: 16px; border-radius: 50%; border: 2px solid #475569;
+    border-top-color: #f59e0b;
+  }
+  .sd-psu-fan.spin { animation: spin 0.8s linear infinite; }
+  .sd-psu-txt { font-size: 10px; font-weight: bold; color: #94a3b8; }
+  
+  .sd-ports-block { height: 60px; display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; padding-top: 4px; }
+  .sd-rj45 { width: 14px; height: 12px; background: #0f172a; border: 1px solid #14b8a6; border-top-color: #f59e0b; }
+  .sd-sfp28 { width: 16px; height: 10px; background: #0f172a; border: 1px solid #64748b; }
+  .sd-usb { width: 12px; height: 6px; background: #3b82f6; border: 1px solid #1e40af; }
+  .sd-vga { width: 18px; height: 8px; background: #3b82f6; border-radius: 2px 2px 4px 4px; }
+  
+  /* ── Bottom Bar / Chips ── */
+  .sd-bottom-bar {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+  .sd-show-all-btn {
+    background: #1e293b;
+    color: #f8fafc;
+    border: 1px solid #334155;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    width: 100%;
+  }
+  .sd-show-all-btn:hover {
+    background: #334155;
+    border-color: #475569;
+  }
+  
+  .sd-component-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sd-chip {
+    background: #1e293b;
+    color: #cbd5e1;
+    border: 1px solid #334155;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sd-chip:hover {
+    background: color-mix(in srgb, var(--cc) 15%, #1e293b);
+    border-color: var(--cc);
+    color: #fff;
+  }
+  
+  /* ── RIGHT: Info Panel ──────────────────────────────────────── */
+  .sd-info-panel {
+    flex: 0 0 350px;
+    background: #11131a;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .sd-info-empty {
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    color: #94a3b8;
+  }
+  .sd-info-empty h3 {
+    color: #f8fafc;
+    margin: 0;
+    font-size: 1.125rem;
+  }
+  .sd-info-empty p {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  .sd-comp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    margin-top: 16px;
+    text-align: left;
+  }
+  .sd-comp-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #1e293b;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sd-comp-list-item:hover {
+    background: color-mix(in srgb, var(--cc) 10%, #1e293b);
+    border-color: color-mix(in srgb, var(--cc) 50%, transparent);
+    color: #fff;
+  }
+  .sd-comp-list-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .sd-comp-list-name {
+    font-size: 0.875rem; font-weight: 500; flex: 1;
+  }
+  .sd-comp-list-cat {
+    font-size: 0.75rem; color: #64748b;
+  }
+  
+  /* Populated Info State */
+  .sd-info-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .sd-info-header {
+    padding: 24px;
+    border-bottom: 2px solid; /* color set inline */
+    background: #151821;
+  }
+  .sd-info-cat {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .sd-info-name {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    color: #f8fafc;
+  }
+  .sd-info-desc {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+  }
+  
+  .sd-info-section {
+    padding: 20px 24px;
+    border-bottom: 1px solid #1e293b;
+  }
+  .sd-info-section:last-child { border-bottom: none; }
+  
+  .sd-info-section-title {
+    margin: 0 0 12px 0;
+    font-size: 0.875rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+  .sd-info-section-body {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #e2e8f0;
+    line-height: 1.6;
+  }
+  
+  /* Specs Grid */
+  .sd-specs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .sd-spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #334155;
+  }
+  .sd-spec-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .sd-spec-key {
+    font-size: 0.875rem; color: #94a3b8;
+  }
+  .sd-spec-val {
+    font-size: 0.875rem; color: #f8fafc; font-weight: 500;
+  }
+  
+  /* Examples List */
+  .sd-examples-list {
+    margin: 0;
+    padding-left: 20px;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+  }
+  .sd-examples-list li { margin-bottom: 6px; }
+  .sd-examples-list li:last-child { margin-bottom: 0; }
