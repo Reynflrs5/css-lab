@@ -153,27 +153,7 @@ export default function AtlasExplorer() {
           >
             <span>Desktop PC</span>
           </button>
-          <button
-            type="button"
-            className={`view-mode-btn${systemType === 'server' ? ' active' : ''}`}
-          onClick={() => { setSystemType('server'); setSelectedId('server-mobo'); setViewResetKey(k => k + 1) }}
-          >
-            <span>Server</span>
-          </button>
-          <button
-            type="button"
-            className={`view-mode-btn${systemType === 'laptop' ? ' active' : ''}`}
-          onClick={() => { setSystemType('laptop'); setSelectedId('laptop-mobo'); setViewResetKey(k => k + 1) }}
-          >
-            <span>Laptop</span>
-          </button>
-          <button
-            type="button"
-            className={`view-mode-btn${systemType === 'networking' ? ' active' : ''}`}
-          onClick={() => { setSystemType('networking'); setSelectedId('wifi-router'); setViewResetKey(k => k + 1) }}
-          >
-            <span>Networking</span>
-          </button>
+
         </div>
 
         {/* View Mode Switcher (Desktop Only) */}

@@ -161,6 +161,8 @@ export default function PcDiagram({
   const [workbenchProps, setWorkbenchProps] = useState<boolean>(false)
   const [buildStep, setBuildStep] = useState<number>(10) // 10 = fully assembled
   const [powerOn, setPowerOn] = useState<boolean>(true)
+  const [isPoweringUp, setIsPoweringUp] = useState<boolean>(false)
+  const [isVerticalGpu, setIsVerticalGpu] = useState<boolean>(false)
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true)
   const [glassPanelOn, setGlassPanelOn] = useState<boolean>(false) // Default OPEN CASE
   const [activeTab, setActiveTab] = useState<'specs' | 'install' | 'diagnostics'>('specs')
@@ -168,6 +170,15 @@ export default function PcDiagram({
   const [zoom, setZoom] = useState<number>(defaultZoom)
   const [focusMode, setFocusMode] = useState<boolean>(false)
   const [pan, setPan] = useState<Pan>({ x: 0, y: 0 })
+
+  const [isAssembling, setIsAssembling] = useState<boolean>(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAssembling(false)
+    }, 2800) // Match the total animation duration + delay
+    return () => clearTimeout(timer)
+  }, [])
 
   const viewportRef = useRef<HTMLDivElement>(null)
   const dragStartRef = useRef<{ clientX: number; clientY: number; rotX: number; rotY: number }>({
@@ -602,6 +613,10 @@ export default function PcDiagram({
             className={`power-toggle-btn${powerOn ? ' powered' : ''}`}
             onClick={() => {
               playClickSound(powerOn ? 450 : 1300, 0.05)
+              if (!powerOn) {
+                setIsPoweringUp(true)
+                setTimeout(() => setIsPoweringUp(false), 400)
+              }
               setPowerOn(prev => !prev)
             }}
             title={powerOn ? 'Cut main system power' : 'Energize system power rail'}
@@ -609,6 +624,20 @@ export default function PcDiagram({
             <Power size={14} strokeWidth={2} aria-hidden="true" />
             <span className={`status-dot${powerOn ? ' live' : ''}`} />
             POWER: {powerOn ? 'ONLINE' : 'OFF'}
+          </button>
+
+          <button
+            type="button"
+            className={`sound-toggle-btn${isVerticalGpu ? ' on' : ''}`}
+            onClick={() => {
+              playClickSound(950, 0.03)
+              setIsVerticalGpu(prev => !prev)
+            }}
+            title="Toggle Vertical GPU Mount"
+            style={{ marginLeft: 6, padding: '7px 12px' }}
+          >
+            <Layers size={14} strokeWidth={1.75} aria-hidden="true" />
+            VERT GPU: {isVerticalGpu ? 'ON' : 'OFF'}
           </button>
 
           <button
@@ -700,7 +729,9 @@ export default function PcDiagram({
               <div
                 className={`pc-case-3d ${activePreset}${powerOn ? ' pwr-on' : ''}${
                   isDragging ? ' no-transition' : ''
-                }${focusMode ? ` focus-mode focusing-${selected.id}` : ''}`}
+                }${focusMode ? ` focus-mode focusing-${selected.id}` : ''}${
+                  isAssembling ? ' assembling' : ''
+                }${isPoweringUp ? ' powering-up' : ''}`}
                 style={{
                   transform: `translateX(${pan.x}px) translateY(${pan.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(${zoom})`,
                   transition: isDragging ? 'none' : 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -709,9 +740,28 @@ export default function PcDiagram({
                 {/* ⚡ WIRING SVG OVERLAY ⚡ */}
                 {wiringMode && (
                   <svg className="wiring-svg-overlay" width="280" height="280" viewBox="0 0 280 280">
-                     <path className="wire-power" d="M120,240 C120,200 230,200 230,120" />
-                     <path className="wire-data" d="M180,240 C180,220 180,180 180,160 C180,140 140,140 140,140" />
-                     <path className="wire-eps" d="M110,240 C110,240 -10,240 -10,80 C-10,30 50,30 50,30" />
+                     <path className="wire-power wire-sleeved" d="M120,240 C120,200 230,200 230,120" />
+                     <rect className="cable-comb" x="180" y="165" width="20" height="4" transform="rotate(-30 190 167)" />
+                     <path className="wire-data wire-sleeved" d="M180,240 C180,220 180,180 180,160 C180,140 140,140 140,140" />
+                     <path className="wire-eps wire-sleeved" d="M110,240 C110,240 -10,240 -10,80 C-10,30 50,30 50,30" />
+                  </svg>
+                )}
+
+                {/* Airflow Particles (Visible when power is on) */}
+                {powerOn && (
+                  <div className="airflow-particles">
+                    {Array.from({ length: 12 }).map((_, i) => (
+                      <div key={i} className={`particle ${i % 3 === 0 ? 'hot' : ''}`} style={{ animationDelay: `${i * 0.25}s`, top: `${20 + (i * 5)}%` }} />
+                    ))}
+                  </div>
+                )}
+
+                {/* Exploded View Guide Lines */}
+                {activePreset === 'exploded' && (
+                  <svg className="exploded-guide-lines" width="280" height="280" viewBox="0 0 280 280">
+                    <line x1="120" y1="120" x2="180" y2="20" className="guide-line" />
+                    <line x1="60" y1="140" x2="-20" y2="40" className="guide-line" />
+                    <line x1="140" y1="180" x2="160" y2="260" className="guide-line" />
                   </svg>
                 )}
 
@@ -743,8 +793,10 @@ export default function PcDiagram({
 
                 {/* Top Chassis Roof */}
                 <div className="chassis-roof" />
+                <div className={`rgb-led-strip top${powerOn ? ' rgb-enabled' : ''}`} style={{ opacity: powerOn ? 1 : 0.2 }} />
                 {/* Bottom Chassis Basement */}
                 <div className="chassis-base" />
+                <div className={`rgb-led-strip bottom${powerOn ? ' rgb-enabled' : ''}`} style={{ opacity: powerOn ? 1 : 0.2 }} />
 
                 {/* Rear Panel Frame (Left edge in open view) */}
                 <div className="chassis-rear-edge">
@@ -784,6 +836,10 @@ export default function PcDiagram({
                       className={`front-pwr-btn${powerOn ? ' on' : ''}`}
                       onClick={e => {
                         e.stopPropagation()
+                        if (!powerOn) {
+                          setIsPoweringUp(true)
+                          setTimeout(() => setIsPoweringUp(false), 400)
+                        }
                         setPowerOn(p => !p)
                       }}
                       title="Front Power Switch"
@@ -884,7 +940,7 @@ export default function PcDiagram({
                   <div className="comp-tag mini">CPU</div>
                 </div>
 
-                {/* ── 4. CPU COOLER ────────────────────────────────── */}
+                {/* ── 4. CPU COOLER (AIO LIQUID COOLER) ────────────────────────────────── */}
                 <div
                   className={`hardware-layer comp-cooling${
                     selected.id === 'cooling' ? ' selected' : ''
@@ -896,27 +952,24 @@ export default function PcDiagram({
                   onKeyDown={e => handleKey(e, 'cooling')}
                   role="button"
                   tabIndex={0}
-                  aria-label="CPU Cooler"
+                  aria-label="AIO Liquid Cooler"
                 >
-                  <div className="cooler-tower">
-                    <div className="heatpipe pipe-1" />
-                    <div className="heatpipe pipe-2" />
-                    <div className="heatpipe pipe-3" />
-                    <div className="heatpipe pipe-4" />
-                    <div className="fin-stack">
-                      {Array.from({ length: 8 }).map((_, i) => (
-                        <div key={i} className="cooler-fin" />
-                      ))}
-                    </div>
-                    <div className={`fan-unit${powerOn ? ' spinning' : ''}`}>
-                      <div className="fan-hub" />
-                      <div className="fan-blade b1" />
-                      <div className="fan-blade b2" />
-                      <div className="fan-blade b3" />
-                      <div className="fan-blade b4" />
+                  <div className="aio-radiator">
+                     <div className={`intake-fan fan-top${powerOn ? ' rgb-enabled spinning' : ''}`} style={{ width: '120px', height: '24px', position: 'absolute', left: 0, top: 0, opacity: 0.5 }} />
+                     <div className={`intake-fan fan-bot${powerOn ? ' rgb-enabled spinning' : ''}`} style={{ width: '120px', height: '24px', position: 'absolute', left: '120px', top: 0, opacity: 0.5 }} />
+                  </div>
+                  <svg className="aio-tubes" viewBox="0 0 280 280">
+                    <path className="aio-tube" d="M 60 140 C 40 80, 80 40, 100 30" />
+                    <path className="aio-tube-texture" d="M 60 140 C 40 80, 80 40, 100 30" />
+                    <path className="aio-tube" d="M 70 140 C 50 90, 100 50, 120 30" />
+                    <path className="aio-tube-texture" d="M 70 140 C 50 90, 100 50, 120 30" />
+                  </svg>
+                  <div className={`aio-pump${powerOn ? ' rgb-enabled' : ''}`} style={{ position: 'absolute', top: '120px', left: '40px' }}>
+                    <div className="aio-pump-screen">
+                      <span className="aio-pump-text">42°</span>
                     </div>
                   </div>
-                  <div className="comp-tag mini">COOLER</div>
+                  <div className="comp-tag mini" style={{ top: '160px', left: '40px' }}>AIO PUMP</div>
                 </div>
 
                 {/* ── 5. RAM (DDR5 Dual Channel) ───────────────────── */}
@@ -934,14 +987,14 @@ export default function PcDiagram({
                   aria-label="RAM Modules"
                 >
                   <div className="dimm-slot slot-a">
-                    <div className="ram-stick">
+                    <div className={`ram-stick${powerOn ? ' rgb-enabled' : ''}`}>
                       <div className="ram-ridges" />
                       <span className="ram-text">DDR5</span>
                       <div className="ram-gold-pins" />
                     </div>
                   </div>
                   <div className="dimm-slot slot-b">
-                    <div className="ram-stick">
+                    <div className={`ram-stick${powerOn ? ' rgb-enabled' : ''}`}>
                       <div className="ram-ridges" />
                       <span className="ram-text">DDR5</span>
                       <div className="ram-gold-pins" />
@@ -1029,7 +1082,7 @@ export default function PcDiagram({
                 <div
                   className={`hardware-layer comp-gpu${
                     selected.id === 'gpu' ? ' selected' : ''
-                  }`}
+                  }${isVerticalGpu ? ' gpu-vertical' : ''}`}
                   onClick={e => {
                     e.stopPropagation()
                     select('gpu')
@@ -1039,7 +1092,8 @@ export default function PcDiagram({
                   tabIndex={0}
                   aria-label="Graphics Accelerator"
                 >
-                  <div className="gpu-shroud">
+                  {isVerticalGpu && <div className="gpu-riser-cable" />}
+                  <div className={`gpu-shroud${powerOn ? ' rgb-enabled' : ''}`}>
                     <div className="gpu-bracket" />
                     <div className="gpu-badge">
                       <span>PCIe 5.0 x16</span>

@@ -258,11 +258,7 @@ export default function ServerDiagram({ selectedId: extId, onSelect }: Props) {
   }
 
   const comp = COMPS.find(c => c.id === activeId)
-  const dimmed = !!activeId
 
-  const cls = (id: string, extra = '') =>
-    ['sd-block', `sd-${id}`, extra, activeId === id ? 'sd-sel' : '', dimmed && activeId !== id ? 'sd-dim' : '']
-      .filter(Boolean).join(' ')
 
   return (
     <div className="sd-root">
