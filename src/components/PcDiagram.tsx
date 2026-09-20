@@ -162,7 +162,9 @@ export default function PcDiagram({
   const [buildStep, setBuildStep] = useState<number>(10) // 10 = fully assembled
   const [powerOn, setPowerOn] = useState<boolean>(true)
   const [isPoweringUp, setIsPoweringUp] = useState<boolean>(false)
+  const [isBooting, setIsBooting] = useState<boolean>(false)
   const [isVerticalGpu, setIsVerticalGpu] = useState<boolean>(false)
+  const [thermalMode, setThermalMode] = useState<boolean>(false)
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true)
   const [glassPanelOn, setGlassPanelOn] = useState<boolean>(false) // Default OPEN CASE
   const [activeTab, setActiveTab] = useState<'specs' | 'install' | 'diagnostics'>('specs')
@@ -615,7 +617,9 @@ export default function PcDiagram({
               playClickSound(powerOn ? 450 : 1300, 0.05)
               if (!powerOn) {
                 setIsPoweringUp(true)
+                setIsBooting(true)
                 setTimeout(() => setIsPoweringUp(false), 400)
+                setTimeout(() => setIsBooting(false), 3000)
               }
               setPowerOn(prev => !prev)
             }}
@@ -638,6 +642,20 @@ export default function PcDiagram({
           >
             <Layers size={14} strokeWidth={1.75} aria-hidden="true" />
             VERT GPU: {isVerticalGpu ? 'ON' : 'OFF'}
+          </button>
+
+          <button
+            type="button"
+            className={`sound-toggle-btn${thermalMode ? ' on' : ''}`}
+            onClick={() => {
+              playClickSound(950, 0.03)
+              setThermalMode(prev => !prev)
+            }}
+            title="Toggle Thermal Vision Mode"
+            style={{ marginLeft: 6, padding: '7px 12px' }}
+          >
+            <Activity size={14} strokeWidth={1.75} aria-hidden="true" />
+            THERMAL: {thermalMode ? 'ON' : 'OFF'}
           </button>
 
           <button
@@ -731,7 +749,9 @@ export default function PcDiagram({
                   isDragging ? ' no-transition' : ''
                 }${focusMode ? ` focus-mode focusing-${selected.id}` : ''}${
                   isAssembling ? ' assembling' : ''
-                }${isPoweringUp ? ' powering-up' : ''}`}
+                }${isPoweringUp ? ' powering-up' : ''}${isBooting ? ' booting' : ''}${
+                  thermalMode ? ' thermal-mode' : ''
+                }`}
                 style={{
                   transform: `translateX(${pan.x}px) translateY(${pan.y}px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(${zoom})`,
                   transition: isDragging ? 'none' : 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -797,6 +817,9 @@ export default function PcDiagram({
                 {/* Bottom Chassis Basement */}
                 <div className="chassis-base" />
                 <div className={`rgb-led-strip bottom${powerOn ? ' rgb-enabled' : ''}`} style={{ opacity: powerOn ? 1 : 0.2 }} />
+                
+                {/* Showcase Floor Reflection */}
+                <div className={`showcase-floor${powerOn ? ' active' : ''}`} />
 
                 {/* Rear Panel Frame (Left edge in open view) */}
                 <div className="chassis-rear-edge">
@@ -838,7 +861,9 @@ export default function PcDiagram({
                         e.stopPropagation()
                         if (!powerOn) {
                           setIsPoweringUp(true)
+                          setIsBooting(true)
                           setTimeout(() => setIsPoweringUp(false), 400)
+                          setTimeout(() => setIsBooting(false), 3000)
                         }
                         setPowerOn(p => !p)
                       }}
@@ -891,13 +916,21 @@ export default function PcDiagram({
                       <path d="M 12 0 L 0 0 0 12" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="0.7" />
                     </pattern>
                     <rect width="100%" height="100%" fill="url(#moboGrid)" />
-                    {/* Gold Data Lines */}
-                    <path d="M 40 60 L 80 60 L 100 90 L 160 90" stroke="rgba(245, 158, 11, 0.45)" strokeWidth="1.5" fill="none" strokeDasharray="3 2" />
-                    <path d="M 110 130 L 110 160 L 50 160 L 50 210" stroke="rgba(214, 213, 206, 0.4)" strokeWidth="1.5" fill="none" />
-                    <path d="M 180 40 L 180 130" stroke="rgba(214, 213, 206, 0.5)" strokeWidth="2" fill="none" />
-                    <circle cx="80" cy="60" r="2.5" fill="#eab308" />
-                    <circle cx="100" cy="90" r="2.5" fill="#eab308" />
+                    {/* Holographic Data Traces */}
+                    <path className={`holo-trace${powerOn ? ' active' : ''}`} d="M 40 60 L 80 60 L 100 90 L 160 90" stroke="rgba(56, 189, 248, 0.8)" strokeWidth="2" fill="none" />
+                    <path className={`holo-trace${powerOn ? ' active' : ''}`} d="M 110 130 L 110 160 L 50 160 L 50 210" stroke="rgba(56, 189, 248, 0.8)" strokeWidth="2" fill="none" style={{ animationDelay: '0.5s' }} />
+                    <path className={`holo-trace${powerOn ? ' active' : ''}`} d="M 180 40 L 180 130" stroke="rgba(56, 189, 248, 0.8)" strokeWidth="2" fill="none" style={{ animationDelay: '1s' }} />
+                    <circle cx="80" cy="60" r="2.5" fill="#38bdf8" />
+                    <circle cx="100" cy="90" r="2.5" fill="#38bdf8" />
                   </svg>
+
+                  {/* Diagnostic LEDs */}
+                  <div className={`diag-leds-block${powerOn ? ' active' : ''}`}>
+                    <span className="diag-led led-cpu" title="CPU" />
+                    <span className="diag-led led-dram" title="DRAM" />
+                    <span className="diag-led led-vga" title="VGA" />
+                    <span className="diag-led led-boot" title="BOOT" />
+                  </div>
 
                   {/* VRM Heatsinks */}
                   <div className="vrm-heatsink top" />
@@ -966,6 +999,7 @@ export default function PcDiagram({
                   </svg>
                   <div className={`aio-pump${powerOn ? ' rgb-enabled' : ''}`} style={{ position: 'absolute', top: '120px', left: '40px' }}>
                     <div className="aio-pump-screen">
+                      <div className={`aio-radar${powerOn ? ' active' : ''}`} />
                       <span className="aio-pump-text">42°</span>
                     </div>
                   </div>
@@ -1098,6 +1132,9 @@ export default function PcDiagram({
                     <div className="gpu-badge">
                       <span>PCIe 5.0 x16</span>
                       <span className={`gpu-led${powerOn ? ' active' : ''}`} />
+                    </div>
+                    <div className="gpu-oled-screen">
+                       <span className={`oled-text${powerOn ? ' active' : ''}`}>LOAD 99%</span>
                     </div>
                     <div className="gpu-fans-row">
                       <div className={`gpu-fan${powerOn ? ' spinning' : ''}`}>

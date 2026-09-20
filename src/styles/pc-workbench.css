@@ -3936,3 +3936,151 @@
   stroke: #52525b;
   stroke-width: 1;
 }
+
+/* ── PHASE 2: THERMAL MODE, BOOT SEQ, HOLOGRAPHICS ── */
+
+/* Showcase Floor Reflection */
+.showcase-floor {
+  position: absolute;
+  width: 150%;
+  height: 150%;
+  left: -25%;
+  top: 100%;
+  background: radial-gradient(circle at center, rgba(30, 41, 59, 0.4) 0%, transparent 60%);
+  transform: rotateX(90deg) translateZ(-10px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+  box-shadow: 0 0 100px rgba(56, 189, 248, 0.1);
+  filter: blur(8px);
+}
+.showcase-floor.active {
+  opacity: 1;
+}
+
+/* Boot Sequence Delays */
+.pc-case-3d.booting .rgb-enabled,
+.pc-case-3d.booting .spinning {
+  animation-play-state: paused !important;
+  opacity: 0.1;
+}
+.pc-case-3d.booting .spinning-reverse {
+  animation-play-state: paused !important;
+}
+
+/* Diagnostic LEDs */
+.diag-leds-block {
+  position: absolute;
+  top: 40px;
+  right: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+}
+.diag-leds-block.active {
+  opacity: 1;
+}
+.diag-led {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #333;
+}
+.pc-case-3d.booting .led-cpu { animation: diag-flash 0.5s 0.2s; }
+.pc-case-3d.booting .led-dram { animation: diag-flash 0.5s 0.8s; }
+.pc-case-3d.booting .led-vga { animation: diag-flash 0.5s 1.4s; }
+.pc-case-3d.booting .led-boot { animation: diag-flash 0.5s 2.0s; }
+
+.pc-case-3d:not(.booting) .diag-leds-block.active .led-boot {
+  background: #22c55e;
+  box-shadow: 0 0 4px #22c55e;
+}
+
+@keyframes diag-flash {
+  0%, 100% { background: #333; box-shadow: none; }
+  50% { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+}
+
+/* Holographic Data Traces */
+.holo-trace {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 200;
+  opacity: 0;
+}
+.holo-trace.active {
+  opacity: 1;
+  animation: data-flow 2s linear infinite;
+}
+@keyframes data-flow {
+  to { stroke-dashoffset: 0; }
+}
+
+/* AIO Radar Screen */
+.aio-radar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 70%, rgba(168, 85, 247, 0.8) 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+.aio-radar.active {
+  opacity: 1;
+  animation: radar-spin 2s linear infinite;
+}
+@keyframes radar-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* GPU OLED Screen */
+.gpu-oled-screen {
+  position: absolute;
+  top: 25px;
+  left: 5px;
+  width: 40px;
+  height: 12px;
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.oled-text {
+  font-family: var(--mono);
+  font-size: 6px;
+  color: #38bdf8;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(40px);
+}
+.oled-text.active {
+  opacity: 1;
+  animation: oled-scroll 3s linear infinite;
+}
+@keyframes oled-scroll {
+  to { transform: translateX(-40px); }
+}
+
+/* Thermal Vision Mode */
+.pc-case-3d.thermal-mode {
+  filter: sepia(1) hue-rotate(-50deg) saturate(3) brightness(0.9);
+}
+.pc-case-3d.thermal-mode .rgb-enabled {
+  filter: none !important;
+  animation: none !important;
+  background: #fff !important;
+  box-shadow: 0 0 15px #fff !important;
+}
+.pc-case-3d.thermal-mode .particle {
+  display: none;
+}
+.pc-case-3d.thermal-mode .comp-cpu .cpu-ihs,
+.pc-case-3d.thermal-mode .comp-gpu .gpu-shroud,
+.pc-case-3d.thermal-mode .vrm-heatsink {
+  background: #fff !important;
+  box-shadow: 0 0 20px #ef4444;
+}
